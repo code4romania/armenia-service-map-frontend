@@ -311,7 +311,7 @@ export function ServiceForm({
   return (
     <form onSubmit={handleSubmit} noValidate /* custom validate() handles all errors; suppress native browser validation */ className="mt-8 space-y-6">
       {errors.length > 0 || submitError ? (
-        <div ref={errorSummaryRef} role="alert" className="scroll-mt-24 space-y-3">
+        <div ref={errorSummaryRef} role="alert" data-testid="service-form-errors" className="scroll-mt-24 space-y-3">
           {errors.length > 0 ? (
             <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
               <p className="font-semibold">{t('errorSummaryTitle')}</p>
