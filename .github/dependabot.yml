@@ -13,3 +13,10 @@ updates:
       interval: "weekly"
     versioning-strategy: increase
     open-pull-requests-limit: 20
+    groups:
+      react:
+        patterns:
+          - "react"
+          - "react-dom"
+          - "@types/react"
+          - "@types/react-dom"
