@@ -177,7 +177,7 @@ export default function OrganisationDetailPage() {
               </div>
               <div>
                 <div className="text-sm font-medium text-[#6b7280]">{t('form.submittedVia')}</div>
-                <div className="mt-1">{org.submissionSource || t('values.submittedViaAdmin')}</div>
+                <div className="mt-1">{!org.submissionSource || org.submissionSource === 'ADMIN' ? t('values.submittedViaAdmin') : org.submissionSource}</div>
               </div>
               <div>
                 <div className="text-sm font-medium text-[#6b7280]">{t('form.reviewedAt')}</div>

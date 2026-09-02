@@ -16,8 +16,13 @@ import {
 test.describe('Admin CRUD', () => {
   test('organisation surfaces in the directory and is removable', async ({ page, request }) => {
     const { accessToken } = await login(request, CREDENTIALS.admin);
-    const name = `[e2e] Org ${Date.now()}`;
-    const org = await apiCreate(request, accessToken, '/admin/organisations', { name });
+    const stamp = Date.now();
+    const name = `[e2e] Org ${stamp}`;
+    // Admin-created orgs provision an ORG_ADMIN user from the contact email, so it must be unique.
+    const org = await apiCreate(request, accessToken, '/admin/organisations', {
+      name,
+      contactPersonEmail: `e2e-org-${stamp}@example.com`,
+    });
     try {
       await page.goto('/admin/organisations');
       await page.getByPlaceholder('Search...').fill(name);
@@ -25,6 +30,8 @@ test.describe('Admin CRUD', () => {
       // target the table cell to avoid a strict-mode double match.
       await expect(page.getByRole('cell', { name }).first()).toBeVisible();
     } finally {
+      const users = org.users as Array<{ id: string }> | undefined;
+      for (const u of users ?? []) await apiDelete(request, accessToken, `/admin/users/${u.id}`);
       await apiDelete(request, accessToken, `/admin/organisations/${org.id}`);
     }
   });
