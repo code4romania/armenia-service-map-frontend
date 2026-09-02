@@ -489,7 +489,6 @@
         "website": "Website",
         "address": "Address",
         "contactEmail": "Contact email",
-        "contactEmailRequired": "Contact email *",
         "contactPhone": "Contact phone",
         "contactPerson": "Contact person",
         "description": "Description",
@@ -497,7 +496,13 @@
         "submittedVia": "Submitted via",
         "reviewedAt": "Reviewed at",
         "rejectionReason": "Rejection reason",
-        "saving": "Saving..."
+        "saving": "Saving...",
+        "adminSection": "Organisation administrator",
+        "adminHint": "This person receives the invitation email, sets their password and manages the organisation.",
+        "adminFirstNameRequired": "First name *",
+        "adminLastNameRequired": "Last name *",
+        "adminEmailRequired": "Email *",
+        "adminPhone": "Phone"
       },
       "values": {
         "submittedViaAdmin": "Admin",
@@ -506,10 +511,12 @@
       },
       "validation": {
         "nameRequired": "Organisation name is required.",
-        "emailRequired": "Contact email is required.",
-        "invalidEmail": "Enter a valid contact email.",
-        "invalidPhone": "Enter a valid contact phone number.",
-        "createFailed": "Unable to create organisation. Please try again."
+        "emailRequired": "Email is required.",
+        "invalidEmail": "Enter a valid email address.",
+        "invalidPhone": "Enter a valid phone number.",
+        "createFailed": "Unable to create organisation. Please try again.",
+        "firstNameRequired": "First name is required.",
+        "lastNameRequired": "Last name is required."
       },
       "mobile": {
         "region": "Region",

@@ -489,7 +489,6 @@
         "website": "Կայք",
         "address": "Հասցե",
         "contactEmail": "Կոնտակտային էլ. փոստ",
-        "contactEmailRequired": "Կոնտակտային էլ. փոստ *",
         "contactPhone": "Կոնտակտային հեռախոս",
         "contactPerson": "Կոնտակտային անձ",
         "description": "Նկարագրություն",
@@ -497,7 +496,13 @@
         "submittedVia": "Ներկայացվել է",
         "reviewedAt": "Վերանայվել է",
         "rejectionReason": "Մերժման պատճառ",
-        "saving": "Պահպանվում է..."
+        "saving": "Պահպանվում է...",
+        "adminSection": "Կազմակերպության ադմինիստրատոր",
+        "adminHint": "Այս անձը կստանա հրավերի նամակը, կսահմանի գաղտնաբառ և կկառավարի կազմակերպությունը։",
+        "adminFirstNameRequired": "Անուն *",
+        "adminLastNameRequired": "Ազգանուն *",
+        "adminEmailRequired": "Էլ. փոստ *",
+        "adminPhone": "Հեռախոս"
       },
       "values": {
         "submittedViaAdmin": "Ադմինիստրատոր",
@@ -506,10 +511,12 @@
       },
       "validation": {
         "nameRequired": "Կազմակերպության անվանումը պարտադիր է:",
-        "emailRequired": "Կոնտակտային էլ. փոստը պարտադիր է:",
-        "invalidEmail": "Մուտքագրեք վավեր կոնտակտային էլ. փոստ:",
-        "invalidPhone": "Մուտքագրեք վավեր կոնտակտային հեռախոսահամար:",
-        "createFailed": "Չհաջողվեց ստեղծել կազմակերպությունը: Փորձեք նորից:"
+        "emailRequired": "Էլ. փոստը պարտադիր է:",
+        "invalidEmail": "Մուտքագրեք վավեր էլ. փոստի հասցե:",
+        "invalidPhone": "Մուտքագրեք վավեր հեռախոսահամար:",
+        "createFailed": "Չհաջողվեց ստեղծել կազմակերպությունը: Փորձեք նորից:",
+        "firstNameRequired": "Անունը պարտադիր է:",
+        "lastNameRequired": "Ազգանունը պարտադիր է:"
       },
       "mobile": {
         "region": "Տարածաշրջան",
