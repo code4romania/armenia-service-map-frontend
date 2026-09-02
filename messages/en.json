@@ -473,6 +473,7 @@
         "website": "Website",
         "address": "Address",
         "contactEmail": "Contact email",
+        "contactEmailRequired": "Contact email *",
         "contactPhone": "Contact phone",
         "contactPerson": "Contact person",
         "description": "Description",
@@ -489,6 +490,7 @@
       },
       "validation": {
         "nameRequired": "Organisation name is required.",
+        "emailRequired": "Contact email is required.",
         "invalidEmail": "Enter a valid contact email.",
         "invalidPhone": "Enter a valid contact phone number.",
         "createFailed": "Unable to create organisation. Please try again."

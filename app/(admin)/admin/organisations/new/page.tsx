@@ -9,13 +9,14 @@ import { Button } from '@/components/ui/button';
 import { useCreateOrganisation } from '@/lib/api/organisations';
 import { getErrorMessage, isValidEmail, isValidPhone, mapErrorMessageToField } from '@/lib/validation';
 
+// Keys mirror the backend CreateOrganisationDto so the form state can be posted as-is.
 type FormState = {
   name: string;
   description: string;
   website: string;
-  contactEmail: string;
-  contactPhone: string;
-  address: string;
+  contactPersonEmail: string;
+  contactPersonPhone: string;
+  streetAddress: string;
 };
 
 type FormField = keyof FormState;
@@ -29,9 +30,9 @@ export default function NewOrganisationPage() {
     name: '',
     description: '',
     website: '',
-    contactEmail: '',
-    contactPhone: '',
-    address: '',
+    contactPersonEmail: '',
+    contactPersonPhone: '',
+    streetAddress: '',
   });
   const [errors, setErrors] = useState<Partial<Record<FormField, string>>>({});
   const [submitError, setSubmitError] = useState<string | null>(null);
@@ -45,11 +46,13 @@ export default function NewOrganisationPage() {
   function validate(values: FormState) {
     const nextErrors: Partial<Record<FormField, string>> = {};
     if (!values.name.trim()) nextErrors.name = t('validation.nameRequired');
-    if (values.contactEmail.trim() && !isValidEmail(values.contactEmail)) {
-      nextErrors.contactEmail = t('validation.invalidEmail');
+    if (!values.contactPersonEmail.trim()) {
+      nextErrors.contactPersonEmail = t('validation.emailRequired');
+    } else if (!isValidEmail(values.contactPersonEmail)) {
+      nextErrors.contactPersonEmail = t('validation.invalidEmail');
     }
-    if (values.contactPhone.trim() && !isValidPhone(values.contactPhone)) {
-      nextErrors.contactPhone = t('validation.invalidPhone');
+    if (values.contactPersonPhone.trim() && !isValidPhone(values.contactPersonPhone)) {
+      nextErrors.contactPersonPhone = t('validation.invalidPhone');
     }
     return nextErrors;
   }
@@ -71,9 +74,9 @@ export default function NewOrganisationPage() {
       const message = getErrorMessage(error, t('validation.createFailed'));
       const mappedField = mapErrorMessageToField<FormField>(message, [
         { field: 'name', pattern: /name|organisation/i },
-        { field: 'contactEmail', pattern: /email/i },
-        { field: 'contactPhone', pattern: /phone|telephone/i },
-        { field: 'address', pattern: /address|street/i },
+        { field: 'contactPersonEmail', pattern: /email/i },
+        { field: 'contactPersonPhone', pattern: /phone|telephone/i },
+        { field: 'streetAddress', pattern: /address|street/i },
       ]);
       if (mappedField) {
         setErrors((prev) => ({ ...prev, [mappedField]: message }));
@@ -111,25 +114,26 @@ export default function NewOrganisationPage() {
         </div>
         <Input
           label={t('form.address')}
-          value={form.address}
-          onChange={(e) => updateField('address', e.target.value)}
-          error={errors.address}
+          value={form.streetAddress}
+          onChange={(e) => updateField('streetAddress', e.target.value)}
+          error={errors.streetAddress}
         />
         <div className="grid grid-cols-2 gap-4">
           <Input
-            label={t('form.contactEmail')}
+            label={t('form.contactEmailRequired')}
             type="email"
-            value={form.contactEmail}
-            onChange={(e) => updateField('contactEmail', e.target.value)}
-            error={errors.contactEmail}
-            aria-invalid={Boolean(errors.contactEmail)}
+            value={form.contactPersonEmail}
+            onChange={(e) => updateField('contactPersonEmail', e.target.value)}
+            error={errors.contactPersonEmail}
+            aria-invalid={Boolean(errors.contactPersonEmail)}
+            required
           />
           <Input
             label={t('form.contactPhone')}
-            value={form.contactPhone}
-            onChange={(e) => updateField('contactPhone', e.target.value)}
-            error={errors.contactPhone}
-            aria-invalid={Boolean(errors.contactPhone)}
+            value={form.contactPersonPhone}
+            onChange={(e) => updateField('contactPersonPhone', e.target.value)}
+            error={errors.contactPersonPhone}
+            aria-invalid={Boolean(errors.contactPersonPhone)}
           />
         </div>
         <div>
