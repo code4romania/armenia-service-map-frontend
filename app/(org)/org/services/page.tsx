@@ -6,6 +6,7 @@ import { useTranslations, useLocale } from 'next-intl';
 import { type ColumnDef, type SortingState } from '@tanstack/react-table';
 import { getLocalizedServiceContent } from '@/lib/i18n/service-content';
 import { DataTable } from '@/components/admin/data-table';
+import { AdminPanel, AdminToolbar } from '@/components/admin/admin-surface';
 import { Pagination } from '@/components/admin/pagination';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -115,8 +116,8 @@ export default function OrgServicesPage() {
         <h1 className="text-2xl font-bold">{t('title')}</h1>
         <Button onClick={() => router.push('/org/services/new')}>{t('addNew')}</Button>
       </div>
-      <div className="mt-6 rounded-lg border bg-white">
-        <div className="flex items-center justify-end gap-2 p-4 pb-0">
+      <AdminPanel className="mt-6 overflow-hidden">
+        <AdminToolbar>
           <TableSelect
             value={status}
             onChange={(event) => {
@@ -130,7 +131,7 @@ export default function OrgServicesPage() {
             <option value="PUBLISHED">{tStatuses('published')}</option>
           </TableSelect>
           <TableSearchInput placeholder={tCommon('searchPlaceholder')} value={search} onChange={(e) => { setSearch(e.target.value); setPage(1); }} className="w-64" />
-        </div>
+        </AdminToolbar>
         {isLoading ? (
           <div className="p-4">
             <TableLoadingSkeleton />
@@ -141,7 +142,7 @@ export default function OrgServicesPage() {
             {data && <Pagination page={data.meta.page} totalPages={data.meta.totalPages} total={data.meta.total} perPage={data.meta.perPage} onPageChange={setPage} onPerPageChange={(pp) => { setPerPage(pp); setPage(1); }} />}
           </>
         )}
-      </div>
+      </AdminPanel>
     </div>
   );
 }

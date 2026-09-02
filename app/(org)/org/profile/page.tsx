@@ -170,7 +170,7 @@ export default function OrgProfilePage() {
   }
 
   if (isLoading) return <DetailPageLoadingSkeleton />;
-  if (!profile) return <div className="rounded-lg border bg-white p-6 text-sm text-[#6b7280]">{t('unavailable')}</div>;
+  if (!profile) return <div className="admin-panel p-6 text-sm text-[#6b7280]">{t('unavailable')}</div>;
 
   return (
     <div>
@@ -216,7 +216,7 @@ export default function OrgProfilePage() {
           id="org-profile-panel-details"
           role="tabpanel"
           aria-labelledby="org-profile-tab-details"
-          className="mt-6 rounded-lg border bg-white p-6"
+          className="admin-panel mt-6 p-6"
         >
           {submitError ? (
             <p className="mb-4 rounded-md border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
@@ -318,9 +318,9 @@ export default function OrgProfilePage() {
           id="org-profile-panel-users"
           role="tabpanel"
           aria-labelledby="org-profile-tab-users"
-          className="mt-6 rounded-lg border bg-white"
+          className="admin-panel mt-6 overflow-hidden"
         >
-          <div className="border-b p-4">
+          <div className="border-b border-[#e5e5e5] p-4">
             <h2 className="text-lg font-semibold text-[#111827]">{t('users.heading')}</h2>
             <p className="text-sm text-[#6b7280]">{t('users.subtitle')}</p>
           </div>
