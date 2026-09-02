@@ -200,7 +200,23 @@
     "loginButton": "Sign in",
     "invalidCredentials": "Invalid email or password",
     "loginPanelTitle": "Coordinate support without leaving the platform behind.",
-    "loginPanelBody": "Stay connected to the same RefugeeSupport.am experience while you access the tools your team uses to respond quickly and confidently."
+    "loginPanelBody": "Stay connected to the same RefugeeSupport.am experience while you access the tools your team uses to respond quickly and confidently.",
+    "setupPassword": {
+      "eyebrow": "Account setup",
+      "title": "Set your password",
+      "subtitle": "Choose a password of at least {min} characters to activate your account.",
+      "newPassword": "New password",
+      "confirmPassword": "Confirm password",
+      "submit": "Set password",
+      "tooShort": "Password must be at least 8 characters.",
+      "mismatch": "Passwords do not match.",
+      "invalidToken": "This setup link is invalid or has expired. Ask an administrator to send a new one.",
+      "missingToken": "This setup link is missing its token.",
+      "errorTitle": "Something went wrong",
+      "successTitle": "Password set",
+      "successBody": "Your account is active. Redirecting you to sign in...",
+      "goToLogin": "Go to sign in"
+    }
   },
   "serviceForm": {
     "language": "Language",
