@@ -4,7 +4,7 @@ import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useLocale, useTranslations } from 'next-intl';
 import { ChevronRightIcon } from '@heroicons/react/24/outline';
-import { ServiceForm, type ServiceFormState } from '@/components/services/service-form';
+import { ALL_REGIONS, ServiceForm, type ServiceFormState } from '@/components/services/service-form';
 import { DetailPageLoadingSkeleton } from '@/components/shared/loading-skeletons';
 import { useAdminService, useUpdateService } from '@/lib/api/services';
 import { useOrganisations } from '@/lib/api/organisations';
@@ -35,7 +35,7 @@ export default function EditServicePage() {
         howToAccess: service.howToAccess ?? '',
         howToAccessHy: service.howToAccessHy ?? '',
         status: service.status,
-        regionId: service.regionId || '',
+        regionId: service.regionId ?? ALL_REGIONS,
         isAvailable: service.isAvailable,
         targetGroupIds: service.targetGroups.map((entry) => entry.targetGroup.id),
         topicIds: service.topics.map((entry) => entry.topic.id),

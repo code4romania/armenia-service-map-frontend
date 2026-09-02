@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 import { fireEvent, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { ServiceForm, type ServiceFormState } from '@/components/services/service-form';
+import { ALL_REGIONS, ServiceForm, type ServiceFormState } from '@/components/services/service-form';
 
 vi.mock('next-intl', () => ({
   useTranslations: () => (key: string, values?: Record<string, string | number>) => {
@@ -188,6 +188,44 @@ describe('ServiceForm', () => {
     await user.selectOptions(screen.getByLabelText('location'), 'region-1');
     await user.click(screen.getByText('Create service'));
     expect(onSubmit).toHaveBeenCalled();
+  });
+
+  it('offers "All regions" as a location and submits it as a null regionId', async () => {
+    const onSubmit = vi.fn().mockResolvedValue(undefined);
+    const user = userEvent.setup();
+    render(
+      <ServiceForm
+        showOrganisationField={false}
+        isSubmitting={false}
+        submitLabel="Create service"
+        onCancel={vi.fn()}
+        onSubmit={onSubmit}
+      />,
+    );
+
+    await fillAllRequired(user, { location: true });
+    await user.selectOptions(screen.getByLabelText('location'), ALL_REGIONS);
+    expect(screen.getByRole('option', { name: 'allRegions' })).toBeInTheDocument();
+    await user.click(screen.getByText('Create service'));
+
+    expect(onSubmit).toHaveBeenCalledTimes(1);
+    expect(onSubmit.mock.calls[0][0]).toMatchObject({ regionId: null });
+  });
+
+  it('pre-selects "All regions" in edit mode when the service has no region', () => {
+    render(
+      <ServiceForm
+        mode="edit"
+        initialValues={{ ...EDIT_INITIAL, regionId: ALL_REGIONS }}
+        showOrganisationField={false}
+        isSubmitting={false}
+        submitLabel="Save changes"
+        onCancel={vi.fn()}
+        onSubmit={vi.fn()}
+      />,
+    );
+
+    expect(screen.getByLabelText('location')).toHaveValue(ALL_REGIONS);
   });
 
   it('requires topics and target groups but not dates', async () => {

@@ -70,7 +70,7 @@ export default function OrgNeedDetailPage() {
 
       <div className="mt-6 grid gap-6 xl:grid-cols-[1.7fr_1fr]">
         <section className="space-y-4">
-          <div className="rounded-lg border bg-white p-6">
+          <div className="admin-panel p-6">
             <h2 className="text-sm font-semibold uppercase tracking-wide text-[#6b7280]">{t('detail.descriptionHeading')}</h2>
             <p className="mt-3 whitespace-pre-wrap text-sm text-[#374151]">{need.description}</p>
             <div className="mt-4 grid gap-3 text-sm text-[#6b7280] md:grid-cols-2">
@@ -79,7 +79,7 @@ export default function OrgNeedDetailPage() {
             </div>
           </div>
 
-          <div className="rounded-lg border bg-white p-6">
+          <div className="admin-panel p-6">
             <h2 className="text-sm font-semibold uppercase tracking-wide text-[#6b7280]">{t('detail.addCommentHeading')}</h2>
             <textarea
               value={comment}
@@ -95,7 +95,7 @@ export default function OrgNeedDetailPage() {
             </div>
           </div>
 
-          <div className="rounded-lg border bg-white p-6">
+          <div className="admin-panel p-6">
             <h2 className="text-sm font-semibold uppercase tracking-wide text-[#6b7280]">{t('detail.timelineHeading')}</h2>
             <div className="mt-3">
               {eventsLoading ? (
@@ -108,7 +108,7 @@ export default function OrgNeedDetailPage() {
         </section>
 
         <aside className="space-y-4">
-          <div className="rounded-lg border bg-white p-6">
+          <div className="admin-panel p-6">
             <h2 className="text-sm font-semibold uppercase tracking-wide text-[#6b7280]">{t('detail.detailsHeading')}</h2>
             <div className="mt-4 space-y-4 text-sm">
               <div>

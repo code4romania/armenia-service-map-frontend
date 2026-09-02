@@ -66,7 +66,7 @@ export default function AdminServicesPage() {
         ),
     },
     {
-      accessorFn: (row) => row.region?.name ?? '',
+      accessorFn: (row) => row.region?.name ?? t('allRegions'),
       id: 'location',
       header: t('columns.location'),
       enableSorting: true,
@@ -203,7 +203,7 @@ export default function AdminServicesPage() {
                         serviceOrgName(row)
                       ),
                   },
-                  { label: t('columns.location'), value: row.region?.name || '—' },
+                  { label: t('columns.location'), value: row.region?.name || t('allRegions') },
                   { label: t('columns.targetGroup'), value: row.targetGroups?.map((item) => item.targetGroup.name).join(', ') || '—' },
                   { label: t('columns.topics'), value: row.topics?.length ? `${row.topics[0].topic.name}${row.topics.length > 1 ? ` +${row.topics.length - 1}` : ''}` : '—' },
                   { label: t('columns.lastUpdated'), value: new Date(row.updatedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) },

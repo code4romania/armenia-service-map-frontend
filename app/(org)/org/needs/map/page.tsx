@@ -6,6 +6,7 @@ import { useTranslations } from 'next-intl';
 import { type ColumnDef } from '@tanstack/react-table';
 import { ArmeniaMap } from '@/components/shared/armenia-map';
 import { DataTable } from '@/components/admin/data-table';
+import { AdminPanel } from '@/components/admin/admin-surface';
 import { Pagination } from '@/components/admin/pagination';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
@@ -137,7 +138,7 @@ export default function OrgNeedsMapPage() {
       ) : (
         <div className="mt-6 flex flex-col gap-6 lg:flex-row">
           <div className="lg:w-2/3">
-            <div className="overflow-hidden rounded-lg border bg-white p-4">
+            <AdminPanel className="overflow-hidden p-4">
               <ArmeniaMap
                 regionCounts={regionCounts}
                 selectedRegionId={selectedRegion?.svgPathId}
@@ -150,14 +151,14 @@ export default function OrgNeedsMapPage() {
                   setPage(1);
                 }}
               />
-            </div>
+            </AdminPanel>
             <div className="mt-3 text-xs text-[#6b7280]">
               {t('map.colorScale')}
             </div>
           </div>
 
           <div className="lg:w-1/3">
-            <div className="rounded-lg border bg-white p-4">
+            <AdminPanel className="p-4">
               <h3 className="text-sm font-semibold text-[#6b7280]">{t('map.regionCountsHeading')}</h3>
               <div className="mt-3 space-y-2">
                 {mapData
@@ -170,7 +171,7 @@ export default function OrgNeedsMapPage() {
                         setSelectedRegionId((prev) => (prev === entry.regionId ? '' : entry.regionId));
                         setPage(1);
                       }}
-                      className={`flex w-full items-center justify-between rounded-md border px-3 py-2 text-sm transition-colors ${
+                      className={`flex w-full items-center justify-between rounded-md border border-[#e8e8e8] px-3 py-2 text-sm transition-colors ${
                         selectedRegionId === entry.regionId
                           ? 'border-emerald-300 bg-emerald-50 text-emerald-700'
                           : 'hover:bg-gray-50'
@@ -181,12 +182,12 @@ export default function OrgNeedsMapPage() {
                     </button>
                   ))}
               </div>
-            </div>
+            </AdminPanel>
           </div>
         </div>
       )}
 
-      <div className="mt-8 rounded-lg border bg-white">
+      <AdminPanel className="mt-8 overflow-hidden">
         <div className="flex items-center justify-between p-4 pb-0">
           <h2 className="text-lg font-semibold text-[#111827]">{t('map.listHeading')}</h2>
           <Input
@@ -222,7 +223,7 @@ export default function OrgNeedsMapPage() {
             ) : null}
           </>
         )}
-      </div>
+      </AdminPanel>
     </div>
   );
 }
