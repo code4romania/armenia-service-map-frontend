@@ -23,31 +23,34 @@ describe('NewOrganisationPage', () => {
     mutateAsyncMock.mockReset().mockResolvedValue({ id: 'org-1' });
   });
 
-  it('requires a contact email before submitting', async () => {
+  it('requires the administrator name and email before submitting', async () => {
     render(<NewOrganisationPage />);
 
     fireEvent.change(screen.getByLabelText('form.nameRequired'), { target: { value: 'Bridge to Hope' } });
     fireEvent.submit(screen.getByRole('button', { name: 'saveChanges' }).closest('form')!);
 
-    expect(await screen.findByText('validation.emailRequired')).toBeInTheDocument();
+    expect(await screen.findByText('validation.firstNameRequired')).toBeInTheDocument();
+    expect(screen.getByText('validation.lastNameRequired')).toBeInTheDocument();
+    expect(screen.getByText('validation.emailRequired')).toBeInTheDocument();
     expect(mutateAsyncMock).not.toHaveBeenCalled();
   });
 
-  it('submits the API field names the backend accepts', async () => {
+  it('posts the organisation with a nested admin object, in backend field names', async () => {
     render(<NewOrganisationPage />);
 
     fireEvent.change(screen.getByLabelText('form.nameRequired'), { target: { value: 'Bridge to Hope' } });
-    fireEvent.change(screen.getByLabelText('form.contactEmailRequired'), { target: { value: 'mariam@example.com' } });
-    fireEvent.change(screen.getByLabelText('form.contactPhone'), { target: { value: '+37477111222' } });
     fireEvent.change(screen.getByLabelText('form.address'), { target: { value: '1 Abovyan St' } });
+    fireEvent.change(screen.getByLabelText('form.adminFirstNameRequired'), { target: { value: 'Mariam' } });
+    fireEvent.change(screen.getByLabelText('form.adminLastNameRequired'), { target: { value: 'Hakobyan' } });
+    fireEvent.change(screen.getByLabelText('form.adminEmailRequired'), { target: { value: 'mariam@example.com' } });
+    fireEvent.change(screen.getByLabelText('form.adminPhone'), { target: { value: '+37477111222' } });
     fireEvent.submit(screen.getByRole('button', { name: 'saveChanges' }).closest('form')!);
 
     await waitFor(() => expect(mutateAsyncMock).toHaveBeenCalledTimes(1));
     expect(mutateAsyncMock).toHaveBeenCalledWith({
       name: 'Bridge to Hope',
-      contactPersonEmail: 'mariam@example.com',
-      contactPersonPhone: '+37477111222',
       streetAddress: '1 Abovyan St',
+      admin: { firstName: 'Mariam', lastName: 'Hakobyan', email: 'mariam@example.com', phone: '+37477111222' },
     });
     expect(pushMock).toHaveBeenCalledWith('/admin/organisations');
   });

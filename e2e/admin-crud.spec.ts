@@ -18,10 +18,10 @@ test.describe('Admin CRUD', () => {
     const { accessToken } = await login(request, CREDENTIALS.admin);
     const stamp = Date.now();
     const name = `[e2e] Org ${stamp}`;
-    // Admin-created orgs provision an ORG_ADMIN user from the contact email, so it must be unique.
+    // Admin-created orgs provision an ORG_ADMIN user from `admin`, so its email must be unique.
     const org = await apiCreate(request, accessToken, '/admin/organisations', {
       name,
-      contactPersonEmail: `e2e-org-${stamp}@example.com`,
+      admin: { firstName: 'E2E', lastName: 'OrgAdmin', email: `e2e-org-${stamp}@example.com` },
     });
     try {
       await page.goto('/admin/organisations');
