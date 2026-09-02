@@ -39,7 +39,7 @@ export default function OrgServicesPage() {
       cell: ({ row }) => getLocalizedServiceContent(row.original, locale).title,
     },
     {
-      accessorFn: (row) => row.region?.name ?? '',
+      accessorFn: (row) => row.region?.name ?? t('allRegions'),
       id: 'location',
       header: t('columns.location'),
       enableSorting: true,

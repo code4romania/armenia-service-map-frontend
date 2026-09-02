@@ -219,6 +219,7 @@
     "serviceCurrentlyAvailable": "Service currently available",
     "location": "Location",
     "whereAvailable": "Where it is available",
+    "allRegions": "All regions",
     "topics": "Topics",
     "targetGroups": "Target groups",
     "startDate": "Start date",
