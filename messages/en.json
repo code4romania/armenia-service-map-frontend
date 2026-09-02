@@ -137,8 +137,11 @@
     "formTitle": "Register to join",
     "formSubtitle": "Tell us about your organisation and support services. Our admin team will review your request and reach out.",
     "organisationName": "Organisation name",
-    "regionOfActivity": "Region of activity",
-    "selectRegion": "Select region...",
+    "regionsOfActivity": "Regions of activity",
+    "selectRegions": "Select regions...",
+    "regionsSelected": "{count} regions selected",
+    "selectAllRegions": "Select all regions",
+    "clearRegions": "Clear selection",
     "contactName": "Contact person name",
     "email": "Email address",
     "phone": "Phone number",
@@ -310,6 +313,7 @@
       "servicesLegend": "Services"
     },
     "common": {
+      "allRegions": "All regions",
       "searchPlaceholder": "Search...",
       "cancel": "Cancel",
       "save": "Save",

@@ -137,8 +137,11 @@
     "formTitle": "Գրանցվել ցանցին միանալու համար",
     "formSubtitle": "Պատմեք ձեր կազմակերպության և ծառայությունների մասին, և մեր թիմը կկապվի ձեզ հետ։",
     "organisationName": "Կազմակերպության անուն",
-    "regionOfActivity": "Գործունեության մարզ",
-    "selectRegion": "Ընտրել մարզ...",
+    "regionsOfActivity": "Գործունեության մարզեր",
+    "selectRegions": "Ընտրել մարզեր...",
+    "regionsSelected": "Ընտրված է {count} մարզ",
+    "selectAllRegions": "Ընտրել բոլոր մարզերը",
+    "clearRegions": "Մաքրել ընտրությունը",
     "contactName": "Կոնտակտային անձ",
     "email": "Էլ. հասցե",
     "phone": "Հեռախոսահամար",
@@ -310,6 +313,7 @@
       "servicesLegend": "Ծառայություններ"
     },
     "common": {
+      "allRegions": "Բոլոր մարզերը",
       "searchPlaceholder": "Որոնել...",
       "cancel": "Չեղարկել",
       "save": "Պահպանել",
