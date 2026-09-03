@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button';
 import { DetailPageLoadingSkeleton } from '@/components/shared/loading-skeletons';
 import { useCreateUser } from '@/lib/api/users';
 import { useOrganisations } from '@/lib/api/organisations';
+import { publishToast } from '@/lib/toast-bus';
 import { getErrorMessage, isValidEmail, mapErrorMessageToField } from '@/lib/validation';
 
 type Role = 'ORG_ADMIN' | 'SUPER_ADMIN';
@@ -89,7 +90,9 @@ function NewUserForm() {
 
     try {
       await createUser.mutateAsync(data);
-      router.back();
+      publishToast({ type: 'success', message: t('created') });
+      // Land where the new user is visible: the organisation's Users tab, or the users list.
+      router.push(presetOrgId ? `/admin/organisations/${presetOrgId}?tab=users` : '/admin/users');
     } catch (error) {
       const message = getErrorMessage(error, t('validation.createFailed'));
       const mappedField = mapErrorMessageToField<FormField>(message, [

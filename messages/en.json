@@ -545,6 +545,7 @@
       "usersManagement": "Users management",
       "addNew": "Add new user",
       "notFound": "User not found",
+      "created": "User added.",
       "status": "Status",
       "deactivateConfirm": "Deactivate this user?",
       "columns": {

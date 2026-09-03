@@ -2,12 +2,13 @@ import { describe, expect, it, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import NewUserPage from './page';
 
-const backMock = vi.fn();
+const pushMock = vi.fn();
+const toastMock = vi.fn();
 const mutateAsyncMock = vi.fn();
 let presetOrganisationId: string | null = null;
 
 vi.mock('next/navigation', () => ({
-  useRouter: () => ({ push: vi.fn(), back: backMock }),
+  useRouter: () => ({ push: pushMock, back: vi.fn() }),
   useSearchParams: () => ({ get: () => presetOrganisationId }),
 }));
 
@@ -17,6 +18,10 @@ vi.mock('next-intl', () => ({
 
 vi.mock('@/lib/api/users', () => ({
   useCreateUser: () => ({ mutateAsync: mutateAsyncMock, isPending: false }),
+}));
+
+vi.mock('@/lib/toast-bus', () => ({
+  publishToast: (toast: unknown) => toastMock(toast),
 }));
 
 vi.mock('@/lib/api/organisations', () => ({
@@ -34,7 +39,8 @@ function fillPerson() {
 describe('NewUserPage', () => {
   beforeEach(() => {
     presetOrganisationId = null;
-    backMock.mockReset();
+    pushMock.mockReset();
+    toastMock.mockReset();
     mutateAsyncMock.mockReset().mockResolvedValue({ id: 'u1' });
   });
 
@@ -56,7 +62,8 @@ describe('NewUserPage', () => {
       role: 'ORG_ADMIN',
       organisationId: 'org-1',
     });
-    expect(backMock).toHaveBeenCalled();
+    expect(toastMock).toHaveBeenCalledWith({ type: 'success', message: 'created' });
+    expect(pushMock).toHaveBeenCalledWith('/admin/organisations/org-1?tab=users');
   });
 
   it('offers only Org Admin and Super Admin, and requires an organisation for an Org Admin', async () => {
@@ -77,6 +84,7 @@ describe('NewUserPage', () => {
 
     await waitFor(() => expect(mutateAsyncMock).toHaveBeenCalledTimes(1));
     expect(mutateAsyncMock).toHaveBeenCalledWith(expect.objectContaining({ role: 'ORG_ADMIN', organisationId: 'org-2' }));
+    expect(pushMock).toHaveBeenCalledWith('/admin/users');
   });
 
   it('creates a Super Admin without an organisation', async () => {

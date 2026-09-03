@@ -1,8 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { Suspense, useState } from 'react';
 import Link from 'next/link';
-import { useParams, useRouter } from 'next/navigation';
+import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { type ColumnDef } from '@tanstack/react-table';
 import { DataTable } from '@/components/admin/data-table';
@@ -26,12 +26,14 @@ const statusVariant: Record<'ACTIVE' | 'PENDING' | 'REJECTED' | 'SUSPENDED', 'su
   SUSPENDED: 'danger',
 };
 
-export default function OrganisationDetailPage() {
+function OrganisationDetail() {
   const { id } = useParams<{ id: string }>();
+  const searchParams = useSearchParams();
   const t = useTranslations('admin.organisations');
   const tCommon = useTranslations('admin.common');
   const tStatuses = useTranslations('admin.statuses');
-  const [activeTab, setActiveTab] = useState<Tab>('details');
+  // `?tab=users` opens the Users tab directly (e.g. after adding a user to this organisation).
+  const [activeTab, setActiveTab] = useState<Tab>(searchParams.get('tab') === 'users' ? 'users' : 'details');
   const [rejectionReason, setRejectionReason] = useState('');
   const [isRejectModalOpen, setIsRejectModalOpen] = useState(false);
   const { data: org, isLoading } = useOrganisation(id);
@@ -303,5 +305,13 @@ function OrgUsersTab({ organisationId }: { organisationId: string }) {
         />
       )}
     </AdminPanel>
+  );
+}
+
+export default function OrganisationDetailPage() {
+  return (
+    <Suspense fallback={<DetailPageLoadingSkeleton />}>
+      <OrganisationDetail />
+    </Suspense>
   );
 }
