@@ -30,7 +30,7 @@ export default function AdminNeedsPage() {
   const [perPage, setPerPage] = useState(10);
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
-  const [sorting, setSorting] = useState<SortingState>([]);
+  const [sorting, setSorting] = useState<SortingState>([{ id: 'createdAt', desc: true }]);
 
   const sortBy = sorting[0]?.id;
   const sortOrder = sorting[0]?.desc ? 'desc' : 'asc';
