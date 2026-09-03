@@ -252,13 +252,6 @@ function OrgUsersTab({ organisationId }: { organisationId: string }) {
     { accessorKey: 'firstName', header: tUsers('columns.firstName'), enableSorting: true },
     { accessorKey: 'lastName', header: tUsers('columns.lastName'), enableSorting: true },
     {
-      accessorKey: 'role',
-      header: tUsers('columns.role'),
-      cell: ({ getValue }) => (
-        <Badge variant="neutral">{(getValue() as string).replace(/_/g, ' ')}</Badge>
-      ),
-    },
-    {
       accessorKey: 'createdAt',
       header: tUsers('columns.joined'),
       cell: ({ getValue }) => new Date(getValue() as string).toLocaleDateString(),
@@ -295,7 +288,6 @@ function OrgUsersTab({ organisationId }: { organisationId: string }) {
           data={data?.data ?? []}
           mobileCard={(row) => ({
             title: `${row.firstName} ${row.lastName}`.trim(),
-            badges: <Badge variant="neutral">{row.role.replace(/_/g, ' ')}</Badge>,
             fields: [
               { label: tUsers('columns.email'), value: row.email },
               { label: tUsers('columns.joined'), value: new Date(row.createdAt).toLocaleDateString() },
