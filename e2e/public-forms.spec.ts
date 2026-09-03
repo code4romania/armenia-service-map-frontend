@@ -29,6 +29,12 @@ test.describe('Join the network form', () => {
     await page.getByLabel('Contact person name').fill('Jane Tester');
     await page.getByLabel('Email address').fill('jane.tester@example.com');
     await page.getByLabel('Brief description of services').fill('We provide support services to refugees.');
+    // Regions of activity is a multi-select: pick two, then close it.
+    await page.getByRole('button', { name: 'Regions of activity' }).click();
+    await page.getByRole('listbox').getByLabel('Yerevan').check();
+    await page.getByRole('listbox').getByLabel('Shirak').check();
+    await page.getByLabel('Organisation name').click();
+    await expect(page.getByRole('button', { name: 'Regions of activity' })).toHaveText('2 regions selected');
     await page.getByRole('button', { name: 'Submit request' }).click();
 
     await expect(page).toHaveURL(/\/join-the-network\/success/);

@@ -11,6 +11,8 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { TableSearchInput } from '@/components/ui/table-controls';
 import { useOrganisations } from '@/lib/api/organisations';
+import { usePublicRegions } from '@/lib/api/services';
+import { formatRegionNames } from '@/lib/formatting/region-names';
 import { formatStatusLabel, ORG_STATUS_LABEL_KEYS } from '@/lib/formatting/status-label';
 import type { Organisation } from '@/types/api';
 import { TableLoadingSkeleton } from '@/components/shared/loading-skeletons';
@@ -36,6 +38,7 @@ export default function OrganisationsPage() {
   const sortOrder = sorting[0]?.desc ? 'desc' : 'asc';
 
   const { data, isLoading } = useOrganisations({ page, perPage, search, sortBy, sortOrder });
+  const { data: allRegions } = usePublicRegions();
 
   const columns: ColumnDef<Organisation, unknown>[] = [
     { accessorKey: 'name', header: t('columns.name'), enableSorting: true },
@@ -114,7 +117,7 @@ export default function OrganisationsPage() {
                 badges: <Badge variant={accountBadge[row.status]}>{ORG_STATUS_LABEL_KEYS[row.status] ? tStatuses(ORG_STATUS_LABEL_KEYS[row.status]) : formatStatusLabel(row.status)}</Badge>,
                 fields: [
                   { label: t('columns.lastAccess'), value: new Date(row.updatedAt).toLocaleDateString() },
-                  { label: t('mobile.region'), value: row.region?.name || '—' },
+                  { label: t('mobile.region'), value: formatRegionNames(row.regions, { totalRegions: allRegions?.length, allLabel: tCommon('allRegions') }) },
                   { label: t('mobile.users'), value: row._count.users },
                   { label: t('mobile.services'), value: row._count.services },
                 ],

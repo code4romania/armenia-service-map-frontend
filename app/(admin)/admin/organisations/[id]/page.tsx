@@ -13,6 +13,8 @@ import { Modal } from '@/components/ui/modal';
 import { DetailPageLoadingSkeleton, TableLoadingSkeleton } from '@/components/shared/loading-skeletons';
 import { useApproveOrganisation, useOrganisation, useRejectOrganisation, useUpdateOrganisation } from '@/lib/api/organisations';
 import { useUsers } from '@/lib/api/users';
+import { usePublicRegions } from '@/lib/api/services';
+import { formatRegionNames } from '@/lib/formatting/region-names';
 import { formatStatusLabel, ORG_STATUS_LABEL_KEYS } from '@/lib/formatting/status-label';
 import type { User } from '@/types/api';
 
@@ -33,6 +35,7 @@ export default function OrganisationDetailPage() {
   const [rejectionReason, setRejectionReason] = useState('');
   const [isRejectModalOpen, setIsRejectModalOpen] = useState(false);
   const { data: org, isLoading } = useOrganisation(id);
+  const { data: allRegions } = usePublicRegions();
   const updateOrg = useUpdateOrganisation();
   const approveOrg = useApproveOrganisation();
   const rejectOrg = useRejectOrganisation();
@@ -149,7 +152,7 @@ export default function OrganisationDetailPage() {
               </div>
               <div>
                 <div className="text-sm font-medium text-[#6b7280]">{t('form.location')}</div>
-                <div className="mt-1">{org.region?.name || '—'}</div>
+                <div className="mt-1">{formatRegionNames(org.regions, { totalRegions: allRegions?.length, allLabel: tCommon('allRegions') })}</div>
               </div>
               <div>
                 <div className="text-sm font-medium text-[#6b7280]">{t('form.contactEmail')}</div>
@@ -177,7 +180,7 @@ export default function OrganisationDetailPage() {
               </div>
               <div>
                 <div className="text-sm font-medium text-[#6b7280]">{t('form.submittedVia')}</div>
-                <div className="mt-1">{org.submissionSource || t('values.submittedViaAdmin')}</div>
+                <div className="mt-1">{!org.submissionSource || org.submissionSource === 'ADMIN' ? t('values.submittedViaAdmin') : org.submissionSource}</div>
               </div>
               <div>
                 <div className="text-sm font-medium text-[#6b7280]">{t('form.reviewedAt')}</div>

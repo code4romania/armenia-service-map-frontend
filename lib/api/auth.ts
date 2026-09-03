@@ -45,3 +45,13 @@ export async function logout(): Promise<void> {
 export async function getProfile(): Promise<UserProfile> {
   return apiClient<UserProfile>('/auth/me');
 }
+
+export interface SetupPasswordRequest {
+  token: string;
+  password: string;
+}
+
+/** Sets the password for an invited / reset user via the emailed setup token. */
+export async function setupPassword(data: SetupPasswordRequest): Promise<void> {
+  await apiClient('/auth/password-setup', { method: 'POST', body: data });
+}

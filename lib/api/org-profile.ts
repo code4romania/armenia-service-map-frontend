@@ -24,7 +24,7 @@ export interface OrgProfileUpdatePayload {
   logoUrl?: string;
   observations?: string;
   tags?: string[];
-  regionId?: string;
+  regionIds?: string[];
 }
 
 function withQuery(path: string, params: Record<string, string | number | undefined>) {

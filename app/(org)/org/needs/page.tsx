@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { type ColumnDef, type SortingState } from '@tanstack/react-table';
 import { DataTable } from '@/components/admin/data-table';
+import { AdminPanel, AdminToolbar } from '@/components/admin/admin-surface';
 import { Pagination } from '@/components/admin/pagination';
 import { Badge } from '@/components/ui/badge';
 import { TableSearchInput, TableSelect } from '@/components/ui/table-controls';
@@ -98,8 +99,8 @@ export default function OrgNeedsPage() {
         <button onClick={() => router.push('/org/needs/map')} className="text-sm text-[#E8922D] hover:underline">{t('viewMap')}</button>
       </div>
 
-      <div className="mt-6 rounded-lg border bg-white">
-        <div className="flex items-center justify-end gap-3 p-4 pb-0">
+      <AdminPanel className="mt-6 overflow-hidden">
+        <AdminToolbar>
           <TableSelect value={statusFilter} onChange={(e) => { setStatusFilter(e.target.value); setPage(1); }} className="w-48">
             <option value="">{tStatuses('allStatuses')}</option>
             <option value="IN_PROGRESS">{tStatuses('inProgress')}</option>
@@ -107,7 +108,7 @@ export default function OrgNeedsPage() {
             <option value="CLOSED">{tStatuses('closed')}</option>
           </TableSelect>
           <TableSearchInput placeholder={tCommon('searchPlaceholder')} value={search} onChange={(e) => { setSearch(e.target.value); setPage(1); }} className="w-64" />
-        </div>
+        </AdminToolbar>
 
         {isLoading ? (
           <div className="p-4">
@@ -119,7 +120,7 @@ export default function OrgNeedsPage() {
             {data && <Pagination page={data.meta.page} totalPages={data.meta.totalPages} total={data.meta.total} perPage={data.meta.perPage} onPageChange={setPage} onPerPageChange={(pp) => { setPerPage(pp); setPage(1); }} />}
           </>
         )}
-      </div>
+      </AdminPanel>
     </div>
   );
 }

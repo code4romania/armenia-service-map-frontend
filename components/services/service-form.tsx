@@ -9,6 +9,9 @@ import { usePublicRegions, usePublicTargetGroups, usePublicTopics } from '@/lib/
 import type { ServiceMutationInput } from '@/lib/api/services';
 import { getErrorMessage, mapErrorMessageToField, toPlainText } from '@/lib/validation';
 
+/** Sentinel select value meaning the service is available nationwide (persisted as `regionId: null`). */
+export const ALL_REGIONS = 'all';
+
 export type ServiceFormState = {
   title: string;
   titleHy: string;
@@ -289,7 +292,7 @@ export function ServiceForm({
             : undefined,
         status: form.status,
         isAvailable: form.isAvailable,
-        regionId: form.regionId || undefined,
+        regionId: form.regionId === ALL_REGIONS ? null : form.regionId || undefined,
         targetGroupIds: form.targetGroupIds,
         topicIds: form.topicIds,
         availabilityStart: form.availabilityStart || undefined,
@@ -468,6 +471,7 @@ export function ServiceForm({
               className={selectClasses}
             >
               <option value="">{t('whereAvailable')}</option>
+              <option value={ALL_REGIONS}>{t('allRegions')}</option>
               {regions?.map((region) => (
                 <option key={region.id} value={region.id}>
                   {region.name}

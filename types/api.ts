@@ -132,7 +132,6 @@ export interface Organisation {
   legalDocumentUrl?: string | null;
   observations?: string | null;
   tags?: string[];
-  regionId: string | null;
   status: 'ACTIVE' | 'PENDING' | 'REJECTED' | 'SUSPENDED';
   submissionSource?: string | null;
   reviewedAt?: string | null;
@@ -140,7 +139,7 @@ export interface Organisation {
   rejectionReason?: string | null;
   createdAt: string;
   updatedAt: string;
-  region: Region | null;
+  regions: Region[];
   _count: { users: number; services: number };
 }
 

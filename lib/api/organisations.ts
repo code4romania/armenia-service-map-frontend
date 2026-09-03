@@ -4,7 +4,7 @@ import type { PaginatedResponse, PaginationParams, Organisation, OrganisationDet
 
 export type JoinNetworkPayload = {
   organisationName: string;
-  regionId?: string;
+  regionIds?: string[];
   contactName: string;
   email: string;
   phone?: string;
@@ -32,10 +32,17 @@ export function useOrganisation(id: string) {
   });
 }
 
+/** Mirrors the backend CreateOrganisationDto. `admin` becomes the organisation's ORG_ADMIN user. */
+export type CreateOrganisationPayload = Partial<Omit<Organisation, 'id' | 'createdAt' | 'updatedAt' | 'regions' | '_count'>> & {
+  regionIds?: string[];
+  name: string;
+  admin: { firstName: string; lastName: string; email: string; phone?: string };
+};
+
 export function useCreateOrganisation() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (data: Partial<Organisation>) =>
+    mutationFn: (data: CreateOrganisationPayload) =>
       apiClient<Organisation>('/admin/organisations', { method: 'POST', body: data }),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['admin', 'organisations'] }),
   });
