@@ -1,10 +1,11 @@
 'use client';
 
-import { useState } from 'react';
+import { Suspense, useState } from 'react';
 import Link from 'next/link';
-import { useParams, useRouter } from 'next/navigation';
+import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { type ColumnDef } from '@tanstack/react-table';
+import { AdminTabs } from '@/components/admin/admin-tabs';
 import { DataTable } from '@/components/admin/data-table';
 import { AdminPanel } from '@/components/admin/admin-surface';
 import { Button } from '@/components/ui/button';
@@ -26,12 +27,14 @@ const statusVariant: Record<'ACTIVE' | 'PENDING' | 'REJECTED' | 'SUSPENDED', 'su
   SUSPENDED: 'danger',
 };
 
-export default function OrganisationDetailPage() {
+function OrganisationDetail() {
   const { id } = useParams<{ id: string }>();
+  const searchParams = useSearchParams();
   const t = useTranslations('admin.organisations');
   const tCommon = useTranslations('admin.common');
   const tStatuses = useTranslations('admin.statuses');
-  const [activeTab, setActiveTab] = useState<Tab>('details');
+  // `?tab=users` opens the Users tab directly (e.g. after adding a user to this organisation).
+  const [activeTab, setActiveTab] = useState<Tab>(searchParams.get('tab') === 'users' ? 'users' : 'details');
   const [rejectionReason, setRejectionReason] = useState('');
   const [isRejectModalOpen, setIsRejectModalOpen] = useState(false);
   const { data: org, isLoading } = useOrganisation(id);
@@ -91,50 +94,22 @@ export default function OrganisationDetailPage() {
         ) : null}
       </div>
 
-      <div
-        className="admin-toolbar mt-4 flex gap-1 p-1.5"
-        style={{ width: 'fit-content' }}
-        role="tablist"
-        aria-label={t('detailSectionsAria')}
-      >
-        <button
-          type="button"
-          role="tab"
-          id="admin-org-tab-details"
-          aria-selected={activeTab === 'details'}
-          aria-controls="admin-org-panel-details"
-          onClick={() => setActiveTab('details')}
-            className={`rounded-xl border border-transparent px-4 py-2 text-sm font-medium ${
-            activeTab === 'details'
-              ? 'border-[#E8922D] bg-white text-[#E8922D]'
-              : 'text-[#6b7280] hover:text-[#374151]'
-          }`}
-        >
-          {t('details')}
-        </button>
-        <button
-          type="button"
-          role="tab"
-          id="admin-org-tab-users"
-          aria-selected={activeTab === 'users'}
-          aria-controls="admin-org-panel-users"
-          onClick={() => setActiveTab('users')}
-            className={`rounded-xl border border-transparent px-4 py-2 text-sm font-medium ${
-            activeTab === 'users'
-              ? 'border-[#E8922D] bg-white text-[#E8922D]'
-              : 'text-[#6b7280] hover:text-[#374151]'
-          }`}
-        >
-          {t('users')}
-        </button>
-      </div>
+      <AdminTabs
+        ariaLabel={t('detailSectionsAria')}
+        active={activeTab}
+        onChange={setActiveTab}
+        tabs={[
+          { id: 'details', label: t('details'), controlsId: 'admin-org-panel-details' },
+          { id: 'users', label: t('users'), controlsId: 'admin-org-panel-users' },
+        ]}
+      />
 
       <div className="mt-6">
         {activeTab === 'details' ? (
           <section
             id="admin-org-panel-details"
             role="tabpanel"
-            aria-labelledby="admin-org-tab-details"
+            aria-labelledby="tab-details"
             className="admin-panel p-6"
           >
             <div className="mb-4 flex items-center justify-between">
@@ -198,7 +173,7 @@ export default function OrganisationDetailPage() {
           <section
             id="admin-org-panel-users"
             role="tabpanel"
-            aria-labelledby="admin-org-tab-users"
+            aria-labelledby="tab-users"
           >
             <OrgUsersTab organisationId={org.id} />
           </section>
@@ -250,13 +225,6 @@ function OrgUsersTab({ organisationId }: { organisationId: string }) {
     { accessorKey: 'firstName', header: tUsers('columns.firstName'), enableSorting: true },
     { accessorKey: 'lastName', header: tUsers('columns.lastName'), enableSorting: true },
     {
-      accessorKey: 'role',
-      header: tUsers('columns.role'),
-      cell: ({ getValue }) => (
-        <Badge variant="neutral">{(getValue() as string).replace(/_/g, ' ')}</Badge>
-      ),
-    },
-    {
       accessorKey: 'createdAt',
       header: tUsers('columns.joined'),
       cell: ({ getValue }) => new Date(getValue() as string).toLocaleDateString(),
@@ -293,7 +261,6 @@ function OrgUsersTab({ organisationId }: { organisationId: string }) {
           data={data?.data ?? []}
           mobileCard={(row) => ({
             title: `${row.firstName} ${row.lastName}`.trim(),
-            badges: <Badge variant="neutral">{row.role.replace(/_/g, ' ')}</Badge>,
             fields: [
               { label: tUsers('columns.email'), value: row.email },
               { label: tUsers('columns.joined'), value: new Date(row.createdAt).toLocaleDateString() },
@@ -303,5 +270,13 @@ function OrgUsersTab({ organisationId }: { organisationId: string }) {
         />
       )}
     </AdminPanel>
+  );
+}
+
+export default function OrganisationDetailPage() {
+  return (
+    <Suspense fallback={<DetailPageLoadingSkeleton />}>
+      <OrganisationDetail />
+    </Suspense>
   );
 }

@@ -23,7 +23,6 @@ export const USER_STATUS_LABEL_KEYS: Record<string, string> = {
 
 // Maps the uppercase user role enum to keys under the `admin.users.roles` i18n namespace.
 export const USER_ROLE_LABEL_KEYS: Record<string, string> = {
-  ORG_MEMBER: 'orgMember',
   ORG_ADMIN: 'orgAdmin',
   SUPER_ADMIN: 'superAdmin',
 };

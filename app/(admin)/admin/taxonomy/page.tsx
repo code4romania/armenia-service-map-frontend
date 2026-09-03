@@ -8,7 +8,7 @@ import { AdminPanel, AdminToolbar } from '@/components/admin/admin-surface';
 import { DataTable } from '@/components/admin/data-table';
 import { Pagination } from '@/components/admin/pagination';
 import { TableLoadingSkeleton } from '@/components/shared/loading-skeletons';
-import { TaxonomyTabs } from '@/components/admin/taxonomy/taxonomy-tabs';
+import { AdminTabs } from '@/components/admin/admin-tabs';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { TableSearchInput } from '@/components/ui/table-controls';
@@ -25,7 +25,16 @@ export default function TaxonomyPage() {
   return (
     <div>
       <h1 className="text-2xl font-bold">{t('title')}</h1>
-      <TaxonomyTabs active={activeTab} onChange={setActiveTab} />
+      <AdminTabs
+        ariaLabel={t('tabsAriaLabel')}
+        active={activeTab}
+        onChange={setActiveTab}
+        tabs={[
+          { id: 'topics', label: t('serviceTopics') },
+          { id: 'need-tags', label: t('needTags') },
+          { id: 'target-groups', label: t('targetGroups') },
+        ]}
+      />
 
       <div className="mt-6">
         {activeTab === 'topics' ? <TopicsSection /> : null}

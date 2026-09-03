@@ -8,23 +8,28 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { DetailPageLoadingSkeleton } from '@/components/shared/loading-skeletons';
 import { useCreateUser } from '@/lib/api/users';
+import { publishToast } from '@/lib/toast-bus';
 import { getErrorMessage, isValidEmail, mapErrorMessageToField } from '@/lib/validation';
 
 type FormState = {
   firstName: string;
   lastName: string;
   email: string;
-  role: string;
-  organisationId: string;
+  phone: string;
 };
 
 type FormField = keyof FormState;
 
+/**
+ * Two entry points share this form:
+ * - from an organisation page (`?organisationId=`): adds an Org Admin to that organisation;
+ * - from the admin users list: adds a platform Super Admin.
+ * The role is implied by where the user came from, so it is never picked here.
+ */
 function NewUserForm() {
   const router = useRouter();
   const t = useTranslations('admin.users');
   const tForm = useTranslations('admin.users.form');
-  const tRoles = useTranslations('admin.users.roles');
   const tCommon = useTranslations('admin.common');
   const searchParams = useSearchParams();
   const presetOrgId = searchParams.get('organisationId') || '';
@@ -34,8 +39,7 @@ function NewUserForm() {
     firstName: '',
     lastName: '',
     email: '',
-    role: 'ORG_MEMBER',
-    organisationId: presetOrgId,
+    phone: '',
   });
   const [errors, setErrors] = useState<Partial<Record<FormField, string>>>({});
   const [submitError, setSubmitError] = useState<string | null>(null);
@@ -64,20 +68,29 @@ function NewUserForm() {
     setErrors(validationErrors);
     if (Object.keys(validationErrors).length > 0) return;
 
-    const data: Record<string, string> = { ...form };
-    if (!data.organisationId) delete data.organisationId;
+    const phone = form.phone.trim();
+    const data = {
+      firstName: form.firstName,
+      lastName: form.lastName,
+      email: form.email,
+      ...(phone ? { phone } : {}),
+      ...(presetOrgId
+        ? { role: 'ORG_ADMIN', organisationId: presetOrgId }
+        : { role: 'SUPER_ADMIN' }),
+    };
 
     try {
-      await createUser.mutateAsync(data as Parameters<typeof createUser.mutateAsync>[0]);
-      router.back();
+      await createUser.mutateAsync(data);
+      publishToast({ type: 'success', message: t('created') });
+      // Land where the new user is visible: the organisation's Users tab, or the admin users list.
+      router.push(presetOrgId ? `/admin/organisations/${presetOrgId}?tab=users` : '/admin/users');
     } catch (error) {
       const message = getErrorMessage(error, t('validation.createFailed'));
       const mappedField = mapErrorMessageToField<FormField>(message, [
         { field: 'firstName', pattern: /first.?name/i },
         { field: 'lastName', pattern: /last.?name/i },
         { field: 'email', pattern: /email/i },
-        { field: 'role', pattern: /role/i },
-        { field: 'organisationId', pattern: /organisation|org/i },
+        { field: 'phone', pattern: /phone/i },
       ]);
       if (mappedField) {
         setErrors((prev) => ({ ...prev, [mappedField]: message }));
@@ -87,16 +100,18 @@ function NewUserForm() {
     }
   }
 
+  const title = presetOrgId ? t('addNew') : t('addNewAdminUser');
+
   return (
     <div>
       <div className="mb-2 text-sm text-[#6b7280]">
         <Link href="/admin/users" className="hover:underline">{t('usersManagement')}</Link>
         {' > '}
-        <span>{t('addNew')}</span>
+        <span>{title}</span>
       </div>
-      <h1 className="text-2xl font-bold">{t('addNew')}</h1>
+      <h1 className="text-2xl font-bold">{title}</h1>
 
-      <form onSubmit={handleSubmit} className="mt-6 max-w-2xl space-y-4 rounded-lg border bg-white p-6">
+      <form onSubmit={handleSubmit} className="mt-6 space-y-4 rounded-lg border bg-white p-6">
         {submitError ? (
           <p className="rounded-md border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
             {submitError}
@@ -127,23 +142,13 @@ function NewUserForm() {
             error={errors.email}
             required
           />
-          <div>
-            <label className="mb-1 block text-sm font-medium text-[#374151]">{tForm('role')}</label>
-            <select
-              value={form.role}
-              onChange={(e) => updateField('role', e.target.value)}
-              aria-invalid={Boolean(errors.role)}
-              aria-describedby={errors.role ? 'new-user-role-error' : undefined}
-              className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-orange-500 focus:outline-none focus:ring-1 focus:ring-orange-500"
-            >
-              <option value="ORG_MEMBER">{tRoles('orgMember')}</option>
-              <option value="ORG_ADMIN">{tRoles('orgAdmin')}</option>
-              <option value="SUPER_ADMIN">{tRoles('superAdmin')}</option>
-            </select>
-            {errors.role ? (
-              <p id="new-user-role-error" className="mt-1 text-xs text-red-600">{errors.role}</p>
-            ) : null}
-          </div>
+          <Input
+            label={tForm('phone')}
+            type="tel"
+            value={form.phone}
+            onChange={(e) => updateField('phone', e.target.value)}
+            error={errors.phone}
+          />
         </div>
 
         <div className="flex justify-end gap-3 pt-4">

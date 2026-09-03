@@ -13,6 +13,8 @@ export type AdminNavItem = {
   /** Key under `admin.sidebar.*` resolving to the display label. */
   labelKey: string;
   href: string;
+  /** Extra path prefixes that keep this item highlighted (sibling tabs living on other routes). */
+  matchPaths?: string[];
   icon: ComponentType<SVGProps<SVGSVGElement>>;
 };
 
@@ -46,7 +48,12 @@ export const adminNav: AdminNavSection[] = [
     id: 'configurations',
     titleKey: 'configurations',
     items: [
-      { labelKey: 'userManagement', href: '/admin/organisations', icon: UserGroupIcon },
+      {
+        labelKey: 'userManagement',
+        href: '/admin/organisations',
+        matchPaths: ['/admin/users'],
+        icon: UserGroupIcon,
+      },
       { labelKey: 'taxonomy', href: '/admin/taxonomy', icon: ViewColumnsIcon },
     ],
   },

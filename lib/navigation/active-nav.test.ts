@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { getBestActiveHref } from '@/lib/navigation/active-nav';
+import { getActiveNavHref, getBestActiveHref } from '@/lib/navigation/active-nav';
 
 describe('getBestActiveHref', () => {
   it('prefers the most specific matching route', () => {
@@ -18,5 +18,19 @@ describe('getBestActiveHref', () => {
     const hrefs = ['/admin/needs', '/admin/needs/map'];
 
     expect(getBestActiveHref('/admin/services', hrefs)).toBeNull();
+  });
+});
+
+describe('getActiveNavHref', () => {
+  it('resolves an alias path back to the nav item that owns it', () => {
+    const items = [
+      { href: '/admin/organisations', matchPaths: ['/admin/users'] },
+      { href: '/admin/taxonomy' },
+    ];
+
+    expect(getActiveNavHref('/admin/users/new', items)).toBe('/admin/organisations');
+    expect(getActiveNavHref('/admin/organisations/abc', items)).toBe('/admin/organisations');
+    expect(getActiveNavHref('/admin/taxonomy', items)).toBe('/admin/taxonomy');
+    expect(getActiveNavHref('/admin/services', items)).toBeNull();
   });
 });

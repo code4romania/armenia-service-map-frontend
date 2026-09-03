@@ -37,10 +37,6 @@ setup('authenticate as org admin', async ({ page, request }) => {
   await persistAuthState(page, request, CREDENTIALS.org, STORAGE_STATE.org);
 });
 
-setup('authenticate as org member', async ({ page, request }) => {
-  await persistAuthState(page, request, CREDENTIALS.member, STORAGE_STATE.member);
-});
-
 // Public project: English locale, no auth tokens.
 setup('prepare public (English locale, signed out)', async ({ page }) => {
   await page.context().addCookies([{ name: 'locale', value: 'en', url: BASE_URL }]);

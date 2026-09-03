@@ -2,7 +2,9 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { apiClient } from './client';
 import type { PaginatedResponse, PaginationParams, User } from '@/types/api';
 
-export function useUsers(params: PaginationParams & { organisationId?: string } = {}) {
+export function useUsers(
+  params: PaginationParams & { organisationId?: string; role?: 'SUPER_ADMIN' | 'ORG_ADMIN' } = {},
+) {
   const searchParams = new URLSearchParams();
   Object.entries(params).forEach(([key, value]) => {
     if (value !== undefined) searchParams.set(key, String(value));
@@ -30,6 +32,7 @@ export function useCreateUser() {
       email: string;
       firstName: string;
       lastName: string;
+      phone?: string;
       role: string;
       organisationId?: string;
     }) => apiClient<User>('/admin/users', { method: 'POST', body: data }),
