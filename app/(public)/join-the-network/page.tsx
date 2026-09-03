@@ -5,13 +5,15 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { NeedCtaBanner } from '@/components/public/need-cta-banner';
+import { MultiSelect } from '@/components/ui/multi-select';
 import { useJoinNetwork } from '@/lib/api/organisations';
 import { usePublicRegions } from '@/lib/api/services';
 import { isValidEmail, isValidPhone } from '@/lib/validation';
+import { ChevronDownIcon } from '@heroicons/react/24/outline';
 
 interface FormState {
   organisationName: string;
-  regionId: string;
+  regionIds: string[];
   contactName: string;
   email: string;
   phone: string;
@@ -20,7 +22,7 @@ interface FormState {
 
 const initialForm: FormState = {
   organisationName: '',
-  regionId: '',
+  regionIds: [],
   contactName: '',
   email: '',
   phone: '',
@@ -90,7 +92,7 @@ export default function JoinTheNetworkPage() {
     try {
       await joinNetwork.mutateAsync({
         organisationName: form.organisationName.trim(),
-        regionId: form.regionId || undefined,
+        regionIds: form.regionIds.length > 0 ? form.regionIds : undefined,
         contactName: form.contactName.trim(),
         email: form.email.trim(),
         phone: form.phone.trim() || undefined,
@@ -141,18 +143,22 @@ export default function JoinTheNetworkPage() {
                 ) : null}
               </Field>
 
-              <Field label={t('regionOfActivity')}>
-                <select
-                  value={form.regionId}
-                  onChange={(event) => updateField('regionId', event.target.value)}
-                  aria-label={t('regionOfActivity')}
-                  className="w-full rounded-md border border-[#d1d5db] bg-white px-3 py-2 text-sm shadow-sm focus:border-[#155dfc] focus:outline-none focus:ring-1 focus:ring-[#155dfc]"
-                >
-                  <option value="">{t('selectRegion')}</option>
-                  {regions?.map((region) => (
-                    <option key={region.id} value={region.id}>{region.name}</option>
-                  ))}
-                </select>
+              <Field label={t('regionsOfActivity')} as="div">
+                <MultiSelect
+                  aria-label={t('regionsOfActivity')}
+                  options={(regions ?? []).map((region) => ({ value: region.id, label: region.name }))}
+                  selected={form.regionIds}
+                  onChange={(next) => updateField('regionIds', next)}
+                  placeholder={t('selectRegions')}
+                  selectedLabel={(count) => t('regionsSelected', { count })}
+                  selectAllLabel={t('selectAllRegions')}
+                  clearAllLabel={t('clearRegions')}
+                  triggerClassName="rounded-md border border-[#d1d5db] bg-white px-3 py-2 pr-9 text-sm shadow-sm focus:border-[#155dfc] focus:outline-none focus:ring-1 focus:ring-[#155dfc]"
+                  checkboxClassName="accent-[#155dfc]"
+                  bulkActionClassName="text-[#155dfc]"
+                  placeholderClassName="text-[#6a7282]"
+                  chevron={<ChevronDownIcon className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#6a7282]" />}
+                />
               </Field>
 
               <div className="grid gap-4 md:grid-cols-2">
@@ -257,18 +263,21 @@ export default function JoinTheNetworkPage() {
 function Field({
   label,
   required = false,
+  as: Wrapper = 'label',
   children,
 }: {
   label: string;
   required?: boolean;
+  /** Use `div` when the control is itself a button (a label wrapping a button is invalid HTML). */
+  as?: 'label' | 'div';
   children: React.ReactNode;
 }) {
   return (
-    <label className="block">
+    <Wrapper className="block">
       <span className="mb-1 block text-sm font-medium text-[#374151]">
         {label}{required ? ' *' : ''}
       </span>
       {children}
-    </label>
+    </Wrapper>
   );
 }
