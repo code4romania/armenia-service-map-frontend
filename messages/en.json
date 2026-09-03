@@ -564,8 +564,7 @@
         "role": "Role",
         "saving": "Saving...",
         "organisationRequired": "Organisation *",
-        "selectOrganisation": "Select an organisation",
-        "orgAdminHint": "This user will be added as an Org Admin of the organisation."
+        "selectOrganisation": "Select an organisation"
       },
       "roles": {
         "orgAdmin": "Org Admin",

@@ -169,9 +169,7 @@ function NewUserForm() {
             </div>
           )}
         </div>
-        {presetOrgId ? (
-          <p className="text-sm text-[#6b7280]">{tForm('orgAdminHint')}</p>
-        ) : needsOrganisation ? (
+        {!presetOrgId && needsOrganisation ? (
           <div>
             <label htmlFor="new-user-organisation" className="mb-1 block text-sm font-medium text-[#374151]">
               {tForm('organisationRequired')}

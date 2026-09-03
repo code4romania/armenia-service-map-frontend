@@ -564,8 +564,7 @@
         "role": "Դեր",
         "saving": "Պահպանվում է...",
         "organisationRequired": "Կազմակերպություն *",
-        "selectOrganisation": "Ընտրեք կազմակերպություն",
-        "orgAdminHint": "Օգտատերը կավելացվի որպես կազմակերպության ադմին:"
+        "selectOrganisation": "Ընտրեք կազմակերպություն"
       },
       "roles": {
         "orgAdmin": "Կազմակերպության ադմին",

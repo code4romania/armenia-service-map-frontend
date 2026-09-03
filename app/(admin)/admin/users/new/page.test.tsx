@@ -44,7 +44,6 @@ describe('NewUserPage', () => {
 
     expect(screen.queryByLabelText('role')).not.toBeInTheDocument();
     expect(screen.queryByLabelText('organisationRequired')).not.toBeInTheDocument();
-    expect(screen.getByText('orgAdminHint')).toBeInTheDocument();
 
     fillPerson();
     fireEvent.submit(screen.getByRole('button', { name: 'saveChanges' }).closest('form')!);
