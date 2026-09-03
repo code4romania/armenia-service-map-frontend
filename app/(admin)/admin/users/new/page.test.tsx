@@ -24,12 +24,6 @@ vi.mock('@/lib/toast-bus', () => ({
   publishToast: (toast: unknown) => toastMock(toast),
 }));
 
-vi.mock('@/lib/api/organisations', () => ({
-  useOrganisations: () => ({
-    data: { data: [{ id: 'org-1', name: 'Mission Armenia' }, { id: 'org-2', name: 'Caritas' }] },
-  }),
-}));
-
 function fillPerson() {
   fireEvent.change(screen.getByLabelText('firstNameRequired'), { target: { value: 'Ani' } });
   fireEvent.change(screen.getByLabelText('lastNameRequired'), { target: { value: 'Petrosyan' } });
@@ -66,32 +60,32 @@ describe('NewUserPage', () => {
     expect(pushMock).toHaveBeenCalledWith('/admin/organisations/org-1?tab=users');
   });
 
-  it('offers only Org Admin and Super Admin, and requires an organisation for an Org Admin', async () => {
+  it('adds a Super Admin with no role or organisation picker when opened from the admin users list', async () => {
     render(<NewUserPage />);
 
-    const roleSelect = screen.getByLabelText('role') as HTMLSelectElement;
-    expect(Array.from(roleSelect.options).map((o) => o.value)).toEqual(['ORG_ADMIN', 'SUPER_ADMIN']);
-    expect(roleSelect.value).toBe('ORG_ADMIN');
+    expect(screen.getByRole('heading', { level: 1, name: 'addNewAdminUser' })).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'usersManagement' })).toHaveAttribute('href', '/admin/users');
+    expect(screen.queryByLabelText('role')).not.toBeInTheDocument();
+    expect(screen.queryByLabelText('organisationRequired')).not.toBeInTheDocument();
 
     fillPerson();
-    fireEvent.submit(screen.getByRole('button', { name: 'saveChanges' }).closest('form')!);
-
-    expect(await screen.findByText('validation.organisationRequired')).toBeInTheDocument();
-    expect(mutateAsyncMock).not.toHaveBeenCalled();
-
-    fireEvent.change(screen.getByLabelText('organisationRequired'), { target: { value: 'org-2' } });
+    fireEvent.change(screen.getByLabelText('phone'), { target: { value: '+374 55 123456' } });
     fireEvent.submit(screen.getByRole('button', { name: 'saveChanges' }).closest('form')!);
 
     await waitFor(() => expect(mutateAsyncMock).toHaveBeenCalledTimes(1));
-    expect(mutateAsyncMock).toHaveBeenCalledWith(expect.objectContaining({ role: 'ORG_ADMIN', organisationId: 'org-2' }));
+    expect(mutateAsyncMock).toHaveBeenCalledWith({
+      firstName: 'Ani',
+      lastName: 'Petrosyan',
+      email: 'ani@example.com',
+      phone: '+374 55 123456',
+      role: 'SUPER_ADMIN',
+    });
+    expect(toastMock).toHaveBeenCalledWith({ type: 'success', message: 'created' });
     expect(pushMock).toHaveBeenCalledWith('/admin/users');
   });
 
-  it('creates a Super Admin without an organisation', async () => {
+  it('omits the phone number when left blank', async () => {
     render(<NewUserPage />);
-
-    fireEvent.change(screen.getByLabelText('role'), { target: { value: 'SUPER_ADMIN' } });
-    expect(screen.queryByLabelText('organisationRequired')).not.toBeInTheDocument();
 
     fillPerson();
     fireEvent.submit(screen.getByRole('button', { name: 'saveChanges' }).closest('form')!);

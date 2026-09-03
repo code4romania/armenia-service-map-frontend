@@ -555,7 +555,10 @@
         "joined": "Joined",
         "email": "Email",
         "organisation": "Organisation",
-        "created": "Created"
+        "created": "Created",
+        "id": "ID",
+        "account": "Account",
+        "lastAccess": "Last access"
       },
       "form": {
         "firstNameRequired": "First name *",
@@ -565,7 +568,8 @@
         "role": "Role",
         "saving": "Saving...",
         "organisationRequired": "Organisation *",
-        "selectOrganisation": "Select an organisation"
+        "selectOrganisation": "Select an organisation",
+        "phone": "Phone number"
       },
       "roles": {
         "orgAdmin": "Org Admin",
@@ -578,6 +582,14 @@
         "invalidEmail": "Enter a valid email address.",
         "createFailed": "Unable to create user. Please try again.",
         "organisationRequired": "An organisation is required for an Org Admin."
+      },
+      "adminUsers": "Admin users",
+      "addAdminUser": "Add admin user",
+      "addNewAdminUser": "Add new admin user",
+      "tabsAriaLabel": "Users management sections",
+      "tabs": {
+        "organisations": "Organisations",
+        "adminUsers": "Admin users"
       }
     },
     "services": {

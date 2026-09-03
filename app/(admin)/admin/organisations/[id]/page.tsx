@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { type ColumnDef } from '@tanstack/react-table';
+import { AdminTabs } from '@/components/admin/admin-tabs';
 import { DataTable } from '@/components/admin/data-table';
 import { AdminPanel } from '@/components/admin/admin-surface';
 import { Button } from '@/components/ui/button';
@@ -93,50 +94,22 @@ function OrganisationDetail() {
         ) : null}
       </div>
 
-      <div
-        className="admin-toolbar mt-4 flex gap-1 p-1.5"
-        style={{ width: 'fit-content' }}
-        role="tablist"
-        aria-label={t('detailSectionsAria')}
-      >
-        <button
-          type="button"
-          role="tab"
-          id="admin-org-tab-details"
-          aria-selected={activeTab === 'details'}
-          aria-controls="admin-org-panel-details"
-          onClick={() => setActiveTab('details')}
-            className={`rounded-xl border border-transparent px-4 py-2 text-sm font-medium ${
-            activeTab === 'details'
-              ? 'border-[#E8922D] bg-white text-[#E8922D]'
-              : 'text-[#6b7280] hover:text-[#374151]'
-          }`}
-        >
-          {t('details')}
-        </button>
-        <button
-          type="button"
-          role="tab"
-          id="admin-org-tab-users"
-          aria-selected={activeTab === 'users'}
-          aria-controls="admin-org-panel-users"
-          onClick={() => setActiveTab('users')}
-            className={`rounded-xl border border-transparent px-4 py-2 text-sm font-medium ${
-            activeTab === 'users'
-              ? 'border-[#E8922D] bg-white text-[#E8922D]'
-              : 'text-[#6b7280] hover:text-[#374151]'
-          }`}
-        >
-          {t('users')}
-        </button>
-      </div>
+      <AdminTabs
+        ariaLabel={t('detailSectionsAria')}
+        active={activeTab}
+        onChange={setActiveTab}
+        tabs={[
+          { id: 'details', label: t('details'), controlsId: 'admin-org-panel-details' },
+          { id: 'users', label: t('users'), controlsId: 'admin-org-panel-users' },
+        ]}
+      />
 
       <div className="mt-6">
         {activeTab === 'details' ? (
           <section
             id="admin-org-panel-details"
             role="tabpanel"
-            aria-labelledby="admin-org-tab-details"
+            aria-labelledby="tab-details"
             className="admin-panel p-6"
           >
             <div className="mb-4 flex items-center justify-between">
@@ -200,7 +173,7 @@ function OrganisationDetail() {
           <section
             id="admin-org-panel-users"
             role="tabpanel"
-            aria-labelledby="admin-org-tab-users"
+            aria-labelledby="tab-users"
           >
             <OrgUsersTab organisationId={org.id} />
           </section>

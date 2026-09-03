@@ -555,7 +555,10 @@
         "joined": "Միացել է",
         "email": "Էլ. փոստ",
         "organisation": "Կազմակերպություն",
-        "created": "Ստեղծվել է"
+        "created": "Ստեղծվել է",
+        "id": "ID",
+        "account": "Հաշիվ",
+        "lastAccess": "Վերջին մուտք"
       },
       "form": {
         "firstNameRequired": "Անուն *",
@@ -565,7 +568,8 @@
         "role": "Դեր",
         "saving": "Պահպանվում է...",
         "organisationRequired": "Կազմակերպություն *",
-        "selectOrganisation": "Ընտրեք կազմակերպություն"
+        "selectOrganisation": "Ընտրեք կազմակերպություն",
+        "phone": "Հեռախոսահամար"
       },
       "roles": {
         "orgAdmin": "Կազմակերպության ադմին",
@@ -578,6 +582,14 @@
         "invalidEmail": "Մուտքագրեք վավեր էլ. փոստի հասցե:",
         "createFailed": "Չհաջողվեց ստեղծել օգտատերը: Խնդրում ենք կրկին փորձել:",
         "organisationRequired": "Կազմակերպության ադմինի համար կազմակերպությունը պարտադիր է:"
+      },
+      "adminUsers": "Ադմին օգտատերեր",
+      "addAdminUser": "Ավելացնել ադմին",
+      "addNewAdminUser": "Ավելացնել նոր ադմին օգտատեր",
+      "tabsAriaLabel": "Օգտատերերի կառավարման բաժիններ",
+      "tabs": {
+        "organisations": "Կազմակերպություններ",
+        "adminUsers": "Ադմին օգտատերեր"
       }
     },
     "services": {

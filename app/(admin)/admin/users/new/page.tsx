@@ -8,50 +8,41 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { DetailPageLoadingSkeleton } from '@/components/shared/loading-skeletons';
 import { useCreateUser } from '@/lib/api/users';
-import { useOrganisations } from '@/lib/api/organisations';
 import { publishToast } from '@/lib/toast-bus';
 import { getErrorMessage, isValidEmail, mapErrorMessageToField } from '@/lib/validation';
-
-type Role = 'ORG_ADMIN' | 'SUPER_ADMIN';
 
 type FormState = {
   firstName: string;
   lastName: string;
   email: string;
-  role: Role;
-  organisationId: string;
+  phone: string;
 };
 
 type FormField = keyof FormState;
 
-const selectClassName =
-  'w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-orange-500 focus:outline-none focus:ring-1 focus:ring-orange-500';
-
+/**
+ * Two entry points share this form:
+ * - from an organisation page (`?organisationId=`): adds an Org Admin to that organisation;
+ * - from the admin users list: adds a platform Super Admin.
+ * The role is implied by where the user came from, so it is never picked here.
+ */
 function NewUserForm() {
   const router = useRouter();
   const t = useTranslations('admin.users');
   const tForm = useTranslations('admin.users.form');
-  const tRoles = useTranslations('admin.users.roles');
   const tCommon = useTranslations('admin.common');
   const searchParams = useSearchParams();
-  // Arriving from an organisation page: the user always becomes that organisation's Org Admin.
   const presetOrgId = searchParams.get('organisationId') || '';
   const createUser = useCreateUser();
-  const organisations = useOrganisations(
-    presetOrgId ? {} : { perPage: 200, sortBy: 'name', sortOrder: 'asc' },
-  );
 
   const [form, setForm] = useState<FormState>({
     firstName: '',
     lastName: '',
     email: '',
-    role: 'ORG_ADMIN',
-    organisationId: presetOrgId,
+    phone: '',
   });
   const [errors, setErrors] = useState<Partial<Record<FormField, string>>>({});
   const [submitError, setSubmitError] = useState<string | null>(null);
-
-  const needsOrganisation = form.role === 'ORG_ADMIN';
 
   const updateField = (field: FormField, value: string) => {
     setForm((prev) => ({ ...prev, [field]: value }));
@@ -68,9 +59,6 @@ function NewUserForm() {
     } else if (!isValidEmail(values.email)) {
       nextErrors.email = t('validation.invalidEmail');
     }
-    if (values.role === 'ORG_ADMIN' && !values.organisationId) {
-      nextErrors.organisationId = t('validation.organisationRequired');
-    }
     return nextErrors;
   }
 
@@ -80,18 +68,21 @@ function NewUserForm() {
     setErrors(validationErrors);
     if (Object.keys(validationErrors).length > 0) return;
 
+    const phone = form.phone.trim();
     const data = {
       firstName: form.firstName,
       lastName: form.lastName,
       email: form.email,
-      role: form.role,
-      ...(needsOrganisation ? { organisationId: form.organisationId } : {}),
+      ...(phone ? { phone } : {}),
+      ...(presetOrgId
+        ? { role: 'ORG_ADMIN', organisationId: presetOrgId }
+        : { role: 'SUPER_ADMIN' }),
     };
 
     try {
       await createUser.mutateAsync(data);
       publishToast({ type: 'success', message: t('created') });
-      // Land where the new user is visible: the organisation's Users tab, or the users list.
+      // Land where the new user is visible: the organisation's Users tab, or the admin users list.
       router.push(presetOrgId ? `/admin/organisations/${presetOrgId}?tab=users` : '/admin/users');
     } catch (error) {
       const message = getErrorMessage(error, t('validation.createFailed'));
@@ -99,8 +90,7 @@ function NewUserForm() {
         { field: 'firstName', pattern: /first.?name/i },
         { field: 'lastName', pattern: /last.?name/i },
         { field: 'email', pattern: /email/i },
-        { field: 'role', pattern: /role/i },
-        { field: 'organisationId', pattern: /organisation|org/i },
+        { field: 'phone', pattern: /phone/i },
       ]);
       if (mappedField) {
         setErrors((prev) => ({ ...prev, [mappedField]: message }));
@@ -110,16 +100,18 @@ function NewUserForm() {
     }
   }
 
+  const title = presetOrgId ? t('addNew') : t('addNewAdminUser');
+
   return (
     <div>
       <div className="mb-2 text-sm text-[#6b7280]">
         <Link href="/admin/users" className="hover:underline">{t('usersManagement')}</Link>
         {' > '}
-        <span>{t('addNew')}</span>
+        <span>{title}</span>
       </div>
-      <h1 className="text-2xl font-bold">{t('addNew')}</h1>
+      <h1 className="text-2xl font-bold">{title}</h1>
 
-      <form onSubmit={handleSubmit} className="mt-6 max-w-2xl space-y-4 rounded-lg border bg-white p-6">
+      <form onSubmit={handleSubmit} className="mt-6 space-y-4 rounded-lg border bg-white p-6">
         {submitError ? (
           <p className="rounded-md border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
             {submitError}
@@ -150,52 +142,14 @@ function NewUserForm() {
             error={errors.email}
             required
           />
-          {presetOrgId ? null : (
-            <div>
-              <label htmlFor="new-user-role" className="mb-1 block text-sm font-medium text-[#374151]">
-                {tForm('role')}
-              </label>
-              <select
-                id="new-user-role"
-                value={form.role}
-                onChange={(e) => updateField('role', e.target.value)}
-                aria-invalid={Boolean(errors.role)}
-                aria-describedby={errors.role ? 'new-user-role-error' : undefined}
-                className={selectClassName}
-              >
-                <option value="ORG_ADMIN">{tRoles('orgAdmin')}</option>
-                <option value="SUPER_ADMIN">{tRoles('superAdmin')}</option>
-              </select>
-              {errors.role ? (
-                <p id="new-user-role-error" className="mt-1 text-xs text-red-600">{errors.role}</p>
-              ) : null}
-            </div>
-          )}
+          <Input
+            label={tForm('phone')}
+            type="tel"
+            value={form.phone}
+            onChange={(e) => updateField('phone', e.target.value)}
+            error={errors.phone}
+          />
         </div>
-        {!presetOrgId && needsOrganisation ? (
-          <div>
-            <label htmlFor="new-user-organisation" className="mb-1 block text-sm font-medium text-[#374151]">
-              {tForm('organisationRequired')}
-            </label>
-            <select
-              id="new-user-organisation"
-              value={form.organisationId}
-              onChange={(e) => updateField('organisationId', e.target.value)}
-              aria-invalid={Boolean(errors.organisationId)}
-              aria-describedby={errors.organisationId ? 'new-user-organisation-error' : undefined}
-              className={selectClassName}
-              required
-            >
-              <option value="">{tForm('selectOrganisation')}</option>
-              {(organisations.data?.data ?? []).map((org) => (
-                <option key={org.id} value={org.id}>{org.name}</option>
-              ))}
-            </select>
-            {errors.organisationId ? (
-              <p id="new-user-organisation-error" className="mt-1 text-xs text-red-600">{errors.organisationId}</p>
-            ) : null}
-          </div>
-        ) : null}
 
         <div className="flex justify-end gap-3 pt-4">
           <Button type="button" variant="secondary" onClick={() => router.back()}>{tCommon('cancel')}</Button>

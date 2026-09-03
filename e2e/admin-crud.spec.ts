@@ -7,7 +7,6 @@ import {
   apiCreate,
   apiDelete,
   apiList,
-  firstOrganisationId,
 } from './helpers';
 
 // SUPER_ADMIN. Each test creates a fixture, verifies it surfaces in the admin UI / API,
@@ -36,16 +35,15 @@ test.describe('Admin CRUD', () => {
     }
   });
 
-  test('user surfaces in the users list and is removable', async ({ page, request }) => {
+  test('super admin surfaces in the admin users list and is removable', async ({ page, request }) => {
     const { accessToken } = await login(request, CREDENTIALS.admin);
-    const organisationId = await firstOrganisationId(request, accessToken);
-    const firstName = `E2EUser${Date.now()}`;
+    const firstName = `E2EAdmin${Date.now()}`;
+    // The admin users list shows SUPER_ADMIN accounts only; org admins live under their organisation.
     const user = await apiCreate(request, accessToken, '/admin/users', {
       email: `e2e-${Date.now()}@example.com`,
       firstName,
       lastName: 'Tester',
-      role: 'ORG_ADMIN',
-      organisationId,
+      role: 'SUPER_ADMIN',
     });
     try {
       await page.goto('/admin/users');
