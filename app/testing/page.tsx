@@ -10,12 +10,11 @@ import { useState } from 'react';
 
 const SHARED_PASSWORD = 'admin123';
 
-type RoleKey = 'SUPER_ADMIN' | 'ORG_ADMIN' | 'ORG_MEMBER';
+type RoleKey = 'SUPER_ADMIN' | 'ORG_ADMIN';
 
 const ROLES: { key: RoleKey; label: string; area: string; accent: string; dot: string }[] = [
   { key: 'SUPER_ADMIN', label: 'Super Admin', area: '/admin', accent: 'text-amber-300 border-amber-400/30 bg-amber-400/10', dot: 'bg-amber-400' },
   { key: 'ORG_ADMIN', label: 'Org Admin', area: '/org', accent: 'text-emerald-300 border-emerald-400/30 bg-emerald-400/10', dot: 'bg-emerald-400' },
-  { key: 'ORG_MEMBER', label: 'Org Member', area: '/org', accent: 'text-sky-300 border-sky-400/30 bg-sky-400/10', dot: 'bg-sky-400' },
 ];
 
 const ROLE_BY_KEY = Object.fromEntries(ROLES.map((r) => [r.key, r])) as Record<RoleKey, (typeof ROLES)[number]>;
@@ -27,12 +26,12 @@ const CAPABILITIES: { label: string; roles: RoleKey[] }[] = [
   { label: 'Manage user accounts', roles: ['SUPER_ADMIN'] },
   { label: 'Manage all need reports', roles: ['SUPER_ADMIN'] },
   { label: 'Platform-wide analytics', roles: ['SUPER_ADMIN'] },
-  { label: 'View own organisation profile & members', roles: ['ORG_ADMIN', 'ORG_MEMBER'] },
+  { label: 'View own organisation profile & members', roles: ['ORG_ADMIN'] },
   { label: 'Edit own organisation profile', roles: ['ORG_ADMIN'] },
-  { label: "Manage own org's services — create / edit / publish / delete", roles: ['ORG_ADMIN', 'ORG_MEMBER'] },
-  { label: 'Manage assigned need reports — update & comment', roles: ['ORG_ADMIN', 'ORG_MEMBER'] },
-  { label: 'Organisation analytics', roles: ['ORG_ADMIN', 'ORG_MEMBER'] },
-  { label: 'Upload files — images & documents', roles: ['SUPER_ADMIN', 'ORG_ADMIN', 'ORG_MEMBER'] },
+  { label: "Manage own org's services — create / edit / publish / delete", roles: ['ORG_ADMIN'] },
+  { label: 'Manage assigned need reports — update & comment', roles: ['ORG_ADMIN'] },
+  { label: 'Organisation analytics', roles: ['ORG_ADMIN'] },
+  { label: 'Upload files — images & documents', roles: ['SUPER_ADMIN', 'ORG_ADMIN'] },
 ];
 
 type Status = 'ACTIVE' | 'PENDING';
@@ -40,9 +39,9 @@ type Status = 'ACTIVE' | 'PENDING';
 const USERS: { name: string; email: string; role: RoleKey; org: string; status: Status }[] = [
   { name: 'Super Admin', email: 'admin@refugeesupport.am', role: 'SUPER_ADMIN', org: '—', status: 'ACTIVE' },
   { name: 'Lilit Hakobyan', email: 'org-admin@missionarmenia.org', role: 'ORG_ADMIN', org: 'Mission Armenia', status: 'ACTIVE' },
-  { name: 'Arman Petrosyan', email: 'org-member@missionarmenia.org', role: 'ORG_MEMBER', org: 'Mission Armenia', status: 'ACTIVE' },
+  { name: 'Arman Petrosyan', email: 'org-member@missionarmenia.org', role: 'ORG_ADMIN', org: 'Mission Armenia', status: 'ACTIVE' },
   { name: 'Mariam Avetisyan', email: 'org-admin@caritas.am', role: 'ORG_ADMIN', org: 'Armenian Caritas', status: 'ACTIVE' },
-  { name: 'Narek Stepanyan', email: 'org-member-pending@caritas.am', role: 'ORG_MEMBER', org: 'Armenian Caritas', status: 'PENDING' },
+  { name: 'Narek Stepanyan', email: 'org-member-pending@caritas.am', role: 'ORG_ADMIN', org: 'Armenian Caritas', status: 'PENDING' },
   { name: 'Sona Abrahamyan', email: 'org-admin@peopleinneed.am', role: 'ORG_ADMIN', org: 'People in Need', status: 'ACTIVE' },
   { name: 'Gor Melkonyan', email: 'org-admin@fulllifearmenia.org', role: 'ORG_ADMIN', org: 'Full Life NGO', status: 'ACTIVE' },
 ];

@@ -562,10 +562,12 @@
         "emailRequired": "Email address *",
         "email": "Email address",
         "role": "Role",
-        "saving": "Saving..."
+        "saving": "Saving...",
+        "organisationRequired": "Organisation *",
+        "selectOrganisation": "Select an organisation",
+        "orgAdminHint": "This user will be added as an Org Admin of the organisation."
       },
       "roles": {
-        "orgMember": "Org Member",
         "orgAdmin": "Org Admin",
         "superAdmin": "Super Admin"
       },
@@ -574,7 +576,8 @@
         "lastNameRequired": "Last name is required.",
         "emailRequired": "Email is required.",
         "invalidEmail": "Enter a valid email address.",
-        "createFailed": "Unable to create user. Please try again."
+        "createFailed": "Unable to create user. Please try again.",
+        "organisationRequired": "An organisation is required for an Org Admin."
       }
     },
     "services": {

@@ -44,7 +44,7 @@ test.describe('Admin CRUD', () => {
       email: `e2e-${Date.now()}@example.com`,
       firstName,
       lastName: 'Tester',
-      role: 'ORG_MEMBER',
+      role: 'ORG_ADMIN',
       organisationId,
     });
     try {

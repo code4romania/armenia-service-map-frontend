@@ -8,17 +8,23 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { DetailPageLoadingSkeleton } from '@/components/shared/loading-skeletons';
 import { useCreateUser } from '@/lib/api/users';
+import { useOrganisations } from '@/lib/api/organisations';
 import { getErrorMessage, isValidEmail, mapErrorMessageToField } from '@/lib/validation';
+
+type Role = 'ORG_ADMIN' | 'SUPER_ADMIN';
 
 type FormState = {
   firstName: string;
   lastName: string;
   email: string;
-  role: string;
+  role: Role;
   organisationId: string;
 };
 
 type FormField = keyof FormState;
+
+const selectClassName =
+  'w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-orange-500 focus:outline-none focus:ring-1 focus:ring-orange-500';
 
 function NewUserForm() {
   const router = useRouter();
@@ -27,18 +33,24 @@ function NewUserForm() {
   const tRoles = useTranslations('admin.users.roles');
   const tCommon = useTranslations('admin.common');
   const searchParams = useSearchParams();
+  // Arriving from an organisation page: the user always becomes that organisation's Org Admin.
   const presetOrgId = searchParams.get('organisationId') || '';
   const createUser = useCreateUser();
+  const organisations = useOrganisations(
+    presetOrgId ? {} : { perPage: 200, sortBy: 'name', sortOrder: 'asc' },
+  );
 
   const [form, setForm] = useState<FormState>({
     firstName: '',
     lastName: '',
     email: '',
-    role: 'ORG_MEMBER',
+    role: 'ORG_ADMIN',
     organisationId: presetOrgId,
   });
   const [errors, setErrors] = useState<Partial<Record<FormField, string>>>({});
   const [submitError, setSubmitError] = useState<string | null>(null);
+
+  const needsOrganisation = form.role === 'ORG_ADMIN';
 
   const updateField = (field: FormField, value: string) => {
     setForm((prev) => ({ ...prev, [field]: value }));
@@ -55,6 +67,9 @@ function NewUserForm() {
     } else if (!isValidEmail(values.email)) {
       nextErrors.email = t('validation.invalidEmail');
     }
+    if (values.role === 'ORG_ADMIN' && !values.organisationId) {
+      nextErrors.organisationId = t('validation.organisationRequired');
+    }
     return nextErrors;
   }
 
@@ -64,11 +79,16 @@ function NewUserForm() {
     setErrors(validationErrors);
     if (Object.keys(validationErrors).length > 0) return;
 
-    const data: Record<string, string> = { ...form };
-    if (!data.organisationId) delete data.organisationId;
+    const data = {
+      firstName: form.firstName,
+      lastName: form.lastName,
+      email: form.email,
+      role: form.role,
+      ...(needsOrganisation ? { organisationId: form.organisationId } : {}),
+    };
 
     try {
-      await createUser.mutateAsync(data as Parameters<typeof createUser.mutateAsync>[0]);
+      await createUser.mutateAsync(data);
       router.back();
     } catch (error) {
       const message = getErrorMessage(error, t('validation.createFailed'));
@@ -127,24 +147,54 @@ function NewUserForm() {
             error={errors.email}
             required
           />
+          {presetOrgId ? null : (
+            <div>
+              <label htmlFor="new-user-role" className="mb-1 block text-sm font-medium text-[#374151]">
+                {tForm('role')}
+              </label>
+              <select
+                id="new-user-role"
+                value={form.role}
+                onChange={(e) => updateField('role', e.target.value)}
+                aria-invalid={Boolean(errors.role)}
+                aria-describedby={errors.role ? 'new-user-role-error' : undefined}
+                className={selectClassName}
+              >
+                <option value="ORG_ADMIN">{tRoles('orgAdmin')}</option>
+                <option value="SUPER_ADMIN">{tRoles('superAdmin')}</option>
+              </select>
+              {errors.role ? (
+                <p id="new-user-role-error" className="mt-1 text-xs text-red-600">{errors.role}</p>
+              ) : null}
+            </div>
+          )}
+        </div>
+        {presetOrgId ? (
+          <p className="text-sm text-[#6b7280]">{tForm('orgAdminHint')}</p>
+        ) : needsOrganisation ? (
           <div>
-            <label className="mb-1 block text-sm font-medium text-[#374151]">{tForm('role')}</label>
+            <label htmlFor="new-user-organisation" className="mb-1 block text-sm font-medium text-[#374151]">
+              {tForm('organisationRequired')}
+            </label>
             <select
-              value={form.role}
-              onChange={(e) => updateField('role', e.target.value)}
-              aria-invalid={Boolean(errors.role)}
-              aria-describedby={errors.role ? 'new-user-role-error' : undefined}
-              className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-orange-500 focus:outline-none focus:ring-1 focus:ring-orange-500"
+              id="new-user-organisation"
+              value={form.organisationId}
+              onChange={(e) => updateField('organisationId', e.target.value)}
+              aria-invalid={Boolean(errors.organisationId)}
+              aria-describedby={errors.organisationId ? 'new-user-organisation-error' : undefined}
+              className={selectClassName}
+              required
             >
-              <option value="ORG_MEMBER">{tRoles('orgMember')}</option>
-              <option value="ORG_ADMIN">{tRoles('orgAdmin')}</option>
-              <option value="SUPER_ADMIN">{tRoles('superAdmin')}</option>
+              <option value="">{tForm('selectOrganisation')}</option>
+              {(organisations.data?.data ?? []).map((org) => (
+                <option key={org.id} value={org.id}>{org.name}</option>
+              ))}
             </select>
-            {errors.role ? (
-              <p id="new-user-role-error" className="mt-1 text-xs text-red-600">{errors.role}</p>
+            {errors.organisationId ? (
+              <p id="new-user-organisation-error" className="mt-1 text-xs text-red-600">{errors.organisationId}</p>
             ) : null}
           </div>
-        </div>
+        ) : null}
 
         <div className="flex justify-end gap-3 pt-4">
           <Button type="button" variant="secondary" onClick={() => router.back()}>{tCommon('cancel')}</Button>
