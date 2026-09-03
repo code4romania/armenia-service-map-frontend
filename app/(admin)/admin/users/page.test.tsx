@@ -48,6 +48,14 @@ describe('UsersPage (admin users)', () => {
     expect(useUsersMock).toHaveBeenCalledWith(expect.objectContaining({ role: 'SUPER_ADMIN' }));
   });
 
+  it('sorts newest first by default', () => {
+    render(<UsersPage />);
+
+    expect(useUsersMock).toHaveBeenCalledWith(
+      expect.objectContaining({ sortBy: 'createdAt', sortOrder: 'desc' }),
+    );
+  });
+
   it('renders the admin-users columns from the design', () => {
     render(<UsersPage />);
 
