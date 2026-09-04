@@ -70,4 +70,5 @@ export const adminBreadcrumbKeys: Record<string, string> = {
   organisations: 'userManagement',
   users: 'users',
   taxonomy: 'taxonomy',
+  account: 'account',
 };

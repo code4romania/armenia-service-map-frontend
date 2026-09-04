@@ -219,6 +219,17 @@
       "successTitle": "Password set",
       "successBody": "Your account is active. Redirecting you to sign in...",
       "goToLogin": "Go to sign in"
+    },
+    "forgotPasswordLink": "Forgot password?",
+    "forgotPassword": {
+      "eyebrow": "Password reset",
+      "title": "Reset your password",
+      "subtitle": "Enter the email address of your account and we will send you a link to choose a new password.",
+      "submit": "Send reset link",
+      "successTitle": "Check your inbox",
+      "successBody": "If an account exists for that email, a password reset link is on its way. The link is valid for 2 hours.",
+      "error": "We could not send the reset link. Please try again.",
+      "backToLogin": "Back to sign in"
     }
   },
   "serviceForm": {
@@ -388,7 +399,8 @@
       "justNow": "Just now",
       "minutesAgo": "{count}m ago",
       "hoursAgo": "{count}h ago",
-      "daysAgo": "{count}d ago"
+      "daysAgo": "{count}d ago",
+      "account": "My account"
     },
     "breadcrumbs": {
       "dashboard": "Dashboard",
@@ -398,7 +410,8 @@
       "analytics": "Analytics",
       "userManagement": "User management",
       "users": "Users",
-      "taxonomy": "Taxonomy"
+      "taxonomy": "Taxonomy",
+      "account": "My account"
     },
     "taxonomy": {
       "title": "Nomenclature",
@@ -799,11 +812,13 @@
       "services": "Service listings",
       "needs": "Assigned needs",
       "needsMap": "Needs map",
-      "profile": "Organisation profile"
+      "profile": "Organisation profile",
+      "account": "My account"
     },
     "topbar": {
       "breadcrumbAria": "Breadcrumb",
-      "signOut": "Sign out"
+      "signOut": "Sign out",
+      "account": "My account"
     },
     "dashboard": {
       "welcomeEyebrow": "Welcome back",
@@ -949,6 +964,37 @@
           "lastAccess": "Last access"
         }
       }
+    }
+  },
+  "account": {
+    "title": "My account",
+    "description": "Manage your name, contact details and password.",
+    "signOut": "Sign out",
+    "profile": {
+      "title": "Profile",
+      "description": "Your name is shown to other members of the platform.",
+      "firstName": "First name",
+      "lastName": "Last name",
+      "email": "Email",
+      "phone": "Phone",
+      "save": "Save changes",
+      "saved": "Profile updated.",
+      "error": "Could not update your profile.",
+      "firstNameRequired": "First name is required.",
+      "lastNameRequired": "Last name is required."
+    },
+    "password": {
+      "title": "Password",
+      "description": "Choose a new password of at least {min} characters. Other devices will be signed out.",
+      "current": "Current password",
+      "new": "New password",
+      "confirm": "Confirm new password",
+      "save": "Change password",
+      "saved": "Password changed.",
+      "error": "Could not change your password.",
+      "tooShort": "Password must be at least 8 characters.",
+      "mismatch": "Passwords do not match.",
+      "wrongCurrent": "Your current password is incorrect."
     }
   }
 }

@@ -2,6 +2,7 @@
 
 import { useState, type FormEvent } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { Button } from '@/components/ui/button';
@@ -76,14 +77,19 @@ export default function LoginPage() {
                   </p>
                 ) : null}
 
-                <Button
-                  type="submit"
-                  size="lg"
-                  disabled={isSubmitting}
-                  className="w-full sm:w-auto"
-                >
-                  {isSubmitting ? '...' : t('loginButton')}
-                </Button>
+                <div className="flex flex-wrap items-center justify-between gap-4">
+                  <Button
+                    type="submit"
+                    size="lg"
+                    disabled={isSubmitting}
+                    className="w-full sm:w-auto"
+                  >
+                    {isSubmitting ? '...' : t('loginButton')}
+                  </Button>
+                  <Link href="/forgot-password" className="text-sm font-medium text-[#155dfc] hover:underline">
+                    {t('forgotPasswordLink')}
+                  </Link>
+                </div>
               </form>
             </div>
           </div>
