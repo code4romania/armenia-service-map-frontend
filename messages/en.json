@@ -560,7 +560,7 @@
       "notFound": "User not found",
       "created": "User added.",
       "status": "Status",
-      "deactivateConfirm": "Deactivate this user?",
+      "deactivateConfirm": "Deactivate this user? They will no longer be able to sign in until reactivated.",
       "columns": {
         "firstName": "First name",
         "lastName": "Last name",
@@ -603,7 +603,14 @@
       "tabs": {
         "organisations": "Organisations",
         "adminUsers": "Admin users"
-      }
+      },
+      "activateAccount": "Activate account",
+      "deleteAccount": "Delete user",
+      "deleteConfirm": "Delete this user? This cannot be undone from the admin panel.",
+      "deactivated": "Account deactivated.",
+      "activated": "Account activated.",
+      "resetPasswordSent": "A set-password email has been sent to the user.",
+      "actionFailed": "The action could not be completed."
     },
     "services": {
       "title": "Service directory",

@@ -59,3 +59,31 @@ export function useDeleteUser() {
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['admin', 'users'] }),
   });
 }
+
+function useUserAction(path: string) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => apiClient<User>(`/admin/users/${id}/${path}`, { method: 'POST' }),
+    onSuccess: (_, id) => {
+      queryClient.invalidateQueries({ queryKey: ['admin', 'users'] });
+      queryClient.invalidateQueries({ queryKey: ['admin', 'users', id] });
+    },
+  });
+}
+
+/** Suspends the account (status SUSPENDED); the user can no longer sign in. Reversible via activate. */
+export function useDeactivateUser() {
+  return useUserAction('deactivate');
+}
+
+export function useActivateUser() {
+  return useUserAction('activate');
+}
+
+/** Emails a set-password link; doubles as "resend invitation" for PENDING users. */
+export function useResetUserPassword() {
+  return useMutation({
+    mutationFn: (id: string) =>
+      apiClient<{ message: string }>(`/admin/users/${id}/reset-password`, { method: 'POST' }),
+  });
+}
