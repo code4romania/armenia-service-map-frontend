@@ -169,6 +169,8 @@ export interface User {
   avatarUrl: string | null;
   createdAt: string;
   updatedAt: string;
+  /** Set when the user has been soft-deleted (only present in the deleted-users list). */
+  deletedAt?: string | null;
   organisation: { id: string; name: string } | null;
 }
 
