@@ -71,4 +71,5 @@ export const adminBreadcrumbKeys: Record<string, string> = {
   users: 'users',
   taxonomy: 'taxonomy',
   account: 'account',
+  deleted: 'deletedUsers',
 };

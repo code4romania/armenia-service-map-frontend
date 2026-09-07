@@ -411,7 +411,8 @@
       "userManagement": "Օգտատերերի կառավարում",
       "users": "Օգտատերեր",
       "taxonomy": "Դասակարգիչ",
-      "account": "Իմ հաշիվը"
+      "account": "Իմ հաշիվը",
+      "deletedUsers": "Ջնջված օգտատերեր"
     },
     "taxonomy": {
       "title": "Դասակարգիչ",

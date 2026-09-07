@@ -411,7 +411,8 @@
       "userManagement": "User management",
       "users": "Users",
       "taxonomy": "Taxonomy",
-      "account": "My account"
+      "account": "My account",
+      "deletedUsers": "Deleted users"
     },
     "taxonomy": {
       "title": "Nomenclature",
