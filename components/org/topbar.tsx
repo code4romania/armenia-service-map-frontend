@@ -1,6 +1,7 @@
 'use client';
 
 import { Fragment, useMemo } from 'react';
+import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { ChevronRightIcon } from '@heroicons/react/24/outline';
@@ -14,6 +15,7 @@ const segmentLabelKey: Record<string, string> = {
   needs: 'needs',
   map: 'needsMap',
   profile: 'profile',
+  account: 'account',
 };
 
 export function OrgTopbar() {
@@ -47,9 +49,14 @@ export function OrgTopbar() {
 
         <div className="flex items-center gap-3">
           <LocaleSwitcher />
-          <div className="flex h-9 w-9 items-center justify-center rounded-full bg-[#1a1a1a] text-xs font-semibold text-white">
+          <Link
+            href="/org/account"
+            aria-label={t('account')}
+            title={t('account')}
+            className="flex h-9 w-9 items-center justify-center rounded-full bg-[#1a1a1a] text-xs font-semibold text-white transition hover:bg-[#333]"
+          >
             {user?.firstName?.[0]}{user?.lastName?.[0]}
-          </div>
+          </Link>
           <button
             type="button"
             onClick={() => void logout()}

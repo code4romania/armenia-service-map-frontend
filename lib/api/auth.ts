@@ -15,6 +15,7 @@ export interface UserProfile {
   email: string;
   firstName: string;
   lastName: string;
+  phone: string | null;
   role: string;
   avatarUrl: string | null;
   organisation: { id: string; name: string } | null;
@@ -54,4 +55,35 @@ export interface SetupPasswordRequest {
 /** Sets the password for an invited / reset user via the emailed setup token. */
 export async function setupPassword(data: SetupPasswordRequest): Promise<void> {
   await apiClient('/auth/password-setup', { method: 'POST', body: data });
+}
+
+export interface ForgotPasswordRequest {
+  email: string;
+}
+
+/** Self-service reset: always resolves, the backend never reveals whether the email exists. */
+export async function forgotPassword(data: ForgotPasswordRequest): Promise<void> {
+  await apiClient('/auth/forgot-password', { method: 'POST', body: data });
+}
+
+export interface UpdateProfileRequest {
+  firstName: string;
+  lastName: string;
+  phone: string;
+}
+
+export async function updateProfile(data: UpdateProfileRequest): Promise<UserProfile> {
+  return apiClient<UserProfile>('/auth/me', { method: 'PATCH', body: data });
+}
+
+export interface ChangePasswordRequest {
+  currentPassword: string;
+  newPassword: string;
+}
+
+/** Changes the password and swaps in the fresh token pair so this session stays signed in. */
+export async function changePassword(data: ChangePasswordRequest): Promise<void> {
+  const tokens = await apiClient<AuthTokens>('/auth/change-password', { method: 'POST', body: data });
+  localStorage.setItem('accessToken', tokens.accessToken);
+  localStorage.setItem('refreshToken', tokens.refreshToken);
 }
