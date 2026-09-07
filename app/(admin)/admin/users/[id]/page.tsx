@@ -20,6 +20,13 @@ import {
   USER_STATUS_LABEL_KEYS,
   formatStatusLabel,
 } from '@/lib/formatting/status-label';
+import type { User } from '@/types/api';
+
+const statusBadge: Record<User['status'], 'success' | 'warning' | 'danger'> = {
+  ACTIVE: 'success',
+  PENDING: 'warning',
+  SUSPENDED: 'danger',
+};
 
 export default function UserDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -136,7 +143,7 @@ export default function UserDetailPage() {
         <div className="mb-4 flex items-center gap-6">
           <div>
             <div className="text-sm font-medium text-gray-500">{t('status')}</div>
-            <Badge variant="success">{statusLabel}</Badge>
+            <Badge variant={statusBadge[user.status] ?? 'neutral'}>{statusLabel}</Badge>
           </div>
           <div>
             <div className="text-sm font-medium text-gray-500">{tCols('created')}</div>
