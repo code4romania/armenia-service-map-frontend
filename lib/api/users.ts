@@ -3,7 +3,12 @@ import { apiClient } from './client';
 import type { PaginatedResponse, PaginationParams, User } from '@/types/api';
 
 export function useUsers(
-  params: PaginationParams & { organisationId?: string; role?: 'SUPER_ADMIN' | 'ORG_ADMIN' } = {},
+  params: PaginationParams & {
+    organisationId?: string;
+    role?: 'SUPER_ADMIN' | 'ORG_ADMIN';
+    /** List soft-deleted users instead of live ones. */
+    deleted?: boolean;
+  } = {},
 ) {
   const searchParams = new URLSearchParams();
   Object.entries(params).forEach(([key, value]) => {
@@ -85,5 +90,14 @@ export function useResetUserPassword() {
   return useMutation({
     mutationFn: (id: string) =>
       apiClient<{ message: string }>(`/admin/users/${id}/reset-password`, { method: 'POST' }),
+  });
+}
+
+/** Undoes a soft delete; the user reappears in the live lists. */
+export function useRestoreUser() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => apiClient<User>(`/admin/users/${id}/restore`, { method: 'POST' }),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['admin', 'users'] }),
   });
 }

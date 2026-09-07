@@ -94,6 +94,7 @@ export default function OrganisationsPage() {
         tabs={[
           { id: 'organisations', label: tUsers('tabs.organisations'), href: '/admin/organisations' },
           { id: 'adminUsers', label: tUsers('tabs.adminUsers'), href: '/admin/users' },
+          { id: 'deletedUsers', label: tUsers('tabs.deletedUsers'), href: '/admin/users/deleted' },
         ]}
       />
 

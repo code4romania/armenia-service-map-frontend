@@ -571,7 +571,8 @@
         "created": "Created",
         "id": "ID",
         "account": "Account",
-        "lastAccess": "Last access"
+        "lastAccess": "Last access",
+        "deletedAt": "Deleted"
       },
       "form": {
         "firstNameRequired": "First name *",
@@ -602,7 +603,8 @@
       "tabsAriaLabel": "Users management sections",
       "tabs": {
         "organisations": "Organisations",
-        "adminUsers": "Admin users"
+        "adminUsers": "Admin users",
+        "deletedUsers": "Deleted users"
       },
       "activateAccount": "Activate account",
       "deleteAccount": "Delete user",
@@ -610,7 +612,12 @@
       "deactivated": "Account deactivated.",
       "activated": "Account activated.",
       "resetPasswordSent": "A set-password email has been sent to the user.",
-      "actionFailed": "The action could not be completed."
+      "actionFailed": "The action could not be completed.",
+      "deletedUsers": "Deleted users",
+      "deletedUsersDescription": "Accounts removed from the platform. Restoring one brings it back with its previous role and organisation.",
+      "noDeletedUsers": "No deleted users.",
+      "restore": "Restore",
+      "restored": "User restored. They are back in the live lists."
     },
     "services": {
       "title": "Service directory",
