@@ -22,7 +22,7 @@
     "@tiptap/starter-kit": "^3.30.5",
     "chart.js": "^4.5.1",
     "next": "16.3.4",
-    "next-intl": "^4.14.2",
+    "next-intl": "^4.14.3",
     "react": "19.3.0",
     "react-chartjs-2": "^5.3.1",
     "react-dom": "19.3.0"
