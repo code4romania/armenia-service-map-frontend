@@ -16,6 +16,7 @@ import { useRegionName } from '@/lib/i18n/region-name';
 import { getLocalizedServiceContent } from '@/lib/i18n/service-content';
 import { serviceOrgName } from '@/lib/services/org-name';
 import type { PaginatedResponse, Service } from '@/types/api';
+import { SITE_URL } from '@/lib/site';
 
 type ViewMode = 'list' | 'map';
 type QueuedSearchLog = {
@@ -270,7 +271,7 @@ function ServicesContent() {
         return {
           '@type': 'ListItem',
           position: index + 1,
-          url: `https://refugeesupport.am/services/${service.id}`,
+          url: `${SITE_URL}/services/${service.id}`,
           name: content.title,
         };
       }) ?? [],

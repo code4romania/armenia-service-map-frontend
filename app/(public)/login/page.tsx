@@ -7,6 +7,7 @@ import { useTranslations } from 'next-intl';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useAuth } from '@/lib/auth/auth-context';
+import { SITE_NAME } from '@/lib/site';
 
 export default function LoginPage() {
   const t = useTranslations('auth');
@@ -100,13 +101,13 @@ export default function LoginPage() {
             <div className="absolute inset-x-0 bottom-0 p-6 sm:p-8 lg:p-10">
               <div className="max-w-md rounded-[28px] border border-white/20 bg-white/12 p-6 text-white backdrop-blur-md">
                 <p className="text-sm font-semibold uppercase tracking-[0.24em] text-white/80">
-                  RefugeeSupport.am
+                  {SITE_NAME}
                 </p>
                 <h2 className="mt-3 text-2xl font-semibold leading-tight">
                   {t('loginPanelTitle')}
                 </h2>
                 <p className="mt-3 text-sm leading-6 text-white/86">
-                  {t('loginPanelBody')}
+                  {t('loginPanelBody', { siteName: SITE_NAME })}
                 </p>
               </div>
             </div>

@@ -115,8 +115,8 @@
     "howToAccess": "How to access the service"
   },
   "about": {
-    "title": "About RefugeeSupport.am",
-    "intro": "RefugeeSupport.am is a platform connecting refugees and displaced people in Armenia with verified support services provided by trusted organisations.",
+    "title": "About {siteName}",
+    "intro": "{siteName} is a platform connecting refugees and displaced people in Armenia with verified support services provided by trusted organisations.",
     "mission": "Our Mission",
     "missionText": "We believe everyone deserves access to essential services - housing, healthcare, legal aid, education, and more. Our platform makes it easy to find, compare, and connect with the right support.",
     "howItWorks": "How it works",
@@ -203,7 +203,7 @@
     "loginButton": "Sign in",
     "invalidCredentials": "Invalid email or password",
     "loginPanelTitle": "Coordinate support without leaving the platform behind.",
-    "loginPanelBody": "Stay connected to the same RefugeeSupport.am experience while you access the tools your team uses to respond quickly and confidently.",
+    "loginPanelBody": "Stay connected to the same {siteName} experience while you access the tools your team uses to respond quickly and confidently.",
     "setupPassword": {
       "eyebrow": "Account setup",
       "title": "Set your password",

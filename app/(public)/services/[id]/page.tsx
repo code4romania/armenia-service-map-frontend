@@ -7,6 +7,7 @@ import { NeedCtaBanner } from '@/components/public/need-cta-banner';
 import { usePublicService } from '@/lib/api/services';
 import { getLocalizedServiceContent } from '@/lib/i18n/service-content';
 import { serviceOrgName } from '@/lib/services/org-name';
+import { SITE_URL } from '@/lib/site';
 
 export default function PublicServiceDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -50,7 +51,7 @@ export default function PublicServiceDetailPage() {
       name: serviceOrgName(service),
     },
     areaServed: service.region?.name || t('allRegions'),
-    url: `https://refugeesupport.am/services/${service.id}`,
+    url: `${SITE_URL}/services/${service.id}`,
   });
 
   return (
