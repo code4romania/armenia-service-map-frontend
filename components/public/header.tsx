@@ -23,6 +23,21 @@ const languages = [
   { code: 'en', label: 'English' },
 ] as const;
 
+const partnerLogos = {
+  hy: [
+    { src: '/am-partner-logos/1-ddf.png', alt: 'Democracy Development Foundation', width: 1390, height: 256 },
+    { src: '/am-partner-logos/2-erc.png', alt: 'Estonian Refugee Council', width: 3855, height: 741 },
+    { src: '/am-partner-logos/3-commit.png', alt: 'Commit Global', width: 3605, height: 1039 },
+    { src: '/am-partner-logos/4-csvw.png', alt: 'Coalition to Stop Violence Against Women', width: 478, height: 175 },
+  ],
+  en: [
+    { src: '/en-partner-logos/1-ddf.svg', alt: 'Democracy Development Foundation', width: 1100, height: 262 },
+    { src: '/en-partner-logos/2-erc.png', alt: 'Estonian Refugee Council', width: 3855, height: 741 },
+    { src: '/en-partner-logos/3-commit.png', alt: 'Commit Global', width: 3605, height: 1039 },
+    { src: '/en-partner-logos/4-csvw.png', alt: 'Coalition to Stop Violence Against Women', width: 478, height: 175 },
+  ],
+} as const;
+
 export function PublicHeader() {
   const tNav = useTranslations('nav');
   const tCommon = useTranslations('common');
@@ -254,15 +269,12 @@ export function PublicHeader() {
       </div>
 
       <div className="border-t border-[#f3f4f6] bg-[#f8fafc]">
-        <div className="mx-auto flex max-w-7xl flex-col gap-2 px-4 py-2 sm:px-6 md:flex-row md:items-center md:justify-between">
+        <div className="mx-auto flex max-w-7xl flex-col gap-2 px-4 py-3.5 sm:px-6 md:flex-row md:items-center md:justify-between">
           <p className="text-xs font-medium text-[#4a5565] sm:text-sm">{tHeader('partnerPrefix')}</p>
           <div className="flex flex-wrap items-center gap-4 sm:gap-5">
-            <Image src="/eu-funded.png" alt="Funded by the European Union" width={168} height={36} className="h-6 w-auto opacity-80" />
-            <Image src="/partner-logo.png" alt="Democracy Development Foundation" width={154} height={32} className="h-6 w-auto opacity-80" />
-            <div className="flex items-center gap-2">
-              <span className="text-xs text-[#6a7282]">{tHeader('createdBy')}</span>
-              <Image src="/commit-global.svg" alt="Commit Global" width={96} height={24} className="h-5 w-auto" />
-            </div>
+            {(locale === 'hy' ? partnerLogos.hy : partnerLogos.en).map((logo) => (
+              <Image key={logo.src} src={logo.src} alt={logo.alt} width={logo.width} height={logo.height} className="h-7 w-auto" />
+            ))}
           </div>
         </div>
       </div>
