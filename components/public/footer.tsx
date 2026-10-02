@@ -43,8 +43,8 @@ export function PublicFooter() {
           <div>
             <h3 className="text-sm font-semibold uppercase tracking-wide text-[#101828]">{t('contact')}</h3>
             <ul className="mt-4 space-y-3 text-sm text-[#4a5565]">
-              <li><a href="mailto:help@example.com" className="hover:text-[#101828]">help@example.com</a></li>
-              <li><a href="tel:+37400000000" className="hover:text-[#101828]">+374 00 000 000</a></li>
+              <li><a href="mailto:info@demdev.org" className="hover:text-[#101828]">info@demdev.org</a></li>
+              <li><a href="tel:+37477533862" className="hover:text-[#101828]">+374 77533862</a></li>
               <li>Yerevan, Armenia</li>
             </ul>
           </div>
