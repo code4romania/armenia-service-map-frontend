@@ -41,6 +41,10 @@
     "services": "Services",
     "reportNeed": "Report a need"
   },
+  "funding": {
+    "sectionAria": "Project partners and funding",
+    "euDisclaimer": "This website has been produced with the financial assistance of the European Union. The content is the sole responsibility of the Human Rights with and for Refugees project team and does not necessarily reflect the views of the European Union."
+  },
   "home": {
     "heroTitle1": "Welcome to",
     "heroTitle2": "RefugeeSupport",

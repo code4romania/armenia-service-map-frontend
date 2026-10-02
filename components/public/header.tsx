@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useLocale, useTranslations } from 'next-intl';
 import { useAuth } from '@/lib/auth/auth-context';
+import { getLogoLocale, partnerLogos } from '@/components/public/partner-logos';
 
 const navItems = [
   { href: '/', labelKey: 'home' },
@@ -22,21 +23,6 @@ const languages = [
   { code: 'hy', label: 'Հայերեն' },
   { code: 'en', label: 'English' },
 ] as const;
-
-const partnerLogos = {
-  hy: [
-    { src: '/am-partner-logos/1-ddf.png', alt: 'Democracy Development Foundation', width: 1390, height: 256 },
-    { src: '/am-partner-logos/2-erc.png', alt: 'Estonian Refugee Council', width: 3855, height: 741 },
-    { src: '/am-partner-logos/3-commit.png', alt: 'Commit Global', width: 3605, height: 1039 },
-    { src: '/am-partner-logos/4-csvw.png', alt: 'Coalition to Stop Violence Against Women', width: 478, height: 175 },
-  ],
-  en: [
-    { src: '/en-partner-logos/1-ddf.svg', alt: 'Democracy Development Foundation', width: 1100, height: 262 },
-    { src: '/en-partner-logos/2-erc.png', alt: 'Estonian Refugee Council', width: 3855, height: 741 },
-    { src: '/en-partner-logos/3-commit.png', alt: 'Commit Global', width: 3605, height: 1039 },
-    { src: '/en-partner-logos/4-csvw.png', alt: 'Coalition to Stop Violence Against Women', width: 478, height: 175 },
-  ],
-} as const;
 
 export function PublicHeader() {
   const tNav = useTranslations('nav');
@@ -272,7 +258,7 @@ export function PublicHeader() {
         <div className="mx-auto flex max-w-7xl flex-col gap-2 px-4 py-3.5 sm:px-6 md:flex-row md:items-center md:justify-between">
           <p className="text-xs font-medium text-[#4a5565] sm:text-sm">{tHeader('partnerPrefix')}</p>
           <div className="flex flex-wrap items-center gap-4 sm:gap-5">
-            {(locale === 'hy' ? partnerLogos.hy : partnerLogos.en).map((logo) => (
+            {partnerLogos[getLogoLocale(locale)].map((logo) => (
               <Image key={logo.src} src={logo.src} alt={logo.alt} width={logo.width} height={logo.height} className="h-7 w-auto" />
             ))}
           </div>

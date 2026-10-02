@@ -7,6 +7,7 @@ import { useRouter } from 'next/navigation';
 import { useLocale, useTranslations } from 'next-intl';
 import { NeedCtaBanner } from '@/components/public/need-cta-banner';
 import { JoinNetworkCta } from '@/components/public/join-network-cta';
+import { PartnersFunding } from '@/components/public/partners-funding';
 import { usePublicRegions, usePublicServices, usePublicTopics } from '@/lib/api/services';
 import { getLocalizedServiceContent } from '@/lib/i18n/service-content';
 import type { Service } from '@/types/api';
@@ -203,6 +204,8 @@ export default function HomePage() {
         subtitle={t('ctaSubtitle')}
         buttonLabel={t('reportNeed')}
       />
+
+      <PartnersFunding />
     </div>
   );
 }
