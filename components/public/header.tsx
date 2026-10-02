@@ -100,8 +100,14 @@ export function PublicHeader() {
   }
 
   const accountAction = getAccountAction();
-  const desktopActionItems = [...actionItems, accountAction];
-  const mobileNavItems = [...navItems, ...actionItems, accountAction];
+  const desktopActionItems = [
+    ...actionItems.map((item) => ({ href: item.href, label: tFooter(item.labelKey) })),
+    accountAction,
+  ];
+  const mobileNavItems = [
+    ...navItems.map((item) => ({ href: item.href, label: tNav(item.labelKey) })),
+    ...desktopActionItems,
+  ];
 
   function handleSearch(event: FormEvent) {
     event.preventDefault();
@@ -149,7 +155,7 @@ export function PublicHeader() {
                     : 'text-[#364153] hover:bg-[#f3f4f6] hover:text-[#101828]'
                 }`}
               >
-                {'labelKey' in item ? tFooter('joinNetwork') : item.label}
+                {item.label}
               </Link>
             ))}
           </nav>
@@ -276,7 +282,7 @@ export function PublicHeader() {
                     : 'text-[#364153] hover:bg-[#f3f4f6]'
                 }`}
               >
-                {'labelKey' in item ? tFooter('joinNetwork') : item.label}
+                {item.label}
               </Link>
             ))}
           </nav>
