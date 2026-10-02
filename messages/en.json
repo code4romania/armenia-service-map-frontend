@@ -935,5 +935,18 @@
         }
       }
     }
+  },
+  "regions": {
+    "aragatsotn": "Aragatsotn",
+    "ararat": "Ararat",
+    "armavir": "Armavir",
+    "gegharkunik": "Gegharkunik",
+    "lori": "Lori",
+    "kotayk": "Kotayk",
+    "shirak": "Shirak",
+    "syunik": "Syunik",
+    "vayotsDzor": "Vayots Dzor",
+    "tavush": "Tavush",
+    "yerevan": "Yerevan"
   }
 }

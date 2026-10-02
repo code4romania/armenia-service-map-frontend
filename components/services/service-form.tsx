@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { RichTextEditor } from '@/components/shared/rich-text-editor';
 import { usePublicRegions, usePublicTargetGroups, usePublicTopics } from '@/lib/api/services';
+import { useRegionName } from '@/lib/i18n/region-name';
 import type { ServiceMutationInput } from '@/lib/api/services';
 import { getErrorMessage, mapErrorMessageToField, toPlainText } from '@/lib/validation';
 
@@ -130,6 +131,7 @@ export function ServiceForm({
   );
   const { data: topics } = usePublicTopics();
   const { data: regions } = usePublicRegions();
+  const regionName = useRegionName();
   const { data: targetGroups } = usePublicTargetGroups();
 
   const topicOptions = useMemo(
@@ -474,7 +476,7 @@ export function ServiceForm({
               <option value={ALL_REGIONS}>{t('allRegions')}</option>
               {regions?.map((region) => (
                 <option key={region.id} value={region.id}>
-                  {region.name}
+                  {regionName(region)}
                 </option>
               ))}
             </select>

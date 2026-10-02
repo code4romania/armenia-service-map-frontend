@@ -12,6 +12,7 @@ import { OverflowChipRow } from '@/components/ui/overflow-chip-row';
 import { useMediaQuery } from '@/lib/hooks/use-media-query';
 import { sendPublicSearchLogBatchBeacon, useLogPublicSearchBatch } from '@/lib/api/analytics';
 import { usePublicRegionServiceCounts, usePublicRegions, usePublicServices, usePublicTopics } from '@/lib/api/services';
+import { useRegionName } from '@/lib/i18n/region-name';
 import { getLocalizedServiceContent } from '@/lib/i18n/service-content';
 import { serviceOrgName } from '@/lib/services/org-name';
 import type { PaginatedResponse, Service } from '@/types/api';
@@ -93,6 +94,7 @@ function ServicesContent() {
 
   const { data: topics } = usePublicTopics();
   const { data: regions } = usePublicRegions();
+  const regionName = useRegionName();
   const { data: regionServiceCounts } = usePublicRegionServiceCounts();
   const logPublicSearchBatch = useLogPublicSearchBatch();
   const trimmedSearch = search.trim();
@@ -255,7 +257,8 @@ function ServicesContent() {
   };
 
   const totalServices = data?.meta.total ?? 0;
-  const selectedRegionName = regions?.find((region) => region.id === selectedRegionId)?.name;
+  const selectedRegion = regions?.find((region) => region.id === selectedRegionId);
+  const selectedRegionName = selectedRegion ? regionName(selectedRegion) : undefined;
   const selectedTopicName = topics?.find((topic) => topic.id === selectedTopicId)?.name;
   const servicesJsonLd = JSON.stringify({
     '@context': 'https://schema.org',
@@ -303,7 +306,7 @@ function ServicesContent() {
               >
                 <option value="">{t('allRegions')}</option>
                 {regions?.map((region) => (
-                  <option key={region.id} value={region.id}>{region.name}</option>
+                  <option key={region.id} value={region.id}>{regionName(region)}</option>
                 ))}
               </select>
             </label>
