@@ -12,7 +12,7 @@ export function PublicFooter() {
         <div className="grid gap-10 md:grid-cols-[2fr_1fr_1fr_1fr]">
           <div>
             <Link href="/" className="inline-flex items-center">
-              <Image src="/logo.svg" alt="RefugeeSupport" width={168} height={44} className="h-10 w-auto" />
+              <Image src="/project-logo.svg" alt="RefugeeSupport" width={215} height={48} className="h-10 w-auto" />
             </Link>
             <p className="mt-4 max-w-sm text-sm leading-6 text-[#4a5565]">{t('tagline')}</p>
             <div className="mt-5 flex items-center gap-3 text-[#6a7282]">

@@ -119,12 +119,7 @@ export function PublicHeader() {
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 py-4 sm:px-6">
         <div className="flex min-w-0 items-center gap-4 lg:gap-8">
           <Link href="/" className="flex min-w-0 items-center gap-3" onClick={() => setMobileOpen(false)}>
-            <div className="flex h-10 w-10 items-center justify-center rounded-[14px] bg-[linear-gradient(135deg,#155DFC_0%,#4F39F6_100%)] shadow-[0_10px_15px_-3px_rgba(0,0,0,0.10),0_4px_6px_-4px_rgba(0,0,0,0.10)] sm:h-12 sm:w-12">
-              <Image src="/logo.png" alt="RefugeeSupport" width={64} height={64} className="h-6 w-6 sm:h-7 sm:w-7" priority />
-            </div>
-            <span className="truncate text-xl font-semibold leading-tight tracking-tight text-[#101828] md:hidden xl:inline">
-              RefugeeSupport
-            </span>
+            <Image src="/project-logo.svg" alt="RefugeeSupport" width={215} height={48} className="h-8 w-auto sm:h-10" priority />
           </Link>
 
           <nav aria-label="Public navigation" className="hidden items-center gap-1 md:flex">
