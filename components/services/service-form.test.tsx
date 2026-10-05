@@ -4,13 +4,17 @@ import userEvent from '@testing-library/user-event';
 import { ALL_REGIONS, ServiceForm, type ServiceFormState } from '@/components/services/service-form';
 
 vi.mock('next-intl', () => ({
-  useTranslations: () => (key: string, values?: Record<string, string | number>) => {
-    if (!values) return key;
-    return Object.entries(values).reduce(
-      (acc, [name, value]) => acc.replace(`{${name}}`, String(value)),
-      key,
-    );
-  },
+  useTranslations: () =>
+    Object.assign(
+      (key: string, values?: Record<string, string | number>) => {
+        if (!values) return key;
+        return Object.entries(values).reduce(
+          (acc, [name, value]) => acc.replace(`{${name}}`, String(value)),
+          key,
+        );
+      },
+      { has: () => false },
+    ),
 }));
 
 vi.mock('@/lib/api/services', () => ({

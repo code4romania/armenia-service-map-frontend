@@ -6,7 +6,9 @@ import { useLocale, useTranslations } from 'next-intl';
 import { NeedCtaBanner } from '@/components/public/need-cta-banner';
 import { usePublicService } from '@/lib/api/services';
 import { getLocalizedServiceContent } from '@/lib/i18n/service-content';
+import { useTopicName } from '@/lib/i18n/topic-name';
 import { serviceOrgName } from '@/lib/services/org-name';
+import { SITE_URL } from '@/lib/site';
 
 export default function PublicServiceDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -15,6 +17,7 @@ export default function PublicServiceDetailPage() {
   const tServices = useTranslations('services');
   const tHome = useTranslations('home');
   const tNav = useTranslations('nav');
+  const topicName = useTopicName();
 
   const { data: service, isLoading } = usePublicService(id);
 
@@ -50,7 +53,7 @@ export default function PublicServiceDetailPage() {
       name: serviceOrgName(service),
     },
     areaServed: service.region?.name || t('allRegions'),
-    url: `https://refugeesupport.am/services/${service.id}`,
+    url: `${SITE_URL}/services/${service.id}`,
   });
 
   return (
@@ -92,7 +95,7 @@ export default function PublicServiceDetailPage() {
               <div className="flex flex-wrap gap-2 md:justify-end">
                 {service.topics.map((topicEntry) => (
                   <span key={topicEntry.topic.id} className="rounded-full bg-[#dbeafe] px-3 py-1 text-xs font-semibold text-[#1447e6]">
-                    {topicEntry.topic.name}
+                    {topicName(topicEntry.topic)}
                   </span>
                 ))}
               </div>

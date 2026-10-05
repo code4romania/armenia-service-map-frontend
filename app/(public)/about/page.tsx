@@ -1,6 +1,7 @@
 import Image from 'next/image';
 import { useTranslations } from 'next-intl';
 import { NeedCtaBanner } from '@/components/public/need-cta-banner';
+import { SITE_NAME } from '@/lib/site';
 
 export default function AboutPage() {
   const t = useTranslations('about');
@@ -10,7 +11,7 @@ export default function AboutPage() {
       {/* Header */}
       <section className="mx-auto max-w-7xl px-6 pt-12">
         <h1 className="text-4xl font-extrabold tracking-tight text-black">
-          {t('title')}
+          {t('title', { siteName: SITE_NAME })}
         </h1>
       </section>
 
@@ -20,7 +21,7 @@ export default function AboutPage() {
           {/* Text */}
           <div className="flex flex-1 flex-col gap-5">
             <p className="text-lg leading-7 text-[#374151]">
-              {t('intro')}
+              {t('intro', { siteName: SITE_NAME })}
             </p>
 
             <div className="space-y-5">

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { SITE_NAME } from '@/lib/site';
 
 /**
  * Internal QA reference page (gated by Basic Auth in middleware.ts).
@@ -92,7 +93,7 @@ export default function TestingPage() {
             Test accounts
           </h1>
           <p className="mt-3 max-w-2xl text-sm leading-relaxed text-slate-400">
-            Seeded fixtures for the RefugeeSupport.am platform. Roles and permissions
+            Seeded fixtures for the {SITE_NAME} platform. Roles and permissions
             below mirror the backend authorisation guards. Sign in at{' '}
             <code className="rounded bg-white/5 px-1.5 py-0.5 font-mono text-xs text-slate-300">/login</code>.
           </p>
@@ -219,7 +220,7 @@ export default function TestingPage() {
         </section>
 
         <footer className="mt-14 border-t border-white/[0.06] pt-6 font-mono text-xs text-slate-600">
-          RefugeeSupport.am · seeded test data · {USERS.length} users · {ROLES.length} roles
+          {SITE_NAME} · seeded test data · {USERS.length} users · {ROLES.length} roles
         </footer>
       </div>
     </main>
