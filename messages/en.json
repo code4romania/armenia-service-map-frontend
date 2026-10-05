@@ -952,5 +952,23 @@
     "vayotsDzor": "Vayots Dzor",
     "tavush": "Tavush",
     "yerevan": "Yerevan"
+  },
+  "topics": {
+    "legalServices": "Legal Services",
+    "healthcare": "Healthcare / Trauma Counseling",
+    "education": "Education",
+    "shelterHousing": "Shelter and Housing",
+    "employment": "Employment",
+    "socialServices": "Social Services / Case Management",
+    "communityIntegration": "Community Integration",
+    "other": "Other"
+  },
+  "targetGroups": {
+    "children": "Children",
+    "olderPersons": "Older Persons",
+    "peopleWithDisabilities": "People with Disabilities",
+    "singleParents": "Single Parents",
+    "women": "Women",
+    "youth": "Youth"
   }
 }

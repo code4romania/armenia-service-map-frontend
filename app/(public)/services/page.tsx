@@ -13,6 +13,7 @@ import { useMediaQuery } from '@/lib/hooks/use-media-query';
 import { sendPublicSearchLogBatchBeacon, useLogPublicSearchBatch } from '@/lib/api/analytics';
 import { usePublicRegionServiceCounts, usePublicRegions, usePublicServices, usePublicTopics } from '@/lib/api/services';
 import { useRegionName } from '@/lib/i18n/region-name';
+import { useTopicName } from '@/lib/i18n/topic-name';
 import { getLocalizedServiceContent } from '@/lib/i18n/service-content';
 import { serviceOrgName } from '@/lib/services/org-name';
 import type { PaginatedResponse, Service } from '@/types/api';
@@ -96,6 +97,7 @@ function ServicesContent() {
   const { data: topics } = usePublicTopics();
   const { data: regions } = usePublicRegions();
   const regionName = useRegionName();
+  const topicName = useTopicName();
   const { data: regionServiceCounts } = usePublicRegionServiceCounts();
   const logPublicSearchBatch = useLogPublicSearchBatch();
   const trimmedSearch = search.trim();
@@ -260,7 +262,8 @@ function ServicesContent() {
   const totalServices = data?.meta.total ?? 0;
   const selectedRegion = regions?.find((region) => region.id === selectedRegionId);
   const selectedRegionName = selectedRegion ? regionName(selectedRegion) : undefined;
-  const selectedTopicName = topics?.find((topic) => topic.id === selectedTopicId)?.name;
+  const selectedTopic = topics?.find((topic) => topic.id === selectedTopicId);
+  const selectedTopicName = selectedTopic ? topicName(selectedTopic) : undefined;
   const servicesJsonLd = JSON.stringify({
     '@context': 'https://schema.org',
     '@type': 'ItemList',
@@ -350,7 +353,7 @@ function ServicesContent() {
                       : 'border-[#d1d5db] bg-white text-[#364153] hover:border-[#9ca3af]'
                   }`}
                 >
-                  {topic.name}
+                  {topicName(topic)}
                 </button>
               ))}
             </div>
@@ -595,6 +598,7 @@ function EmptyResultsCta({ onClearFilters }: { onClearFilters: () => void }) {
 function ServiceCard({ service }: { service: Service }) {
   const t = useTranslations('services');
   const locale = useLocale();
+  const topicName = useTopicName();
   const badgeTopics = service.topics.slice(0, 3);
   const content = getLocalizedServiceContent(service, locale);
 
@@ -626,7 +630,7 @@ function ServiceCard({ service }: { service: Service }) {
         <div className="mt-4 flex flex-wrap gap-2">
           {badgeTopics.map((topic) => (
             <span key={topic.topic.id} className="rounded-full bg-[#dbeafe] px-3 py-1 text-xs font-semibold text-[#1447e6]">
-              {topic.topic.name}
+              {topicName(topic.topic)}
             </span>
           ))}
         </div>

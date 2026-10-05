@@ -952,5 +952,23 @@
     "vayotsDzor": "Վայոց ձոր",
     "tavush": "Տավուշ",
     "yerevan": "Երևան"
+  },
+  "topics": {
+    "legalServices": "Իրավաբանական ծառայություններ",
+    "healthcare": "Առողջապահություն / Տրավմայի խորհրդատվություն",
+    "education": "Կրթություն",
+    "shelterHousing": "Ապաստան և բնակարանային ապահովում",
+    "employment": "Զբաղվածություն",
+    "socialServices": "Սոցիալական ծառայություններ / Դեպքերի վարում",
+    "communityIntegration": "Համայնքային ինտեգրում",
+    "other": "Այլ"
+  },
+  "targetGroups": {
+    "children": "Երեխաներ",
+    "olderPersons": "Տարեց անձինք",
+    "peopleWithDisabilities": "Հաշմանդամություն ունեցող անձինք",
+    "singleParents": "Միայնակ ծնողներ",
+    "women": "Կանայք",
+    "youth": "Երիտասարդներ"
   }
 }
