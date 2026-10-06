@@ -9,6 +9,7 @@ import { NeedCtaBanner } from '@/components/public/need-cta-banner';
 import { JoinNetworkCta } from '@/components/public/join-network-cta';
 import { PartnersFunding } from '@/components/public/partners-funding';
 import { usePublicRegions, usePublicServices, usePublicTopics } from '@/lib/api/services';
+import { useRegionName } from '@/lib/i18n/region-name';
 import { useTopicName } from '@/lib/i18n/topic-name';
 import { getLocalizedServiceContent } from '@/lib/i18n/service-content';
 import type { Service } from '@/types/api';
@@ -35,6 +36,7 @@ export default function HomePage() {
   const { data: topics } = usePublicTopics();
   const topicName = useTopicName();
   const { data: regions } = usePublicRegions();
+  const regionName = useRegionName();
   const { data: latestServices } = usePublicServices({
     perPage: 3,
     sortBy: 'createdAt',
@@ -101,7 +103,7 @@ export default function HomePage() {
               >
                 <option value="">{t('allRegions')}</option>
                 {regions?.map((region) => (
-                  <option key={region.id} value={region.id}>{region.name}</option>
+                  <option key={region.id} value={region.id}>{regionName(region)}</option>
                 ))}
               </select>
             </label>
@@ -172,7 +174,7 @@ export default function HomePage() {
               <article key={service.id} className="relative flex flex-col rounded-2xl border border-[#e5e7eb] bg-white p-7 shadow-lg transition-all hover:-translate-y-0.5 hover:border-[#155dfc]/40 hover:shadow-xl">
                 <div className="flex items-center gap-2 text-sm text-[#4a5565]">
                   <MapPinIcon />
-                  <span>{service.region?.name || t('anywhereInArmenia')}</span>
+                  <span>{service.region ? regionName(service.region) : t('anywhereInArmenia')}</span>
                 </div>
                 <h3 className="mt-4 text-xl font-semibold text-[#101828]">{content.title}</h3>
                 <p className="mt-4 flex-1 text-sm leading-relaxed text-[#4a5565] line-clamp-4">

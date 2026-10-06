@@ -14,8 +14,12 @@ vi.mock('next/image', () => ({
 }));
 
 vi.mock('next-intl', () => ({
-  useTranslations: () => (key: string, values?: Record<string, string | number>) =>
-    values ? `${key}:${Object.values(values).join(',')}` : key,
+  useTranslations: () =>
+    Object.assign(
+      (key: string, values?: Record<string, string | number>) =>
+        values ? `${key}:${Object.values(values).join(',')}` : key,
+      { has: () => false },
+    ),
 }));
 
 vi.mock('@/components/public/need-cta-banner', () => ({

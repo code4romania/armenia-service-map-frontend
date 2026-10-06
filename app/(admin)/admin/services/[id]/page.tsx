@@ -10,12 +10,16 @@ import { DetailPageLoadingSkeleton } from '@/components/shared/loading-skeletons
 import { useAdminService, useDeleteService, usePublishService, useUnpublishService } from '@/lib/api/services';
 import { getLocalizedServiceContent } from '@/lib/i18n/service-content';
 import { serviceOrgName } from '@/lib/services/org-name';
+import { useRegionName } from '@/lib/i18n/region-name';
+import { useTargetGroupName } from '@/lib/i18n/target-group-name';
 
 export default function ServiceDetailPage() {
   const { id } = useParams<{ id: string }>();
   const router = useRouter();
   const locale = useLocale();
   const t = useTranslations('admin.services');
+  const regionName = useRegionName();
+  const targetGroupName = useTargetGroupName();
   const tStatus = useTranslations('admin.statuses');
   const tCommon = useTranslations('admin.common');
   const { data: service, isLoading } = useAdminService(id);
@@ -70,7 +74,7 @@ export default function ServiceDetailPage() {
             </div>
             <div>
               <div className="text-sm font-medium text-[#6b7280]">{t('region')}</div>
-              <div className="mt-1">{service.region?.name || t('allRegions')}</div>
+              <div className="mt-1">{service.region ? regionName(service.region) : t('allRegions')}</div>
             </div>
             <div>
               <div className="text-sm font-medium text-[#6b7280]">{t('columns.availability')}</div>
@@ -83,7 +87,7 @@ export default function ServiceDetailPage() {
             {service.targetGroup.length > 0 && (
               <div>
                 <div className="text-sm font-medium text-[#6b7280]">{t('targetGroups')}</div>
-                <div className="mt-1">{service.targetGroup.join(', ')}</div>
+                <div className="mt-1">{service.targetGroup.map((name) => targetGroupName({ name })).join(', ')}</div>
               </div>
             )}
           </div>
