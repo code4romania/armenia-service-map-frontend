@@ -55,13 +55,15 @@ export default function AboutPage() {
 
           {/* Image */}
           <div className="shrink-0 md:w-[560px]">
-            <Image
-              src="/about-image.jpg"
-              alt="About RefugeeSupport"
-              width={560}
-              height={620}
-              className="h-auto w-full rounded-lg object-cover"
-            />
+            <div className="overflow-hidden rounded-3xl bg-white p-6 shadow-2xl sm:p-10">
+              <Image
+                src="/illustrations/about.svg"
+                alt="About RefugeeSupport"
+                width={858}
+                height={880}
+                className="h-auto w-full"
+              />
+            </div>
           </div>
         </div>
       </section>
