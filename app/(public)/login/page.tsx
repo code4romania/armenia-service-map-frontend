@@ -89,17 +89,17 @@ export default function LoginPage() {
             </div>
           </div>
 
-          <div className="relative min-h-[320px] border-t border-[#dbe4f0] lg:min-h-[100%] lg:border-l lg:border-t-0">
+          <div className="relative min-h-[520px] border-t border-[#dbe4f0] bg-[#f5f8ff] lg:min-h-[100%] lg:border-l lg:border-t-0">
             <Image
-              src="/hero-support.jpg"
+              src="/illustrations/login.svg"
               alt=""
               fill
               priority
-              className="object-cover"
+              className="object-contain object-top p-8 pb-40 sm:p-10 sm:pb-44"
             />
-            <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(10,37,64,0.18)_0%,rgba(8,47,73,0.68)_100%)]" />
+            <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(10,37,64,0)_45%,rgba(8,47,73,0.68)_100%)]" />
             <div className="absolute inset-x-0 bottom-0 p-6 sm:p-8 lg:p-10">
-              <div className="max-w-md rounded-[28px] border border-white/20 bg-white/12 p-6 text-white backdrop-blur-md">
+              <div className="max-w-md rounded-[28px] border border-white/20 bg-[#0a2540]/55 p-6 text-white backdrop-blur-md">
                 <p className="text-sm font-semibold uppercase tracking-[0.24em] text-white/80">
                   {SITE_NAME}
                 </p>
