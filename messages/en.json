@@ -46,9 +46,10 @@
     "euDisclaimer": "This website has been produced with the financial assistance of the European Union. The content is the sole responsibility of the Human Rights with and for Refugees project team and does not necessarily reflect the views of the European Union."
   },
   "home": {
-    "heroTitle1": "Welcome to",
-    "heroTitle2": "RefugeeSupport",
-    "subtitle": "Thousands of refugees in Armenia are seeking housing, healthcare, legal aid, and more. Find trusted support services near you - confidential, free, and easy to access.",
+    "heroWelcome": "Welcome to the “Needs and Services Map” platform.",
+    "heroText1": "Here you will find reliable and regularly updated information about services available in your region.",
+    "heroText2": "The platform aims to provide people displaced from Nagorno-Karabakh with information about essential services, helping them address legal, healthcare, educational, social, and other related needs.",
+    "heroText3": "The platform was launched within the framework of the “Human Rights with and for Refugees” programme, funded by the European Union. The programme aims to ensure the effective protection of the rights of people displaced from Nagorno-Karabakh by providing access to information and services and empowering them.",
     "findServices": "Find services now",
     "searchTitle": "Search for available services",
     "searchPlaceholder": "Search for housing, healthcare, legal aid...",
