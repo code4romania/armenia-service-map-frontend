@@ -242,12 +242,13 @@ export default function JoinTheNetworkPage() {
             </form>
           </div>
 
-          <div className="relative min-h-[420px] overflow-hidden rounded-xl border border-[#e5e7eb]">
+          <div className="self-start p-4 lg:pt-10">
             <Image
-              src="/join-the-network.png"
+              src="/illustrations/join-the-network.svg"
               alt={t('imageAlt')}
-              fill
-              className="object-cover"
+              width={799}
+              height={592}
+              className="h-auto w-full"
             />
           </div>
         </div>

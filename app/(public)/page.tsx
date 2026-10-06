@@ -73,13 +73,13 @@ export default function HomePage() {
 
           <div className="relative">
             <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-[#51a2ff4d] to-[#7c86ff4d] blur-[64px]" />
-            <div className="relative overflow-hidden rounded-3xl shadow-2xl">
+            <div className="relative overflow-hidden rounded-3xl bg-white px-6 pt-6 shadow-2xl sm:px-10 sm:pt-10">
               <Image
-                src="/hero-support.jpg"
+                src="/illustrations/home.svg"
                 alt="Refugee support services"
-                width={567}
-                height={450}
-                className="h-auto w-full object-cover"
+                width={800}
+                height={546}
+                className="h-auto w-full"
                 priority
               />
             </div>
