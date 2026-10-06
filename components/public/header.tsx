@@ -6,7 +6,6 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useLocale, useTranslations } from 'next-intl';
 import { useAuth } from '@/lib/auth/auth-context';
-import { getLogoLocale, partnerLogos } from '@/components/public/partner-logos';
 
 const navItems = [
   { href: '/', labelKey: 'home' },
@@ -126,7 +125,7 @@ export function PublicHeader() {
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 py-4 sm:px-6">
         <div className="flex min-w-0 items-center gap-4 lg:gap-8">
           <Link href="/" className="flex min-w-0 items-center gap-3" onClick={() => setMobileOpen(false)}>
-            <Image src="/project-logo.svg" alt="RefugeeSupport" width={215} height={48} className="h-8 w-auto sm:h-10" priority />
+            <Image src="/project-logo.svg" alt="RefugeeSupport" width={215} height={48} className="h-10 w-auto sm:h-12" priority />
           </Link>
 
           <nav aria-label="Public navigation" className="hidden items-center gap-1 md:flex">
@@ -252,17 +251,6 @@ export function PublicHeader() {
             )}
           </svg>
         </button>
-      </div>
-
-      <div className="border-t border-[#f3f4f6] bg-[#f8fafc]">
-        <div className="mx-auto flex max-w-7xl flex-col gap-2 px-4 py-3.5 sm:px-6 md:flex-row md:items-center md:justify-between">
-          <p className="text-xs font-medium text-[#4a5565] sm:text-sm">{tHeader('partnerPrefix')}</p>
-          <div className="flex flex-wrap items-center gap-4 sm:gap-5">
-            {partnerLogos[getLogoLocale(locale)].map((logo) => (
-              <Image key={logo.src} src={logo.src} alt={logo.alt} width={logo.width} height={logo.height} className="h-7 w-auto" />
-            ))}
-          </div>
-        </div>
       </div>
 
       {mobileOpen ? (
