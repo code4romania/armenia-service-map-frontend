@@ -56,15 +56,12 @@ export default function HomePage() {
       <section className="mx-auto max-w-7xl px-4 pb-14 pt-12 sm:px-6 md:pt-16">
         <div className="grid items-center gap-10 md:grid-cols-[1.1fr_1fr]">
           <div>
-            <h1>
-              <span className="block bg-gradient-to-r from-[#101828] to-[#364153] bg-clip-text text-4xl font-extrabold leading-tight text-transparent sm:text-5xl md:text-6xl">
-                {t('heroTitle1')}
-              </span>
-              <span className="block bg-gradient-to-r from-[#155dfc] to-[#4f39f6] bg-clip-text text-4xl font-extrabold leading-tight text-transparent sm:text-5xl md:text-6xl">
-                {t('heroTitle2')}
-              </span>
-            </h1>
-            <p className="mt-5 max-w-xl text-lg leading-relaxed text-[#4a5565] sm:text-xl">{t('subtitle')}</p>
+            <h1 className="max-w-xl text-base font-bold leading-relaxed text-[#101828] sm:text-lg">{t('heroWelcome')}</h1>
+            <div className="mt-4 max-w-xl space-y-3 text-base leading-relaxed text-[#4a5565] sm:text-lg">
+              <p>{t('heroText1')}</p>
+              <p>{t('heroText2')}</p>
+              <p>{t('heroText3')}</p>
+            </div>
             <Link
               href="/services"
               className="mt-8 inline-flex items-center gap-2 rounded-[14px] bg-gradient-to-r from-[#155dfc] to-[#4f39f6] px-7 py-3.5 text-base font-semibold text-white shadow-lg transition-all hover:-translate-y-0.5 hover:shadow-xl"
