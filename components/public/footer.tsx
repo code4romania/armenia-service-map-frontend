@@ -1,4 +1,3 @@
-import Image from 'next/image';
 import Link from 'next/link';
 import { useTranslations } from 'next-intl';
 
@@ -9,19 +8,16 @@ export function PublicFooter() {
   return (
     <footer className="border-t border-[#e5e7eb] bg-[#f8fafc]">
       <div className="mx-auto max-w-7xl px-6 pb-8 pt-14">
-        <div className="grid gap-10 md:grid-cols-[2fr_1fr_1fr_1fr]">
-          <div>
-            <Link href="/" className="inline-flex items-center">
-              <Image src="/project-logo.svg" alt="RefugeeSupport" width={215} height={48} className="h-10 w-auto" />
-            </Link>
-            <p className="mt-4 max-w-sm text-sm leading-6 text-[#4a5565]">{t('tagline')}</p>
-            <div className="mt-5 flex items-center gap-3 text-[#6a7282]">
-              <SocialLink href="https://www.facebook.com/DemocracyDevelopmentFoundation" label="Facebook" icon={<FacebookIcon />} />
-              <SocialLink href="https://www.linkedin.com/company/demdevelopmet/?originalSubdomain=am" label="LinkedIn" icon={<LinkedInIcon />} />
-              <SocialLink href="https://www.instagram.com/ddf_armenia?igsi=YWJjaGMwZTcxMnl4" label="Instagram" icon={<InstagramIcon />} />
-            </div>
+        <div className="flex flex-col items-center text-center">
+          <p className="max-w-sm text-sm leading-6 text-[#4a5565]">{t('tagline')}</p>
+          <div className="mt-5 flex items-center gap-3 text-[#6a7282]">
+            <SocialLink href="https://www.facebook.com/DemocracyDevelopmentFoundation" label="Facebook" icon={<FacebookIcon />} />
+            <SocialLink href="https://www.linkedin.com/company/demdevelopmet/?originalSubdomain=am" label="LinkedIn" icon={<LinkedInIcon />} />
+            <SocialLink href="https://www.instagram.com/ddf_armenia?igsi=YWJjaGMwZTcxMnl4" label="Instagram" icon={<InstagramIcon />} />
           </div>
+        </div>
 
+        <div className="mx-auto mt-10 grid max-w-3xl gap-10 text-center sm:grid-cols-3">
           <div>
             <h3 className="text-sm font-semibold uppercase tracking-wide text-[#101828]">{t('company')}</h3>
             <ul className="mt-4 space-y-3 text-sm text-[#4a5565]">
