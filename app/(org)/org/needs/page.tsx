@@ -13,6 +13,7 @@ import { useOrgNeeds } from '@/lib/api/needs';
 import { formatStatusLabel, NEED_STATUS_LABEL_KEYS } from '@/lib/formatting/status-label';
 import type { NeedReport } from '@/types/api';
 import { TableLoadingSkeleton } from '@/components/shared/loading-skeletons';
+import { useRegionName } from '@/lib/i18n/region-name';
 
 const statusVariant: Record<string, 'neutral' | 'warning' | 'success' | 'danger'> = {
   NEW: 'neutral',
@@ -23,6 +24,7 @@ const statusVariant: Record<string, 'neutral' | 'warning' | 'success' | 'danger'
 
 export default function OrgNeedsPage() {
   const t = useTranslations('org.needs');
+  const regionName = useRegionName();
   const tStatuses = useTranslations('admin.statuses');
   const tCommon = useTranslations('admin.common');
   const router = useRouter();
@@ -61,7 +63,7 @@ export default function OrgNeedsPage() {
       cell: ({ getValue }) => <span className="line-clamp-1">{String(getValue())}</span>,
     },
     {
-      accessorFn: (row) => row.region?.name || '—',
+      accessorFn: (row) => (row.region ? regionName(row.region) : '—'),
       id: 'region',
       header: t('columns.region'),
     },

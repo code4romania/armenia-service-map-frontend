@@ -6,6 +6,8 @@ import { useLocale, useTranslations } from 'next-intl';
 import { NeedCtaBanner } from '@/components/public/need-cta-banner';
 import { usePublicService } from '@/lib/api/services';
 import { getLocalizedServiceContent } from '@/lib/i18n/service-content';
+import { useRegionName } from '@/lib/i18n/region-name';
+import { useTargetGroupName } from '@/lib/i18n/target-group-name';
 import { useTopicName } from '@/lib/i18n/topic-name';
 import { serviceOrgName } from '@/lib/services/org-name';
 import { SITE_URL } from '@/lib/site';
@@ -18,6 +20,8 @@ export default function PublicServiceDetailPage() {
   const tHome = useTranslations('home');
   const tNav = useTranslations('nav');
   const topicName = useTopicName();
+  const regionName = useRegionName();
+  const targetGroupName = useTargetGroupName();
 
   const { data: service, isLoading } = usePublicService(id);
 
@@ -104,9 +108,9 @@ export default function PublicServiceDetailPage() {
 
           <div className="mt-6 grid gap-4 sm:grid-cols-2">
             <DetailCard label={t('organisation')} value={serviceOrgName(service)} />
-            <DetailCard label={t('region')} value={service.region?.name || t('allRegions')} />
+            <DetailCard label={t('region')} value={service.region ? regionName(service.region) : t('allRegions')} />
             {service.targetGroup.length > 0 ? (
-              <DetailCard label={t('targetGroups')} value={service.targetGroup.join(', ')} />
+              <DetailCard label={t('targetGroups')} value={service.targetGroup.map((name) => targetGroupName({ name })).join(', ')} />
             ) : null}
             {(service.availabilityStart || service.availabilityEnd) ? (
               <DetailCard

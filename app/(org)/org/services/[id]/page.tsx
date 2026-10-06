@@ -9,12 +9,16 @@ import { ActionButton } from '@/components/ui/action-button';
 import { DetailPageLoadingSkeleton } from '@/components/shared/loading-skeletons';
 import { useOrgService, usePublishOrgService, useUnpublishOrgService, useDeleteOrgService } from '@/lib/api/services';
 import { getLocalizedServiceContent } from '@/lib/i18n/service-content';
+import { useRegionName } from '@/lib/i18n/region-name';
+import { useTargetGroupName } from '@/lib/i18n/target-group-name';
 
 export default function OrgServiceDetailPage() {
   const { id } = useParams<{ id: string }>();
   const router = useRouter();
   const locale = useLocale();
   const t = useTranslations('org.services');
+  const regionName = useRegionName();
+  const targetGroupName = useTargetGroupName();
   const tStatuses = useTranslations('admin.statuses');
   const tCommon = useTranslations('admin.common');
   const { data: service, isLoading } = useOrgService(id);
@@ -67,7 +71,7 @@ export default function OrgServiceDetailPage() {
           <div className="grid grid-cols-1 gap-x-6 gap-y-4 md:grid-cols-2">
             <div>
               <div className="text-sm font-medium text-[#6b7280]">{t('detail.region')}</div>
-              <div className="mt-1">{service.region?.name || t('allRegions')}</div>
+              <div className="mt-1">{service.region ? regionName(service.region) : t('allRegions')}</div>
             </div>
             <div>
               <div className="text-sm font-medium text-[#6b7280]">{t('detail.availability')}</div>
@@ -81,7 +85,7 @@ export default function OrgServiceDetailPage() {
               <div>
                 <div className="text-sm font-medium text-[#6b7280]">{t('detail.targetGroups')}</div>
                 <div className="mt-1">
-                  {service.targetGroups.map((entry) => entry.targetGroup.name).join(', ')}
+                  {service.targetGroups.map((entry) => targetGroupName(entry.targetGroup)).join(', ')}
                 </div>
               </div>
             )}

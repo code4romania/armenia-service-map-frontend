@@ -13,6 +13,7 @@ import { useAdminNeeds } from '@/lib/api/needs';
 import { formatStatusLabel, NEED_STATUS_LABEL_KEYS } from '@/lib/formatting/status-label';
 import type { NeedReport } from '@/types/api';
 import { TableLoadingSkeleton } from '@/components/shared/loading-skeletons';
+import { useRegionName } from '@/lib/i18n/region-name';
 
 const statusVariant: Record<string, 'neutral' | 'warning' | 'success' | 'danger'> = {
   NEW: 'neutral',
@@ -24,6 +25,7 @@ const statusVariant: Record<string, 'neutral' | 'warning' | 'success' | 'danger'
 export default function AdminNeedsPage() {
   const router = useRouter();
   const t = useTranslations('admin.needs');
+  const regionName = useRegionName();
   const tStatuses = useTranslations('admin.statuses');
   const tCommon = useTranslations('admin.common');
   const [page, setPage] = useState(1);
@@ -61,7 +63,7 @@ export default function AdminNeedsPage() {
       cell: ({ getValue }) => <span className="line-clamp-1">{String(getValue())}</span>,
     },
     {
-      accessorFn: (row) => row.region?.name || '—',
+      accessorFn: (row) => (row.region ? regionName(row.region) : '—'),
       id: 'region',
       header: t('columns.region'),
     },
@@ -136,7 +138,7 @@ export default function AdminNeedsPage() {
                 badges: <Badge variant={statusVariant[row.status] || 'neutral'}>{NEED_STATUS_LABEL_KEYS[row.status] ? tStatuses(NEED_STATUS_LABEL_KEYS[row.status]) : formatStatusLabel(row.status)}</Badge>,
                 fields: [
                   { label: t('columns.submittedBy'), value: row.fullName },
-                  { label: t('columns.region'), value: row.region?.name || '—' },
+                  { label: t('columns.region'), value: row.region ? regionName(row.region) : '—' },
                   { label: t('columns.assignedTo'), value: row.assignedOrganisation?.name || '—' },
                   { label: t('columns.submitted'), value: new Date(row.createdAt).toLocaleDateString() },
                 ],

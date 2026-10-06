@@ -13,6 +13,7 @@ import { useMediaQuery } from '@/lib/hooks/use-media-query';
 import { sendPublicSearchLogBatchBeacon, useLogPublicSearchBatch } from '@/lib/api/analytics';
 import { usePublicRegionServiceCounts, usePublicRegions, usePublicServices, usePublicTopics } from '@/lib/api/services';
 import { useRegionName } from '@/lib/i18n/region-name';
+import { useTargetGroupName } from '@/lib/i18n/target-group-name';
 import { useTopicName } from '@/lib/i18n/topic-name';
 import { getLocalizedServiceContent } from '@/lib/i18n/service-content';
 import { serviceOrgName } from '@/lib/services/org-name';
@@ -597,6 +598,7 @@ function EmptyResultsCta({ onClearFilters }: { onClearFilters: () => void }) {
 
 function ServiceCard({ service }: { service: Service }) {
   const t = useTranslations('services');
+  const targetGroupName = useTargetGroupName();
   const locale = useLocale();
   const topicName = useTopicName();
   const badgeTopics = service.topics.slice(0, 3);
@@ -638,7 +640,7 @@ function ServiceCard({ service }: { service: Service }) {
 
       {service.targetGroup.length > 0 ? (
         <p className="mt-4 text-sm text-[#6a7282]">
-          {t('whoFor')}: {service.targetGroup.join(', ')}
+          {t('whoFor')}: {service.targetGroup.map((name) => targetGroupName({ name })).join(', ')}
         </p>
       ) : null}
 

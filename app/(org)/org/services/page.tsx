@@ -15,10 +15,14 @@ import { TableSearchInput, TableSelect } from '@/components/ui/table-controls';
 import { useOrgServices } from '@/lib/api/services';
 import type { Service } from '@/types/api';
 import { TableLoadingSkeleton } from '@/components/shared/loading-skeletons';
+import { useRegionName } from '@/lib/i18n/region-name';
+import { useTargetGroupName } from '@/lib/i18n/target-group-name';
 
 export default function OrgServicesPage() {
   const router = useRouter();
   const t = useTranslations('org.services');
+  const regionName = useRegionName();
+  const targetGroupName = useTargetGroupName();
   const tStatuses = useTranslations('admin.statuses');
   const tCommon = useTranslations('admin.common');
   const locale = useLocale();
@@ -40,7 +44,7 @@ export default function OrgServicesPage() {
       cell: ({ row }) => getLocalizedServiceContent(row.original, locale).title,
     },
     {
-      accessorFn: (row) => row.region?.name ?? t('allRegions'),
+      accessorFn: (row) => (row.region ? regionName(row.region) : t('allRegions')),
       id: 'location',
       header: t('columns.location'),
       enableSorting: true,
@@ -84,7 +88,7 @@ export default function OrgServicesPage() {
       },
     },
     {
-      accessorFn: (row) => row.targetGroups?.map((entry) => entry.targetGroup.name).join(', ') ?? '',
+      accessorFn: (row) => row.targetGroups?.map((entry) => targetGroupName(entry.targetGroup)).join(', ') ?? '',
       id: 'targetGroup',
       header: t('columns.targetGroup'),
       enableSorting: false,
