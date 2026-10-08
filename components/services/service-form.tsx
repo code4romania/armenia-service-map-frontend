@@ -6,6 +6,9 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { RichTextEditor } from '@/components/shared/rich-text-editor';
 import { usePublicRegions, usePublicTargetGroups, usePublicTopics } from '@/lib/api/services';
+import { useRegionName } from '@/lib/i18n/region-name';
+import { useTargetGroupName } from '@/lib/i18n/target-group-name';
+import { useTopicName } from '@/lib/i18n/topic-name';
 import type { ServiceMutationInput } from '@/lib/api/services';
 import { getErrorMessage, mapErrorMessageToField, toPlainText } from '@/lib/validation';
 
@@ -130,18 +133,21 @@ export function ServiceForm({
   );
   const { data: topics } = usePublicTopics();
   const { data: regions } = usePublicRegions();
+  const regionName = useRegionName();
+  const topicName = useTopicName();
   const { data: targetGroups } = usePublicTargetGroups();
+  const targetGroupName = useTargetGroupName();
 
   const topicOptions = useMemo(
     () =>
       (topics ?? []).flatMap((topic) => [
-        { id: topic.id, name: topic.name },
+        { id: topic.id, name: topicName(topic) },
         ...((topic.children ?? []).map((child) => ({
           id: child.id,
-          name: `${topic.name} / ${child.name}`,
+          name: `${topicName(topic)} / ${child.name}`,
         })) || []),
       ]),
-    [topics],
+    [topics, topicName],
   );
 
   const selectClasses =
@@ -474,7 +480,7 @@ export function ServiceForm({
               <option value={ALL_REGIONS}>{t('allRegions')}</option>
               {regions?.map((region) => (
                 <option key={region.id} value={region.id}>
-                  {region.name}
+                  {regionName(region)}
                 </option>
               ))}
             </select>
@@ -532,7 +538,7 @@ export function ServiceForm({
                         )
                       }
                     />
-                    {targetGroup.name}
+                    {targetGroupName(targetGroup)}
                   </label>
                 ))}
               </div>

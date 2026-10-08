@@ -21,12 +21,16 @@ vi.mock('next/navigation', () => ({
 
 vi.mock('next-intl', () => ({
   useLocale: () => 'en',
-  useTranslations: () => (key: string, values?: Record<string, string | number>) => {
-    if (key === 'regionalServicesTitle') return `${values?.region}:${values?.count}`;
-    if (key === 'viewResults') return `viewResults:${values?.count}`;
-    if (key === 'refineWithin') return `Refine within ${values?.topic}`;
-    return key;
-  },
+  useTranslations: () =>
+    Object.assign(
+      (key: string, values?: Record<string, string | number>) => {
+        if (key === 'regionalServicesTitle') return `${values?.region}:${values?.count}`;
+        if (key === 'viewResults') return `viewResults:${values?.count}`;
+        if (key === 'refineWithin') return `Refine within ${values?.topic}`;
+        return key;
+      },
+      { has: () => false },
+    ),
 }));
 
 vi.mock('@/components/shared/armenia-map', () => ({

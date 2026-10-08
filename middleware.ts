@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { SITE_NAME } from '@/lib/site';
 
 /**
  * HTTP Basic Auth gate for the internal /testing page.
@@ -28,7 +29,7 @@ export function middleware(req: NextRequest) {
   return new NextResponse('Authentication required.', {
     status: 401,
     headers: {
-      'WWW-Authenticate': 'Basic realm="RefugeeSupport.am Testing", charset="UTF-8"',
+      'WWW-Authenticate': `Basic realm="${SITE_NAME} Testing", charset="UTF-8"`,
     },
   });
 }

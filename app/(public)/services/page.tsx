@@ -12,9 +12,13 @@ import { OverflowChipRow } from '@/components/ui/overflow-chip-row';
 import { useMediaQuery } from '@/lib/hooks/use-media-query';
 import { sendPublicSearchLogBatchBeacon, useLogPublicSearchBatch } from '@/lib/api/analytics';
 import { usePublicRegionServiceCounts, usePublicRegions, usePublicServices, usePublicTopics } from '@/lib/api/services';
+import { useRegionName } from '@/lib/i18n/region-name';
+import { useTargetGroupName } from '@/lib/i18n/target-group-name';
+import { useTopicName } from '@/lib/i18n/topic-name';
 import { getLocalizedServiceContent } from '@/lib/i18n/service-content';
 import { serviceOrgName } from '@/lib/services/org-name';
 import type { PaginatedResponse, Service } from '@/types/api';
+import { SITE_URL } from '@/lib/site';
 
 type ViewMode = 'list' | 'map';
 type QueuedSearchLog = {
@@ -93,6 +97,8 @@ function ServicesContent() {
 
   const { data: topics } = usePublicTopics();
   const { data: regions } = usePublicRegions();
+  const regionName = useRegionName();
+  const topicName = useTopicName();
   const { data: regionServiceCounts } = usePublicRegionServiceCounts();
   const logPublicSearchBatch = useLogPublicSearchBatch();
   const trimmedSearch = search.trim();
@@ -255,8 +261,10 @@ function ServicesContent() {
   };
 
   const totalServices = data?.meta.total ?? 0;
-  const selectedRegionName = regions?.find((region) => region.id === selectedRegionId)?.name;
-  const selectedTopicName = topics?.find((topic) => topic.id === selectedTopicId)?.name;
+  const selectedRegion = regions?.find((region) => region.id === selectedRegionId);
+  const selectedRegionName = selectedRegion ? regionName(selectedRegion) : undefined;
+  const selectedTopic = topics?.find((topic) => topic.id === selectedTopicId);
+  const selectedTopicName = selectedTopic ? topicName(selectedTopic) : undefined;
   const servicesJsonLd = JSON.stringify({
     '@context': 'https://schema.org',
     '@type': 'ItemList',
@@ -267,7 +275,7 @@ function ServicesContent() {
         return {
           '@type': 'ListItem',
           position: index + 1,
-          url: `https://refugeesupport.am/services/${service.id}`,
+          url: `${SITE_URL}/services/${service.id}`,
           name: content.title,
         };
       }) ?? [],
@@ -303,7 +311,7 @@ function ServicesContent() {
               >
                 <option value="">{t('allRegions')}</option>
                 {regions?.map((region) => (
-                  <option key={region.id} value={region.id}>{region.name}</option>
+                  <option key={region.id} value={region.id}>{regionName(region)}</option>
                 ))}
               </select>
             </label>
@@ -346,7 +354,7 @@ function ServicesContent() {
                       : 'border-[#d1d5db] bg-white text-[#364153] hover:border-[#9ca3af]'
                   }`}
                 >
-                  {topic.name}
+                  {topicName(topic)}
                 </button>
               ))}
             </div>
@@ -590,7 +598,9 @@ function EmptyResultsCta({ onClearFilters }: { onClearFilters: () => void }) {
 
 function ServiceCard({ service }: { service: Service }) {
   const t = useTranslations('services');
+  const targetGroupName = useTargetGroupName();
   const locale = useLocale();
+  const topicName = useTopicName();
   const badgeTopics = service.topics.slice(0, 3);
   const content = getLocalizedServiceContent(service, locale);
 
@@ -622,7 +632,7 @@ function ServiceCard({ service }: { service: Service }) {
         <div className="mt-4 flex flex-wrap gap-2">
           {badgeTopics.map((topic) => (
             <span key={topic.topic.id} className="rounded-full bg-[#dbeafe] px-3 py-1 text-xs font-semibold text-[#1447e6]">
-              {topic.topic.name}
+              {topicName(topic.topic)}
             </span>
           ))}
         </div>
@@ -630,7 +640,7 @@ function ServiceCard({ service }: { service: Service }) {
 
       {service.targetGroup.length > 0 ? (
         <p className="mt-4 text-sm text-[#6a7282]">
-          {t('whoFor')}: {service.targetGroup.join(', ')}
+          {t('whoFor')}: {service.targetGroup.map((name) => targetGroupName({ name })).join(', ')}
         </p>
       ) : null}
 

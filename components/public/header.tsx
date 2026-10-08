@@ -100,8 +100,14 @@ export function PublicHeader() {
   }
 
   const accountAction = getAccountAction();
-  const desktopActionItems = [...actionItems, accountAction];
-  const mobileNavItems = [...navItems, ...actionItems, accountAction];
+  const desktopActionItems = [
+    ...actionItems.map((item) => ({ href: item.href, label: tFooter(item.labelKey) })),
+    accountAction,
+  ];
+  const mobileNavItems = [
+    ...navItems.map((item) => ({ href: item.href, label: tNav(item.labelKey) })),
+    ...desktopActionItems,
+  ];
 
   function handleSearch(event: FormEvent) {
     event.preventDefault();
@@ -119,12 +125,7 @@ export function PublicHeader() {
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 py-4 sm:px-6">
         <div className="flex min-w-0 items-center gap-4 lg:gap-8">
           <Link href="/" className="flex min-w-0 items-center gap-3" onClick={() => setMobileOpen(false)}>
-            <div className="flex h-10 w-10 items-center justify-center rounded-[14px] bg-[linear-gradient(135deg,#155DFC_0%,#4F39F6_100%)] shadow-[0_10px_15px_-3px_rgba(0,0,0,0.10),0_4px_6px_-4px_rgba(0,0,0,0.10)] sm:h-12 sm:w-12">
-              <Image src="/logo.png" alt="RefugeeSupport" width={64} height={64} className="h-6 w-6 sm:h-7 sm:w-7" priority />
-            </div>
-            <span className="truncate text-xl font-semibold leading-tight tracking-tight text-[#101828] md:hidden xl:inline">
-              RefugeeSupport
-            </span>
+            <Image src="/project-logo.svg" alt="RefugeeSupport" width={215} height={48} className="h-10 w-auto sm:h-12" priority />
           </Link>
 
           <nav aria-label="Public navigation" className="hidden items-center gap-1 md:flex">
@@ -154,7 +155,7 @@ export function PublicHeader() {
                     : 'text-[#364153] hover:bg-[#f3f4f6] hover:text-[#101828]'
                 }`}
               >
-                {'labelKey' in item ? tFooter('joinNetwork') : item.label}
+                {item.label}
               </Link>
             ))}
           </nav>
@@ -252,20 +253,6 @@ export function PublicHeader() {
         </button>
       </div>
 
-      <div className="border-t border-[#f3f4f6] bg-[#f8fafc]">
-        <div className="mx-auto flex max-w-7xl flex-col gap-2 px-4 py-2 sm:px-6 md:flex-row md:items-center md:justify-between">
-          <p className="text-xs font-medium text-[#4a5565] sm:text-sm">{tHeader('partnerPrefix')}</p>
-          <div className="flex flex-wrap items-center gap-4 sm:gap-5">
-            <Image src="/eu-funded.png" alt="Funded by the European Union" width={168} height={36} className="h-6 w-auto opacity-80" />
-            <Image src="/partner-logo.png" alt="Democracy Development Foundation" width={154} height={32} className="h-6 w-auto opacity-80" />
-            <div className="flex items-center gap-2">
-              <span className="text-xs text-[#6a7282]">{tHeader('createdBy')}</span>
-              <Image src="/commit-global.svg" alt="Commit Global" width={96} height={24} className="h-5 w-auto" />
-            </div>
-          </div>
-        </div>
-      </div>
-
       {mobileOpen ? (
         <div className="border-t border-[#e5e7eb] bg-white px-4 py-4 sm:px-6 md:hidden">
           <nav aria-label="Mobile navigation" className="space-y-1">
@@ -281,7 +268,7 @@ export function PublicHeader() {
                     : 'text-[#364153] hover:bg-[#f3f4f6]'
                 }`}
               >
-                {'labelKey' in item ? tFooter('joinNetwork') : item.label}
+                {item.label}
               </Link>
             ))}
           </nav>

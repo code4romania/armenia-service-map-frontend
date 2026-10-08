@@ -8,6 +8,7 @@ import { NeedCtaBanner } from '@/components/public/need-cta-banner';
 import { MultiSelect } from '@/components/ui/multi-select';
 import { useJoinNetwork } from '@/lib/api/organisations';
 import { usePublicRegions } from '@/lib/api/services';
+import { useRegionName } from '@/lib/i18n/region-name';
 import { isValidEmail, isValidPhone } from '@/lib/validation';
 import { ChevronDownIcon } from '@heroicons/react/24/outline';
 
@@ -34,6 +35,7 @@ export default function JoinTheNetworkPage() {
   const tHome = useTranslations('home');
   const router = useRouter();
   const { data: regions } = usePublicRegions();
+  const regionName = useRegionName();
   const joinNetwork = useJoinNetwork();
 
   const [form, setForm] = useState<FormState>(initialForm);
@@ -146,7 +148,7 @@ export default function JoinTheNetworkPage() {
               <Field label={t('regionsOfActivity')} as="div">
                 <MultiSelect
                   aria-label={t('regionsOfActivity')}
-                  options={(regions ?? []).map((region) => ({ value: region.id, label: region.name }))}
+                  options={(regions ?? []).map((region) => ({ value: region.id, label: regionName(region) }))}
                   selected={form.regionIds}
                   onChange={(next) => updateField('regionIds', next)}
                   placeholder={t('selectRegions')}
@@ -240,12 +242,13 @@ export default function JoinTheNetworkPage() {
             </form>
           </div>
 
-          <div className="relative min-h-[420px] overflow-hidden rounded-xl border border-[#e5e7eb]">
+          <div className="self-start p-4 lg:pt-10">
             <Image
-              src="/join-the-network.png"
+              src="/illustrations/join-the-network.svg"
               alt={t('imageAlt')}
-              fill
-              className="object-cover"
+              width={799}
+              height={592}
+              className="h-auto w-full"
             />
           </div>
         </div>

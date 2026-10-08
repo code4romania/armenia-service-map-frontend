@@ -8,6 +8,7 @@ import { NeedCtaBanner } from '@/components/public/need-cta-banner';
 import { useSubmitNeed } from '@/lib/api/needs';
 import { usePublicRegions } from '@/lib/api/services';
 import { ApiError } from '@/lib/api/client';
+import { useRegionName } from '@/lib/i18n/region-name';
 import { isValidEmail, isValidPhone } from '@/lib/validation';
 
 export default function ReportANeedPage() {
@@ -17,6 +18,7 @@ export default function ReportANeedPage() {
   const router = useRouter();
   const submit = useSubmitNeed();
   const { data: regions } = usePublicRegions();
+  const regionName = useRegionName();
 
   const [submitted, setSubmitted] = useState(false);
   const [form, setForm] = useState({
@@ -227,7 +229,7 @@ export default function ReportANeedPage() {
                 >
                   <option value="">{t('selectOption')}</option>
                   {regions?.map((region) => (
-                    <option key={region.id} value={region.id}>{region.name}</option>
+                    <option key={region.id} value={region.id}>{regionName(region)}</option>
                   ))}
                 </select>
                 {errors.regionId ? (
@@ -256,12 +258,13 @@ export default function ReportANeedPage() {
           </div>
 
           <div className="hidden w-[560px] shrink-0 lg:block">
-            <div className="relative h-full min-h-[780px] overflow-hidden rounded-lg">
+            <div className="overflow-hidden rounded-3xl bg-white p-6 shadow-2xl sm:p-10">
               <Image
-                src="/report-need-banner.jpg"
+                src="/illustrations/report-a-need.svg"
                 alt={t('imageAlt')}
-                fill
-                className="object-cover"
+                width={960}
+                height={748}
+                className="h-auto w-full"
               />
             </div>
           </div>
