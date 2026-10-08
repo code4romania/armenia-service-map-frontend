@@ -13,13 +13,11 @@ export const PUBLIC_STORAGE_STATE = 'e2e/.auth/public.json';
 export const CREDENTIALS = {
   admin: { email: 'admin@refugeesupport.am', password: 'admin123' },
   org: { email: 'org-admin@missionarmenia.org', password: 'admin123' },
-  member: { email: 'org-member@missionarmenia.org', password: 'admin123' },
 };
 
 export const STORAGE_STATE = {
   admin: 'e2e/.auth/admin.json',
   org: 'e2e/.auth/org.json',
-  member: 'e2e/.auth/member.json',
 };
 
 type Credentials = { email: string; password: string };

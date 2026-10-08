@@ -10,6 +10,7 @@ import {
   ChevronRightIcon,
   ArrowRightOnRectangleIcon,
   CheckIcon,
+  UserCircleIcon,
 } from '@heroicons/react/24/outline';
 import { useAuth } from '@/lib/auth/auth-context';
 import {
@@ -268,6 +269,15 @@ export function AdminTopbar({ mobileNavOpen, onToggleMobileNav, showMobileNavTri
                 >
                   <CheckIcon className="h-4 w-4" />
                   {t('goToDashboard')}
+                </Link>
+                <Link
+                  href="/admin/account"
+                  role="menuitem"
+                  className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-[#374151] hover:bg-[#fafafa]"
+                  onClick={() => setProfileOpen(false)}
+                >
+                  <UserCircleIcon className="h-4 w-4" />
+                  {t('account')}
                 </Link>
                 <button
                   type="button"

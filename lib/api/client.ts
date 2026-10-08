@@ -80,8 +80,10 @@ export async function apiClient<T>(endpoint: string, options: RequestOptions = {
     throw new ApiError(response.status, error.message);
   }
 
-  if (response.status === 204) return undefined as T;
-  return response.json();
+  // Some endpoints (DELETE, actions) reply 200/204 with no body.
+  const text = await response.text();
+  if (!text) return undefined as T;
+  return JSON.parse(text) as T;
 }
 
 export class ApiError extends Error {
