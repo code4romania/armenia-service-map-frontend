@@ -17,7 +17,6 @@
     "previous": "Previous"
   },
   "header": {
-    "partnerPrefix": "A project in partnership with",
     "createdBy": "Created by",
     "searchAria": "Search services",
     "languageAria": "Select language"
@@ -41,10 +40,15 @@
     "services": "Services",
     "reportNeed": "Report a need"
   },
+  "funding": {
+    "sectionAria": "Project partners and funding",
+    "euDisclaimer": "This website has been produced with the financial assistance of the European Union. The content is the sole responsibility of the Human Rights with and for Refugees project team and does not necessarily reflect the views of the European Union."
+  },
   "home": {
-    "heroTitle1": "Welcome to",
-    "heroTitle2": "RefugeeSupport",
-    "subtitle": "Thousands of refugees in Armenia are seeking housing, healthcare, legal aid, and more. Find trusted support services near you - confidential, free, and easy to access.",
+    "heroWelcome": "Welcome to the “Needs and Services Map” platform.",
+    "heroText1": "Here you will find reliable and regularly updated information about services available in your region.",
+    "heroText2": "The platform aims to provide people displaced from Nagorno-Karabakh with information about essential services, helping them address legal, healthcare, educational, social, and other related needs.",
+    "heroText3": "The platform was launched within the framework of the “Human Rights with and for Refugees” programme, funded by the European Union. The programme aims to ensure the effective protection of the rights of people displaced from Nagorno-Karabakh by providing access to information and services and empowering them.",
     "findServices": "Find services now",
     "searchTitle": "Search for available services",
     "searchPlaceholder": "Search for housing, healthcare, legal aid...",
@@ -115,8 +119,8 @@
     "howToAccess": "How to access the service"
   },
   "about": {
-    "title": "About RefugeeSupport.am",
-    "intro": "RefugeeSupport.am is a platform connecting refugees and displaced people in Armenia with verified support services provided by trusted organisations.",
+    "title": "About {siteName}",
+    "intro": "{siteName} is a platform connecting refugees and displaced people in Armenia with verified support services provided by trusted organisations.",
     "mission": "Our Mission",
     "missionText": "We believe everyone deserves access to essential services - housing, healthcare, legal aid, education, and more. Our platform makes it easy to find, compare, and connect with the right support.",
     "howItWorks": "How it works",
@@ -165,7 +169,7 @@
   "reportNeedPage": {
     "title": "Report a need",
     "subtitle": "Tell us what your needs are and you will be contacted and provided with the available resources.",
-    "infoBox": "If you have already submitted a need report and have not been contacted, call +374 00 000 000 or email help@example.com.",
+    "infoBox": "If you have already submitted a need report and have not been contacted, call +374 77533862 or email info@demdev.org.",
     "formTitle": "Tell us what you need",
     "formSubtitle": "Let us know your needs, and we will reach out to connect you with the most appropriate services available.",
     "needDescription": "How can we help you?",
@@ -203,7 +207,7 @@
     "loginButton": "Sign in",
     "invalidCredentials": "Invalid email or password",
     "loginPanelTitle": "Coordinate support without leaving the platform behind.",
-    "loginPanelBody": "Stay connected to the same RefugeeSupport.am experience while you access the tools your team uses to respond quickly and confidently.",
+    "loginPanelBody": "Stay connected to the same {siteName} experience while you access the tools your team uses to respond quickly and confidently.",
     "setupPassword": {
       "eyebrow": "Account setup",
       "title": "Set your password",
@@ -980,6 +984,37 @@
         }
       }
     }
+  },
+  "regions": {
+    "aragatsotn": "Aragatsotn",
+    "ararat": "Ararat",
+    "armavir": "Armavir",
+    "gegharkunik": "Gegharkunik",
+    "lori": "Lori",
+    "kotayk": "Kotayk",
+    "shirak": "Shirak",
+    "syunik": "Syunik",
+    "vayotsDzor": "Vayots Dzor",
+    "tavush": "Tavush",
+    "yerevan": "Yerevan"
+  },
+  "topics": {
+    "legalServices": "Legal Services",
+    "healthcare": "Healthcare / Trauma Counseling",
+    "education": "Education",
+    "shelterHousing": "Shelter and Housing",
+    "employment": "Employment",
+    "socialServices": "Social Services / Case Management",
+    "communityIntegration": "Community Integration",
+    "other": "Other"
+  },
+  "targetGroups": {
+    "children": "Children",
+    "olderPersons": "Older Persons",
+    "peopleWithDisabilities": "People with Disabilities",
+    "singleParents": "Single Parents",
+    "women": "Women",
+    "youth": "Youth"
   },
   "account": {
     "title": "My account",

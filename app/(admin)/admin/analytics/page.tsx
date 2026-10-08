@@ -24,6 +24,7 @@ import {
   useZeroResultQueries,
 } from '@/lib/api/analytics';
 import { AnalyticsLoadingSkeleton } from '@/components/shared/loading-skeletons';
+import { useRegionName } from '@/lib/i18n/region-name';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, PointElement, LineElement, Tooltip, Legend);
 
@@ -53,6 +54,7 @@ function downloadCsv(filename: string, rows: Array<Record<string, string | numbe
 
 export default function AdminAnalyticsPage() {
   const t = useTranslations('admin.analytics');
+  const regionName = useRegionName();
   const [page, setPage] = useState(1);
   const [perPage, setPerPage] = useState(12);
   const [search, setSearch] = useState('');
@@ -247,7 +249,7 @@ export default function AdminAnalyticsPage() {
               <Bar
                 data={{
                   labels: [
-                    ...(mostUsedFilters?.regionUsage.map((item) => t('regionLabel', { name: item.regionName })) ?? []),
+                    ...(mostUsedFilters?.regionUsage.map((item) => t('regionLabel', { name: regionName({ name: item.regionName, svgPathId: item.svgPathId }) })) ?? []),
                     ...(mostUsedFilters?.topicUsage.map((item) => t('topicLabel', { name: item.topicName })) ?? []),
                   ],
                   datasets: [
@@ -273,7 +275,7 @@ export default function AdminAnalyticsPage() {
               <Bar
                 data={{
                   labels: [
-                    ...(leastUsedFilters?.regionUsage.map((item) => t('regionLabel', { name: item.regionName })) ?? []),
+                    ...(leastUsedFilters?.regionUsage.map((item) => t('regionLabel', { name: regionName({ name: item.regionName, svgPathId: item.svgPathId }) })) ?? []),
                     ...(leastUsedFilters?.topicUsage.map((item) => t('topicLabel', { name: item.topicName })) ?? []),
                   ],
                   datasets: [
@@ -306,7 +308,7 @@ export default function AdminAnalyticsPage() {
                     <th className="px-2 py-1 text-left text-[#6b7280]">{t('heatmapCorner')}</th>
                     {heatmapData?.regions.map((region) => (
                       <th key={region.id} className="px-2 py-1 text-left text-[#6b7280]">
-                        {region.name}
+                        {regionName(region)}
                       </th>
                     ))}
                   </tr>

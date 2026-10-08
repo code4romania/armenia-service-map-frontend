@@ -12,7 +12,7 @@ test.describe('Public pages – smoke', () => {
 
   test('about', async ({ page }) => {
     await page.goto('/about');
-    await expect(page.getByRole('heading', { level: 1, name: /About RefugeeSupport/i })).toBeVisible();
+    await expect(page.getByRole('heading', { level: 1, name: /About www\.qezhet\.am/i })).toBeVisible();
     await expect(page.getByRole('heading', { name: 'How it works' })).toBeVisible();
   });
 

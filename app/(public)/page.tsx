@@ -7,7 +7,10 @@ import { useRouter } from 'next/navigation';
 import { useLocale, useTranslations } from 'next-intl';
 import { NeedCtaBanner } from '@/components/public/need-cta-banner';
 import { JoinNetworkCta } from '@/components/public/join-network-cta';
+import { PartnersFunding } from '@/components/public/partners-funding';
 import { usePublicRegions, usePublicServices, usePublicTopics } from '@/lib/api/services';
+import { useRegionName } from '@/lib/i18n/region-name';
+import { useTopicName } from '@/lib/i18n/topic-name';
 import { getLocalizedServiceContent } from '@/lib/i18n/service-content';
 import type { Service } from '@/types/api';
 
@@ -31,7 +34,9 @@ export default function HomePage() {
   const [regionId, setRegionId] = useState('');
 
   const { data: topics } = usePublicTopics();
+  const topicName = useTopicName();
   const { data: regions } = usePublicRegions();
+  const regionName = useRegionName();
   const { data: latestServices } = usePublicServices({
     perPage: 3,
     sortBy: 'createdAt',
@@ -51,15 +56,12 @@ export default function HomePage() {
       <section className="mx-auto max-w-7xl px-4 pb-14 pt-12 sm:px-6 md:pt-16">
         <div className="grid items-center gap-10 md:grid-cols-[1.1fr_1fr]">
           <div>
-            <h1>
-              <span className="block bg-gradient-to-r from-[#101828] to-[#364153] bg-clip-text text-4xl font-extrabold leading-tight text-transparent sm:text-5xl md:text-6xl">
-                {t('heroTitle1')}
-              </span>
-              <span className="block bg-gradient-to-r from-[#155dfc] to-[#4f39f6] bg-clip-text text-4xl font-extrabold leading-tight text-transparent sm:text-5xl md:text-6xl">
-                {t('heroTitle2')}
-              </span>
-            </h1>
-            <p className="mt-5 max-w-xl text-lg leading-relaxed text-[#4a5565] sm:text-xl">{t('subtitle')}</p>
+            <h1 className="max-w-xl text-base font-bold leading-relaxed text-[#101828] sm:text-lg">{t('heroWelcome')}</h1>
+            <div className="mt-4 max-w-xl space-y-3 text-base leading-relaxed text-[#4a5565] sm:text-lg">
+              <p>{t('heroText1')}</p>
+              <p>{t('heroText2')}</p>
+              <p>{t('heroText3')}</p>
+            </div>
             <Link
               href="/services"
               className="mt-8 inline-flex items-center gap-2 rounded-[14px] bg-gradient-to-r from-[#155dfc] to-[#4f39f6] px-7 py-3.5 text-base font-semibold text-white shadow-lg transition-all hover:-translate-y-0.5 hover:shadow-xl"
@@ -71,13 +73,13 @@ export default function HomePage() {
 
           <div className="relative">
             <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-[#51a2ff4d] to-[#7c86ff4d] blur-[64px]" />
-            <div className="relative overflow-hidden rounded-3xl shadow-2xl">
+            <div className="relative overflow-hidden rounded-3xl bg-white px-6 pt-6 shadow-2xl sm:px-10 sm:pt-10">
               <Image
-                src="/hero-support.jpg"
+                src="/illustrations/home.svg"
                 alt="Refugee support services"
-                width={567}
-                height={450}
-                className="h-auto w-full object-cover"
+                width={800}
+                height={546}
+                className="h-auto w-full"
                 priority
               />
             </div>
@@ -85,7 +87,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="mx-auto max-w-7xl px-4 sm:px-6">
+      <section className="mx-auto max-w-7xl px-4 pb-16 sm:px-6 sm:pb-20">
         <div className="rounded-3xl bg-gradient-to-r from-[#155dfc] to-[#4f39f6] px-5 py-8 shadow-2xl sm:px-8 sm:py-10 md:px-12 md:py-12">
           <h2 className="text-center text-xl font-bold text-white sm:text-2xl md:text-3xl">{t('searchTitle')}</h2>
           <form onSubmit={handleSearch} className="mx-auto mt-7 grid max-w-4xl gap-4 md:grid-cols-[1fr_1.2fr_auto]">
@@ -98,7 +100,7 @@ export default function HomePage() {
               >
                 <option value="">{t('allRegions')}</option>
                 {regions?.map((region) => (
-                  <option key={region.id} value={region.id}>{region.name}</option>
+                  <option key={region.id} value={region.id}>{regionName(region)}</option>
                 ))}
               </select>
             </label>
@@ -125,7 +127,7 @@ export default function HomePage() {
       </section>
 
       {topics && topics.length > 0 ? (
-        <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 sm:py-20">
+        <section className="mx-auto max-w-7xl px-4 pb-16 sm:px-6 sm:pb-20">
           <div className="text-center">
             <h2 className="text-3xl font-bold text-[#101828] sm:text-4xl">{t('browseTopics')}</h2>
             <p className="mt-4 text-base text-[#4a5565] sm:text-lg">{t('browseTopicsSubtitle')}</p>
@@ -144,7 +146,7 @@ export default function HomePage() {
                   <div className={`flex h-14 w-14 items-center justify-center rounded-[14px] bg-gradient-to-br ${color.gradient} shadow-lg`}>
                     <IconComponent />
                   </div>
-                  <h3 className="mt-6 text-lg font-semibold text-[#101828]">{topic.name}</h3>
+                  <h3 className="mt-6 text-lg font-semibold text-[#101828]">{topicName(topic)}</h3>
                   <div className="mt-4 flex items-center gap-1 text-sm font-medium text-[#155dfc]">
                     {t('learnMore')}
                     <ArrowRightIcon className="h-4 w-4" />
@@ -169,7 +171,7 @@ export default function HomePage() {
               <article key={service.id} className="relative flex flex-col rounded-2xl border border-[#e5e7eb] bg-white p-7 shadow-lg transition-all hover:-translate-y-0.5 hover:border-[#155dfc]/40 hover:shadow-xl">
                 <div className="flex items-center gap-2 text-sm text-[#4a5565]">
                   <MapPinIcon />
-                  <span>{service.region?.name || t('anywhereInArmenia')}</span>
+                  <span>{service.region ? regionName(service.region) : t('anywhereInArmenia')}</span>
                 </div>
                 <h3 className="mt-4 text-xl font-semibold text-[#101828]">{content.title}</h3>
                 <p className="mt-4 flex-1 text-sm leading-relaxed text-[#4a5565] line-clamp-4">
@@ -203,6 +205,8 @@ export default function HomePage() {
         subtitle={t('ctaSubtitle')}
         buttonLabel={t('reportNeed')}
       />
+
+      <PartnersFunding />
     </div>
   );
 }

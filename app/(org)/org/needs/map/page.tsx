@@ -14,6 +14,7 @@ import { NeedsMapLoadingSkeleton, TableLoadingSkeleton } from '@/components/shar
 import { useOrgNeeds, useOrgNeedsMap } from '@/lib/api/needs';
 import { formatStatusLabel, NEED_STATUS_LABEL_KEYS } from '@/lib/formatting/status-label';
 import type { NeedReport } from '@/types/api';
+import { useRegionName } from '@/lib/i18n/region-name';
 
 const statusVariant: Record<string, 'neutral' | 'warning' | 'success' | 'danger'> = {
   NEW: 'neutral',
@@ -24,6 +25,7 @@ const statusVariant: Record<string, 'neutral' | 'warning' | 'success' | 'danger'
 
 export default function OrgNeedsMapPage() {
   const t = useTranslations('org.needs');
+  const regionName = useRegionName();
   const tStatuses = useTranslations('admin.statuses');
   const [selectedRegionId, setSelectedRegionId] = useState('');
   const [search, setSearch] = useState('');
@@ -66,7 +68,7 @@ export default function OrgNeedsMapPage() {
       ),
     },
     {
-      accessorFn: (row) => row.region?.name || '—',
+      accessorFn: (row) => (row.region ? regionName(row.region) : '—'),
       id: 'region',
       header: t('map.columns.location'),
     },
@@ -112,14 +114,14 @@ export default function OrgNeedsMapPage() {
       <h1 className="text-2xl font-bold">{t('map.title')}</h1>
       <p className="mt-2 text-[#6b7280]">
         {selectedRegion
-          ? t('map.showingRegion', { region: selectedRegion.regionName })
+          ? t('map.showingRegion', { region: regionName({ name: selectedRegion.regionName, svgPathId: selectedRegion.svgPathId }) })
           : t('map.showingAll')}
       </p>
 
       {selectedRegion ? (
         <div className="mt-3 flex items-center gap-2">
           <span className="inline-flex items-center rounded-full bg-emerald-50 px-3 py-1 text-xs font-medium text-emerald-700">
-            {t('map.regionBadge', { region: selectedRegion.regionName })}
+            {t('map.regionBadge', { region: regionName({ name: selectedRegion.regionName, svgPathId: selectedRegion.svgPathId }) })}
           </span>
           <button
             onClick={() => {
@@ -177,7 +179,7 @@ export default function OrgNeedsMapPage() {
                           : 'hover:bg-gray-50'
                       }`}
                     >
-                      <span>{entry.regionName}</span>
+                      <span>{regionName({ name: entry.regionName, svgPathId: entry.svgPathId })}</span>
                       <span className="font-semibold">{entry.count}</span>
                     </button>
                   ))}

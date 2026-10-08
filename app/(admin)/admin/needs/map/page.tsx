@@ -17,6 +17,7 @@ import { useAdminNeeds, useAdminNeedsMap } from '@/lib/api/needs';
 import { useNeedTags } from '@/lib/api/taxonomy';
 import { formatStatusLabel, NEED_STATUS_LABEL_KEYS } from '@/lib/formatting/status-label';
 import type { NeedReport } from '@/types/api';
+import { useRegionName } from '@/lib/i18n/region-name';
 
 const statusVariant: Record<string, 'neutral' | 'warning' | 'success' | 'danger'> = {
   NEW: 'neutral',
@@ -28,6 +29,7 @@ const statusVariant: Record<string, 'neutral' | 'warning' | 'success' | 'danger'
 export default function AdminNeedsMapPage() {
   const router = useRouter();
   const t = useTranslations('admin.needs');
+  const regionName = useRegionName();
   const tMap = useTranslations('admin.needs.map');
   const tStatuses = useTranslations('admin.statuses');
   const [selectedRegionId, setSelectedRegionId] = useState('');
@@ -98,7 +100,7 @@ export default function AdminNeedsMapPage() {
       ),
     },
     {
-      accessorFn: (row) => row.region?.name || '—',
+      accessorFn: (row) => (row.region ? regionName(row.region) : '—'),
       id: 'region',
       header: tMap('columnLocation'),
     },
@@ -141,14 +143,14 @@ export default function AdminNeedsMapPage() {
       <h1 className="text-2xl font-bold">{tMap('title')}</h1>
       <p className="mt-2 text-[#6b7280]">
         {selectedRegion
-          ? tMap('showingRegion', { region: selectedRegion.regionName })
+          ? tMap('showingRegion', { region: regionName({ name: selectedRegion.regionName, svgPathId: selectedRegion.svgPathId }) })
           : tMap('showingAll')}
       </p>
 
       {selectedRegion ? (
         <div className="mt-3 flex items-center gap-2">
           <span className="inline-flex items-center rounded-full bg-[#fef3e2] px-3 py-1 text-xs font-medium text-[#E8922D]">
-            {tMap('regionChip', { region: selectedRegion.regionName })}
+            {tMap('regionChip', { region: regionName({ name: selectedRegion.regionName, svgPathId: selectedRegion.svgPathId }) })}
           </span>
           <button
             onClick={() => {
@@ -206,7 +208,7 @@ export default function AdminNeedsMapPage() {
                           : 'text-[#6b7280] hover:bg-[#f5f5f4]'
                       }`}
                     >
-                      <span>{entry.regionName}</span>
+                      <span>{regionName({ name: entry.regionName, svgPathId: entry.svgPathId })}</span>
                       <span className="font-semibold">{entry.count}</span>
                     </button>
                   ))}
@@ -314,7 +316,7 @@ export default function AdminNeedsMapPage() {
                 title: row.title || row.description.slice(0, 60),
                 badges: <Badge variant={statusVariant[row.status] || 'neutral'}>{NEED_STATUS_LABEL_KEYS[row.status] ? tStatuses(NEED_STATUS_LABEL_KEYS[row.status]) : formatStatusLabel(row.status)}</Badge>,
                 fields: [
-                  { label: tMap('columnLocation'), value: row.region?.name || '—' },
+                  { label: tMap('columnLocation'), value: row.region ? regionName(row.region) : '—' },
                   { label: tMap('columnTags'), value: row.tags.map((tag) => tag.needTag.name).join(', ') || '—' },
                   { label: t('columns.submitted'), value: new Date(row.createdAt).toLocaleDateString() },
                 ],

@@ -16,6 +16,7 @@ import {
 } from '@/lib/api/needs';
 import { formatStatusLabel, NEED_STATUS_LABEL_KEYS } from '@/lib/formatting/status-label';
 import type { NeedStatus } from '@/types/api';
+import { useRegionName } from '@/lib/i18n/region-name';
 
 const statusVariant: Record<NeedStatus, 'neutral' | 'warning' | 'success' | 'danger'> = {
   NEW: 'neutral',
@@ -28,6 +29,7 @@ const STATUS_OPTION_VALUES: NeedStatus[] = ['IN_PROGRESS', 'SOLVED', 'CLOSED'];
 
 export default function OrgNeedDetailPage() {
   const t = useTranslations('org.needs');
+  const regionName = useRegionName();
   const tStatuses = useTranslations('admin.statuses');
   const { id } = useParams<{ id: string }>();
   const { data: need, isLoading } = useOrgNeed(id);
@@ -131,7 +133,7 @@ export default function OrgNeedDetailPage() {
                 <div>{t('detail.assigneeLabel')} {need.assignedOrganisation?.name || t('detail.unassigned')}</div>
                 <div>{t('detail.submittedLabel')} {new Date(need.createdAt).toLocaleString()}</div>
                 <div>{t('detail.lastUpdatedLabel')} {new Date(need.updatedAt).toLocaleString()}</div>
-                <div>{t('detail.regionLabel')} {need.region?.name || t('detail.regionNotProvided')}</div>
+                <div>{t('detail.regionLabel')} {need.region ? regionName(need.region) : t('detail.regionNotProvided')}</div>
               </div>
 
               <div>

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useRef, useCallback } from 'react';
+import { useRegionName } from '@/lib/i18n/region-name';
 
 interface ArmeniaMapProps {
   regionCounts?: Record<string, number>;
@@ -121,6 +122,7 @@ export function ArmeniaMap({
   densityMode = false,
 }: ArmeniaMapProps) {
   const svgRef = useRef<SVGSVGElement>(null);
+  const regionName = useRegionName();
   const [hoveredRegion, setHoveredRegion] = useState<string | null>(null);
   const [focusedRegion, setFocusedRegion] = useState<string | null>(null);
   const [tooltipPos, setTooltipPos] = useState<{ x: number; y: number } | null>(null);
@@ -221,7 +223,7 @@ export function ArmeniaMap({
             const isSelected = selectedRegionId === region.id;
             const hasCount = count > 0;
             const countLabel = count === 1 ? countLabelSingular : countLabelPlural;
-            const ariaLabel = `${region.name}: ${count} ${countLabel}`;
+            const ariaLabel = `${regionName({ name: region.name, svgPathId: region.id })}: ${count} ${countLabel}`;
 
             return (
               <g
@@ -266,7 +268,7 @@ export function ArmeniaMap({
           className="pointer-events-none absolute z-10 -translate-x-1/2 -translate-y-full rounded-lg bg-[#1f2937] px-3 py-2 text-sm text-white shadow-lg"
           style={finalTooltipStyle}
         >
-          <div className="font-semibold">{tooltipData.name}</div>
+          <div className="font-semibold">{regionName({ name: tooltipData.name, svgPathId: tooltipData.id })}</div>
           <div className="text-xs text-[#9ca3af]">
             {tooltipCount} {tooltipCount === 1 ? countLabelSingular : countLabelPlural}
           </div>

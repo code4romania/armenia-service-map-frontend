@@ -21,6 +21,7 @@ import { useOrganisations } from '@/lib/api/organisations';
 import { useNeedTags } from '@/lib/api/taxonomy';
 import { formatStatusLabel, NEED_STATUS_LABEL_KEYS } from '@/lib/formatting/status-label';
 import type { NeedStatus } from '@/types/api';
+import { useRegionName } from '@/lib/i18n/region-name';
 
 const statusVariant: Record<NeedStatus, 'neutral' | 'warning' | 'success' | 'danger'> = {
   NEW: 'neutral',
@@ -47,6 +48,7 @@ export default function AdminNeedDetailPage() {
   const { id } = useParams<{ id: string }>();
   const router = useRouter();
   const t = useTranslations('admin.needs');
+  const regionName = useRegionName();
   const tForm = useTranslations('admin.needs.form');
   const tStatuses = useTranslations('admin.statuses');
   const tCommon = useTranslations('admin.common');
@@ -280,7 +282,7 @@ export default function AdminNeedDetailPage() {
               <AdminInset className="p-3 text-xs text-[#6b7280]">
                 <div>{tForm('submittedMeta', { date: new Date(need.createdAt).toLocaleString() })}</div>
                 <div>{tForm('lastUpdatedMeta', { date: new Date(need.updatedAt).toLocaleString() })}</div>
-                <div>{tForm('regionMeta', { region: need.region?.name || tForm('regionNotProvided') })}</div>
+                <div>{tForm('regionMeta', { region: need.region ? regionName(need.region) : tForm('regionNotProvided') })}</div>
               </AdminInset>
 
               <Button onClick={handleSaveSidebar} disabled={updateNeed.isPending || !hasSidebarChanges} className="w-full">
