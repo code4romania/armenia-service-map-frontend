@@ -9,7 +9,7 @@ import {
 } from '@heroicons/react/24/outline';
 import type { AdminSidebarMode } from '@/app/(admin)/layout';
 import { adminNav } from '@/components/admin/navigation';
-import { getBestActiveHref } from '@/lib/navigation/active-nav';
+import { getActiveNavHref } from '@/lib/navigation/active-nav';
 
 function SectionHeader({
   title,
@@ -66,9 +66,9 @@ function SidebarNav({
   const t = useTranslations('admin.sidebar');
   const isRail = mode === 'rail';
   const items = isRail ? adminNav.flatMap((section) => section.items) : [];
-  const activeHref = getBestActiveHref(
+  const activeHref = getActiveNavHref(
     pathname,
-    (isRail ? items : adminNav.flatMap((section) => section.items)).map((item) => item.href),
+    isRail ? items : adminNav.flatMap((section) => section.items),
   );
 
   if (isRail) {

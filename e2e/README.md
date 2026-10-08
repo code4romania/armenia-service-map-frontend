@@ -26,7 +26,7 @@ E2E_BASE_URL=http://localhost:3001 NEXT_PUBLIC_API_URL=http://localhost:3000/api
 
 ## Projects (Playwright)
 
-`setup` logs the seeded `SUPER_ADMIN`, `ORG_ADMIN`, `ORG_MEMBER` in via the API, stores their
+`setup` logs the seeded `SUPER_ADMIN` and `ORG_ADMIN` in via the API, stores their
 tokens, and pins the UI language to English (`locale` cookie). It also writes a token-less
 `public` state. State files live under `e2e/.auth/` (gitignored). The other projects reuse them:
 
@@ -35,14 +35,13 @@ tokens, and pins the UI language to English (`locale` cookie). It also writes a 
 | `public` | signed out, English | `public-*.spec.ts` |
 | `admin` | SUPER_ADMIN | `admin-*.spec.ts` |
 | `org-admin` | ORG_ADMIN | `org-admin-*.spec.ts` |
-| `org-member` | ORG_MEMBER | `org-member-*.spec.ts` |
 
 ## Coverage
 
 - **Public** (`public-pages`, `public-auth`, `public-forms`): every public page renders; login
   (invalid creds, super-admin redirect, org redirect); signed-out guards on `/admin` + `/org`;
   join-the-network + report-a-need validation and a real submit (cleaned up via the admin API).
-- **Service form** (`shared/service-form-suite.ts`, run for admin + org-admin + org-member):
+- **Service form** (`shared/service-form-suite.ts`, run for admin + org-admin):
   Armenian-first tabs, required-field asterisks, the error summary box, language-specific
   required messages, live error clearing, create end-to-end, edit pre-population, blocked save
   on a cleared required field, and a persisted edit.

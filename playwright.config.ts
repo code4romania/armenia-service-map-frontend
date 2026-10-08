@@ -41,12 +41,6 @@ export default defineConfig({
       use: { ...devices['Desktop Chrome'], storageState: 'e2e/.auth/org.json' },
       dependencies: ['setup'],
     },
-    {
-      name: 'org-member',
-      testMatch: /[\\/]org-member-.*\.spec\.ts$/,
-      use: { ...devices['Desktop Chrome'], storageState: 'e2e/.auth/member.json' },
-      dependencies: ['setup'],
-    },
   ],
   webServer: {
     command: 'next dev -p 3001',

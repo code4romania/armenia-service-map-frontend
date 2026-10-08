@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { type ColumnDef, type SortingState } from '@tanstack/react-table';
 import { DataTable } from '@/components/admin/data-table';
@@ -9,83 +8,78 @@ import { Pagination } from '@/components/admin/pagination';
 import { AdminPageHeader, AdminPanel, AdminToolbar } from '@/components/admin/admin-surface';
 import { AdminTabs } from '@/components/admin/admin-tabs';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import { TableSearchInput } from '@/components/ui/table-controls';
-import { useUsers } from '@/lib/api/users';
+import { useRestoreUser, useUsers } from '@/lib/api/users';
 import type { User } from '@/types/api';
 import { TableLoadingSkeleton } from '@/components/shared/loading-skeletons';
-import { USER_STATUS_LABEL_KEYS, formatStatusLabel } from '@/lib/formatting/status-label';
+import { USER_ROLE_LABEL_KEYS, formatStatusLabel } from '@/lib/formatting/status-label';
+import { getErrorMessage } from '@/lib/validation';
 
-const accountBadge: Record<User['status'], 'success' | 'warning' | 'danger'> = {
-  ACTIVE: 'success',
-  PENDING: 'warning',
-  SUSPENDED: 'danger',
-};
-
-/** Users are keyed by UUID; the table shows a short, stable prefix as the visible ID. */
-function shortId(id: string) {
-  return `#${id.slice(0, 6)}`;
-}
-
-function formatLastAccess(value: string | null) {
+function formatDate(value: string | null | undefined) {
   return value ? new Date(value).toLocaleString() : '—';
 }
 
-/** Platform (super admin) accounts. Organisation admins live under each organisation. */
-export default function UsersPage() {
-  const router = useRouter();
+/** Soft-deleted accounts of every role, with a one-click restore. */
+export default function DeletedUsersPage() {
   const t = useTranslations('admin.users');
   const tCols = useTranslations('admin.users.columns');
   const tCommon = useTranslations('admin.common');
-  const tStatuses = useTranslations('admin.statuses');
+  const tRoles = useTranslations('admin.users.roles');
   const [page, setPage] = useState(1);
   const [perPage, setPerPage] = useState(10);
   const [search, setSearch] = useState('');
-  const [sorting, setSorting] = useState<SortingState>([{ id: 'createdAt', desc: true }]);
+  const [sorting, setSorting] = useState<SortingState>([{ id: 'updatedAt', desc: true }]);
+  const [notice, setNotice] = useState<{ kind: 'success' | 'error'; message: string } | null>(null);
 
   const sortBy = sorting[0]?.id;
   const sortOrder = sorting[0]?.desc ? 'desc' : 'asc';
 
-  const { data, isLoading } = useUsers({ page, perPage, search, sortBy, sortOrder, role: 'SUPER_ADMIN' });
+  const { data, isLoading } = useUsers({ page, perPage, search, sortBy, sortOrder, deleted: true });
+  const restoreUser = useRestoreUser();
 
-  const statusLabel = (status: string) =>
-    USER_STATUS_LABEL_KEYS[status] ? tStatuses(USER_STATUS_LABEL_KEYS[status]) : formatStatusLabel(status);
-  const statusBadge = (status: User['status']) => (
-    <Badge variant={accountBadge[status]}>{statusLabel(status)}</Badge>
+  const roleLabel = (role: string) =>
+    USER_ROLE_LABEL_KEYS[role] ? tRoles(USER_ROLE_LABEL_KEYS[role]) : formatStatusLabel(role);
+
+  async function handleRestore(user: User) {
+    setNotice(null);
+    try {
+      await restoreUser.mutateAsync(user.id);
+      setNotice({ kind: 'success', message: t('restored') });
+    } catch (error) {
+      setNotice({ kind: 'error', message: getErrorMessage(error, t('actionFailed')) });
+    }
+  }
+
+  const restoreButton = (user: User) => (
+    <Button size="sm" variant="secondary" disabled={restoreUser.isPending} onClick={() => void handleRestore(user)}>
+      {t('restore')}
+    </Button>
   );
 
   const columns: ColumnDef<User, unknown>[] = [
-    {
-      accessorKey: 'id',
-      header: tCols('id'),
-      cell: ({ getValue }) => shortId(getValue() as string),
-    },
     { accessorKey: 'firstName', header: tCols('firstName'), enableSorting: true },
     { accessorKey: 'lastName', header: tCols('lastName'), enableSorting: true },
     { accessorKey: 'email', header: tCols('email'), enableSorting: true },
     {
-      accessorKey: 'status',
-      header: tCols('account'),
-      cell: ({ getValue }) => statusBadge(getValue() as User['status']),
+      accessorKey: 'role',
+      header: tCols('role'),
+      cell: ({ getValue }) => roleLabel(getValue() as string),
       enableSorting: true,
     },
     {
-      accessorKey: 'lastAccessAt',
-      header: tCols('lastAccess'),
-      cell: ({ getValue }) => formatLastAccess(getValue() as string | null),
-      enableSorting: true,
+      accessorKey: 'organisation',
+      header: tCols('organisation'),
+      cell: ({ row }) => row.original.organisation?.name ?? '—',
+    },
+    {
+      accessorKey: 'deletedAt',
+      header: tCols('deletedAt'),
+      cell: ({ getValue }) => formatDate(getValue() as string | null | undefined),
     },
     {
       id: 'actions',
       header: '',
-      cell: ({ row }) => (
-        <button
-          onClick={() => router.push(`/admin/users/${row.original.id}`)}
-          className="text-sm text-[#E8922D] hover:underline"
-        >
-          {tCommon('view')}
-        </button>
-      ),
+      cell: ({ row }) => restoreButton(row.original),
     },
   ];
 
@@ -100,7 +94,7 @@ export default function UsersPage() {
 
       <AdminTabs
         ariaLabel={t('tabsAriaLabel')}
-        active="adminUsers"
+        active="deletedUsers"
         tabs={[
           { id: 'organisations', label: t('tabs.organisations'), href: '/admin/organisations' },
           { id: 'adminUsers', label: t('tabs.adminUsers'), href: '/admin/users' },
@@ -109,9 +103,9 @@ export default function UsersPage() {
       />
 
       <AdminPanel className="mt-6 overflow-hidden">
-        <div className="flex items-center justify-between gap-4 border-b border-[#f0f0f0] px-5 py-4">
-          <h2 className="text-lg font-semibold text-[#111827]">{t('adminUsers')}</h2>
-          <Button onClick={() => router.push('/admin/users/new')}>{t('addAdminUser')}</Button>
+        <div className="border-b border-[#f0f0f0] px-5 py-4">
+          <h2 className="text-lg font-semibold text-[#111827]">{t('deletedUsers')}</h2>
+          <p className="mt-1 text-sm text-[#6b7280]">{t('deletedUsersDescription')}</p>
         </div>
 
         <AdminToolbar layout="compact-end">
@@ -124,6 +118,19 @@ export default function UsersPage() {
           />
         </AdminToolbar>
 
+        {notice ? (
+          <p
+            role={notice.kind === 'error' ? 'alert' : 'status'}
+            className={`mx-5 mt-4 rounded-md border px-3 py-2 text-sm ${
+              notice.kind === 'success'
+                ? 'border-emerald-200 bg-emerald-50 text-emerald-700'
+                : 'border-red-200 bg-red-50 text-red-700'
+            }`}
+          >
+            {notice.message}
+          </p>
+        ) : null}
+
         {isLoading ? (
           <div className="p-4">
             <TableLoadingSkeleton />
@@ -135,16 +142,15 @@ export default function UsersPage() {
               data={data?.data ?? []}
               sorting={sorting}
               onSortingChange={setSorting}
-              onRowClick={(row) => router.push(`/admin/users/${row.id}`)}
+              emptyLabel={t('noDeletedUsers')}
               mobileCard={(row) => ({
                 title: `${row.firstName} ${row.lastName}`.trim(),
-                badges: statusBadge(row.status),
                 fields: [
-                  { label: tCols('id'), value: shortId(row.id) },
                   { label: tCols('email'), value: row.email },
-                  { label: tCols('lastAccess'), value: formatLastAccess(row.lastAccessAt) },
+                  { label: tCols('role'), value: roleLabel(row.role) },
+                  { label: tCols('deletedAt'), value: formatDate(row.deletedAt) },
                 ],
-                action: <button type="button" onClick={() => router.push(`/admin/users/${row.id}`)} className="admin-link-button">{tCommon('view')}</button>,
+                action: restoreButton(row),
               })}
             />
             {data && (

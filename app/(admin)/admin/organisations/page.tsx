@@ -7,6 +7,7 @@ import { type ColumnDef, type SortingState } from '@tanstack/react-table';
 import { DataTable } from '@/components/admin/data-table';
 import { Pagination } from '@/components/admin/pagination';
 import { AdminPageHeader, AdminPanel, AdminToolbar } from '@/components/admin/admin-surface';
+import { AdminTabs } from '@/components/admin/admin-tabs';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { TableSearchInput } from '@/components/ui/table-controls';
@@ -27,12 +28,13 @@ const accountBadge: Record<Organisation['status'], 'success' | 'warning' | 'dang
 export default function OrganisationsPage() {
   const router = useRouter();
   const t = useTranslations('admin.organisations');
+  const tUsers = useTranslations('admin.users');
   const tCommon = useTranslations('admin.common');
   const tStatuses = useTranslations('admin.statuses');
   const [page, setPage] = useState(1);
   const [perPage, setPerPage] = useState(10);
   const [search, setSearch] = useState('');
-  const [sorting, setSorting] = useState<SortingState>([]);
+  const [sorting, setSorting] = useState<SortingState>([{ id: 'createdAt', desc: true }]);
 
   const sortBy = sorting[0]?.id;
   const sortOrder = sorting[0]?.desc ? 'desc' : 'asc';
@@ -85,6 +87,16 @@ export default function OrganisationsPage() {
         </div>
         <Button onClick={() => router.push('/admin/organisations/new')}>{t('addOrganisation')}</Button>
       </AdminPageHeader>
+
+      <AdminTabs
+        ariaLabel={tUsers('tabsAriaLabel')}
+        active="organisations"
+        tabs={[
+          { id: 'organisations', label: tUsers('tabs.organisations'), href: '/admin/organisations' },
+          { id: 'adminUsers', label: tUsers('tabs.adminUsers'), href: '/admin/users' },
+          { id: 'deletedUsers', label: tUsers('tabs.deletedUsers'), href: '/admin/users/deleted' },
+        ]}
+      />
 
       <AdminPanel className="mt-6 overflow-hidden">
         <div className="border-b border-[#f0f0f0] px-5 py-4">
