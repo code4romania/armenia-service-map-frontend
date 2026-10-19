@@ -44,7 +44,7 @@ export default function OrgServicesPage() {
       cell: ({ row }) => getLocalizedServiceContent(row.original, locale).title,
     },
     {
-      accessorFn: (row) => (row.region ? regionName(row.region) : t('allRegions')),
+      accessorFn: (row) => (row.regions.length ? row.regions.map(regionName).join(', ') : t('allRegions')),
       id: 'location',
       header: t('columns.location'),
       enableSorting: true,

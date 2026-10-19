@@ -74,7 +74,7 @@ export default function ServiceDetailPage() {
             </div>
             <div>
               <div className="text-sm font-medium text-[#6b7280]">{t('region')}</div>
-              <div className="mt-1">{service.region ? regionName(service.region) : t('allRegions')}</div>
+              <div className="mt-1">{service.regions.length ? service.regions.map(regionName).join(', ') : t('allRegions')}</div>
             </div>
             <div>
               <div className="text-sm font-medium text-[#6b7280]">{t('columns.availability')}</div>

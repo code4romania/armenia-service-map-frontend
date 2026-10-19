@@ -56,7 +56,7 @@ export default function PublicServiceDetailPage() {
       '@type': 'Organization',
       name: serviceOrgName(service),
     },
-    areaServed: service.region?.name || t('allRegions'),
+    areaServed: service.regions.length ? service.regions.map((region) => region.name) : t('allRegions'),
     url: `${SITE_URL}/services/${service.id}`,
   });
 
@@ -108,7 +108,7 @@ export default function PublicServiceDetailPage() {
 
           <div className="mt-6 grid gap-4 sm:grid-cols-2">
             <DetailCard label={t('organisation')} value={serviceOrgName(service)} />
-            <DetailCard label={t('region')} value={service.region ? regionName(service.region) : t('allRegions')} />
+            <DetailCard label={t('region')} value={service.regions.length ? service.regions.map(regionName).join(', ') : t('allRegions')} />
             {service.targetGroup.length > 0 ? (
               <DetailCard label={t('targetGroups')} value={service.targetGroup.map((name) => targetGroupName({ name })).join(', ')} />
             ) : null}

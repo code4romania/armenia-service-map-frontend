@@ -47,7 +47,11 @@ export async function fillRequiredServiceFields(
     await page.getByLabel('Organisation', { exact: true }).selectOption({ index: 1 });
   }
   await page.getByLabel('Title (Armenian)').fill(opts.title);
-  await page.getByLabel('Location', { exact: true }).selectOption({ index: 1 });
+  // Location is a multi-select; "Select all regions" makes the service nationwide.
+  const location = page.getByRole('button', { name: 'Location', exact: true });
+  await location.click();
+  await page.getByRole('button', { name: 'Select all regions' }).click();
+  await location.click();
 
   // Topics + target groups are the two scroll boxes, in order.
   const boxes = page.locator('div.max-h-36');
@@ -93,7 +97,7 @@ export async function createServiceViaApi(
     howToAccessHy: '<p>how to access (e2e)</p>',
     status: 'DRAFT',
     isAvailable: true,
-    regionId: regions[0]?.id,
+    regionIds: regions[0]?.id ? [regions[0].id] : [],
     topicIds: topics[0]?.id ? [topics[0].id] : [],
     targetGroupIds: groups[0]?.id ? [groups[0].id] : [],
   };

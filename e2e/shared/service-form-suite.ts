@@ -168,5 +168,51 @@ export function serviceFormSuite(role: ServiceFormRole) {
         });
       }
     });
+
+    test('saves several regions and lists them on the detail page', async ({ page, request }) => {
+      const { accessToken } = await login(request, role.credentials);
+      const organisationId = role.showsOrg ? await firstOrganisationId(request, accessToken) : undefined;
+      const regions: { id: string; name: string }[] = await request
+        .get(`${API_URL}/public/regions`)
+        .then((r) => r.json());
+      // The fixture starts in regions[0]; tick two more.
+      const fixture = await createServiceViaApi(request, {
+        token: accessToken,
+        apiServicesPath: role.apiServicesPath,
+        title: `[e2e] multi-region ${role.label} ${Date.now()}`,
+        organisationId,
+      });
+
+      try {
+        await page.goto(`${role.editRoutePrefix}${fixture.id}/edit`);
+        const location = page.getByRole('button', { name: 'Location', exact: true });
+        await expect(location).toHaveText(regions[0].name);
+        await location.click();
+        await page.getByRole('checkbox', { name: regions[1].name, exact: true }).check();
+        await page.getByRole('checkbox', { name: regions[2].name, exact: true }).check();
+        await location.click();
+        await page.getByRole('button', { name: 'Save changes' }).click();
+
+        await expect(page).toHaveURL(
+          new RegExp(`${escapeRegExp(role.serviceBasePath)}/${escapeRegExp(fixture.id)}(?!/edit)`),
+        );
+        for (const region of regions.slice(0, 3)) {
+          await expect(page.getByText(region.name, { exact: false }).first()).toBeVisible();
+        }
+
+        const detail = await request
+          .get(`${API_URL}${role.apiServicesPath}/${fixture.id}`, authHeaders(accessToken))
+          .then((r) => r.json());
+        expect(detail.regions.map((region: { id: string }) => region.id).sort()).toEqual(
+          regions.slice(0, 3).map((region) => region.id).sort(),
+        );
+      } finally {
+        await deleteServiceViaApi(request, {
+          token: accessToken,
+          apiServicesPath: role.apiServicesPath,
+          id: fixture.id,
+        });
+      }
+    });
   });
 }

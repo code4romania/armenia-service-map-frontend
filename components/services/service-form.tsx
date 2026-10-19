@@ -2,8 +2,10 @@
 
 import { useMemo, useRef, useState } from 'react';
 import { useTranslations } from 'next-intl';
+import { ChevronDownIcon } from '@heroicons/react/24/outline';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+import { MultiSelect } from '@/components/ui/multi-select';
 import { RichTextEditor } from '@/components/shared/rich-text-editor';
 import { usePublicRegions, usePublicTargetGroups, usePublicTopics } from '@/lib/api/services';
 import { useRegionName } from '@/lib/i18n/region-name';
@@ -12,7 +14,7 @@ import { useTopicName } from '@/lib/i18n/topic-name';
 import type { ServiceMutationInput } from '@/lib/api/services';
 import { getErrorMessage, mapErrorMessageToField, toPlainText } from '@/lib/validation';
 
-/** Sentinel select value meaning the service is available nationwide (persisted as `regionId: null`). */
+/** Sentinel `regionIds` entry meaning the service is available nationwide (persisted as `regionIds: []`). */
 export const ALL_REGIONS = 'all';
 
 export type ServiceFormState = {
@@ -29,7 +31,8 @@ export type ServiceFormState = {
   externalOrganisationName: string;
   status: 'DRAFT' | 'PUBLISHED';
   isAvailable: boolean;
-  regionId: string;
+  /** `[ALL_REGIONS]` = nationwide; empty = nothing chosen yet. */
+  regionIds: string[];
   topicIds: string[];
   targetGroupIds: string[];
   availabilityStart: string;
@@ -41,7 +44,7 @@ type FieldErrorKey =
   | 'shortDescription'
   | 'description'
   | 'howToAccess'
-  | 'regionId'
+  | 'regionIds'
   | 'organisationId'
   | 'externalOrganisationName'
   | 'topics'
@@ -65,7 +68,7 @@ const SERVER_ERROR_FIELD_PATTERNS: Array<{ field: FieldErrorKey; pattern: RegExp
   { field: 'title', pattern: /title/i },
   { field: 'shortDescription', pattern: /short.?description/i },
   { field: 'description', pattern: /description/i },
-  { field: 'regionId', pattern: /region|location/i },
+  { field: 'regionIds', pattern: /region|location/i },
   { field: 'availabilityStart', pattern: /start/i },
   { field: 'availabilityEnd', pattern: /end/i },
 ];
@@ -98,7 +101,7 @@ const EMPTY_FORM: ServiceFormState = {
   externalOrganisationName: '',
   status: 'DRAFT',
   isAvailable: true,
-  regionId: '',
+  regionIds: [],
   topicIds: [],
   targetGroupIds: [],
   availabilityStart: '',
@@ -190,9 +193,9 @@ export function ServiceForm({
         summary: t('validation.required', { field: t('howToAccessField', { language: armenian }) }),
       });
     }
-    if (!values.regionId) {
+    if (values.regionIds.length === 0) {
       const message = t('validation.required', { field: t('location') });
-      issues.push({ key: 'regionId', inline: message, summary: message });
+      issues.push({ key: 'regionIds', inline: message, summary: message });
     }
     if (showOrganisationField) {
       if (values.isExternalOrganisation) {
@@ -243,6 +246,25 @@ export function ServiceForm({
     setSubmitError(null);
     reconcileErrors(next);
   };
+
+  // Nationwide is stored as the ALL_REGIONS sentinel but shown as every region ticked, so
+  // ticking the last region (or "select all") collapses back to nationwide.
+  const regionOptions = (regions ?? []).map((region) => ({ value: region.id, label: regionName(region) }));
+  const isAllRegions = form.regionIds.includes(ALL_REGIONS);
+  const selectedRegionIds = isAllRegions ? regionOptions.map((option) => option.value) : form.regionIds;
+
+  const handleRegionsChange = (next: string[]) => {
+    const coversAll = regionOptions.length > 0 && next.length === regionOptions.length;
+    updateField('regionIds', coversAll ? [ALL_REGIONS] : next);
+  };
+
+  const regionsTriggerLabel = () =>
+    isAllRegions
+      ? t('allRegions')
+      : regionOptions
+          .filter((option) => form.regionIds.includes(option.value))
+          .map((option) => option.label)
+          .join(', ');
 
   const handleExternalToggle = (checked: boolean) => {
     const next: ServiceFormState = {
@@ -298,7 +320,7 @@ export function ServiceForm({
             : undefined,
         status: form.status,
         isAvailable: form.isAvailable,
-        regionId: form.regionId === ALL_REGIONS ? null : form.regionId || undefined,
+        regionIds: isAllRegions ? [] : form.regionIds,
         targetGroupIds: form.targetGroupIds,
         topicIds: form.topicIds,
         availabilityStart: form.availabilityStart || undefined,
@@ -470,21 +492,19 @@ export function ServiceForm({
               {t('location')}
               {requiredMark}
             </label>
-            <select
+            <MultiSelect
               aria-label={t('location')}
-              value={form.regionId}
-              onChange={(event) => updateField('regionId', event.target.value)}
-              className={selectClasses}
-            >
-              <option value="">{t('whereAvailable')}</option>
-              <option value={ALL_REGIONS}>{t('allRegions')}</option>
-              {regions?.map((region) => (
-                <option key={region.id} value={region.id}>
-                  {regionName(region)}
-                </option>
-              ))}
-            </select>
-            {errorMap.regionId ? <p className="mt-1 text-xs text-red-600">{errorMap.regionId}</p> : null}
+              options={regionOptions}
+              selected={selectedRegionIds}
+              onChange={handleRegionsChange}
+              placeholder={t('whereAvailable')}
+              selectedLabel={regionsTriggerLabel}
+              selectAllLabel={t('selectAllRegions')}
+              clearAllLabel={t('clearRegions')}
+              triggerClassName={`${selectClasses} pr-9`}
+              chevron={<ChevronDownIcon className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#6a7282]" />}
+            />
+            {errorMap.regionIds ? <p className="mt-1 text-xs text-red-600">{errorMap.regionIds}</p> : null}
           </div>
         </div>
 
