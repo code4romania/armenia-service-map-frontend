@@ -171,7 +171,7 @@ export default function HomePage() {
               <article key={service.id} className="relative flex flex-col rounded-2xl border border-[#e5e7eb] bg-white p-7 shadow-lg transition-all hover:-translate-y-0.5 hover:border-[#155dfc]/40 hover:shadow-xl">
                 <div className="flex items-center gap-2 text-sm text-[#4a5565]">
                   <MapPinIcon />
-                  <span>{service.region ? regionName(service.region) : t('anywhereInArmenia')}</span>
+                  <span>{service.regions.length ? service.regions.map(regionName).join(', ') : t('anywhereInArmenia')}</span>
                 </div>
                 <h3 className="mt-4 text-xl font-semibold text-[#101828]">{content.title}</h3>
                 <p className="mt-4 flex-1 text-sm leading-relaxed text-[#4a5565] line-clamp-4">
