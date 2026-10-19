@@ -254,6 +254,8 @@
     "location": "Մարզ",
     "whereAvailable": "Որտեղ է հասանելի",
     "allRegions": "Բոլոր մարզերը",
+    "selectAllRegions": "Ընտրել բոլոր մարզերը",
+    "clearRegions": "Մաքրել ընտրությունը",
     "topics": "Թեմաներ",
     "targetGroups": "Թիրախային խմբեր",
     "startDate": "Սկզբի ամսաթիվ",

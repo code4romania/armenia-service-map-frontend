@@ -71,7 +71,7 @@ export default function OrgServiceDetailPage() {
           <div className="grid grid-cols-1 gap-x-6 gap-y-4 md:grid-cols-2">
             <div>
               <div className="text-sm font-medium text-[#6b7280]">{t('detail.region')}</div>
-              <div className="mt-1">{service.region ? regionName(service.region) : t('allRegions')}</div>
+              <div className="mt-1">{service.regions.length ? service.regions.map(regionName).join(', ') : t('allRegions')}</div>
             </div>
             <div>
               <div className="text-sm font-medium text-[#6b7280]">{t('detail.availability')}</div>

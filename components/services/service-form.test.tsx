@@ -20,7 +20,11 @@ vi.mock('next-intl', () => ({
 vi.mock('@/lib/api/services', () => ({
   usePublicTopics: () => ({ data: [{ id: 'topic-1', name: 'Topic 1', children: [] }] }),
   usePublicRegions: () => ({
-    data: [{ id: 'region-1', name: 'Yerevan', slug: 'yerevan', svgPathId: 'p1' }],
+    data: [
+      { id: 'region-1', name: 'Yerevan', slug: 'yerevan', svgPathId: 'p1' },
+      { id: 'region-2', name: 'Shirak', slug: 'shirak', svgPathId: 'p2' },
+      { id: 'region-3', name: 'Lori', slug: 'lori', svgPathId: 'p3' },
+    ],
   }),
   usePublicTargetGroups: () => ({ data: [{ id: 'tg-1', name: 'TG 1' }] }),
 }));
@@ -30,6 +34,13 @@ vi.mock('@/components/shared/rich-text-editor', () => ({
     <textarea aria-label="rich-text-editor" value={content} onChange={(event) => onChange(event.target.value)} />
   ),
 }));
+
+// Opens the location multi-select, ticks each named region, then closes it again.
+async function pickRegions(user: ReturnType<typeof userEvent.setup>, names: string[]) {
+  await user.click(screen.getByLabelText('location'));
+  for (const name of names) await user.click(screen.getByLabelText(name));
+  await user.click(screen.getByLabelText('location'));
+}
 
 // Fills every required field on the Armenian tab. Pass `skip` to leave one field empty so a
 // test can prove that field is the sole blocker.
@@ -42,7 +53,7 @@ async function fillAllRequired(
   await user.type(editors[0], 'short');
   await user.type(editors[1], 'desc');
   await user.type(editors[2], 'access');
-  if (!skip.location) await user.selectOptions(screen.getByLabelText('location'), 'region-1');
+  if (!skip.location) await pickRegions(user, ['Yerevan']);
   if (!skip.topics) await user.click(screen.getByLabelText('Topic 1'));
   if (!skip.targetGroups) await user.click(screen.getByLabelText('TG 1'));
   if (!skip.dates) {
@@ -189,14 +200,12 @@ describe('ServiceForm', () => {
     await user.click(screen.getByText('Create service'));
     expect(onSubmit).not.toHaveBeenCalled();
 
-    await user.selectOptions(screen.getByLabelText('location'), 'region-1');
+    await pickRegions(user, ['Yerevan']);
     await user.click(screen.getByText('Create service'));
     expect(onSubmit).toHaveBeenCalled();
   });
 
-  it('offers "All regions" as a location and submits it as a null regionId', async () => {
-    const onSubmit = vi.fn().mockResolvedValue(undefined);
-    const user = userEvent.setup();
+  function renderCreate(onSubmit = vi.fn().mockResolvedValue(undefined)) {
     render(
       <ServiceForm
         showOrganisationField={false}
@@ -206,21 +215,75 @@ describe('ServiceForm', () => {
         onSubmit={onSubmit}
       />,
     );
+    return onSubmit;
+  }
+
+  it('submits several selected regions as regionIds', async () => {
+    const user = userEvent.setup();
+    const onSubmit = renderCreate();
 
     await fillAllRequired(user, { location: true });
-    await user.selectOptions(screen.getByLabelText('location'), ALL_REGIONS);
-    expect(screen.getByRole('option', { name: 'allRegions' })).toBeInTheDocument();
+    await pickRegions(user, ['Yerevan', 'Lori']);
+    expect(screen.getByLabelText('location')).toHaveTextContent('Yerevan, Lori');
     await user.click(screen.getByText('Create service'));
 
-    expect(onSubmit).toHaveBeenCalledTimes(1);
-    expect(onSubmit.mock.calls[0][0]).toMatchObject({ regionId: null });
+    expect(onSubmit.mock.calls[0][0]).toMatchObject({ regionIds: ['region-1', 'region-3'] });
   });
 
-  it('pre-selects "All regions" in edit mode when the service has no region', () => {
+  it('submits "select all regions" as a nationwide service (empty regionIds)', async () => {
+    const user = userEvent.setup();
+    const onSubmit = renderCreate();
+
+    await fillAllRequired(user, { location: true });
+    await user.click(screen.getByLabelText('location'));
+    await user.click(screen.getByText('selectAllRegions'));
+    expect(screen.getByLabelText('location')).toHaveTextContent('allRegions');
+    await user.click(screen.getByText('Create service'));
+
+    expect(onSubmit.mock.calls[0][0]).toMatchObject({ regionIds: [] });
+  });
+
+  it('treats ticking every region one by one as nationwide', async () => {
+    const user = userEvent.setup();
+    const onSubmit = renderCreate();
+
+    await fillAllRequired(user, { location: true });
+    await pickRegions(user, ['Yerevan', 'Shirak', 'Lori']);
+    expect(screen.getByLabelText('location')).toHaveTextContent('allRegions');
+    await user.click(screen.getByText('Create service'));
+
+    expect(onSubmit.mock.calls[0][0]).toMatchObject({ regionIds: [] });
+  });
+
+  it('pre-selects every region in edit mode for a nationwide service, and unticking one narrows it', async () => {
+    const onSubmit = vi.fn().mockResolvedValue(undefined);
+    const user = userEvent.setup();
     render(
       <ServiceForm
         mode="edit"
-        initialValues={{ ...EDIT_INITIAL, regionId: ALL_REGIONS }}
+        initialValues={{ ...EDIT_INITIAL, regionIds: [ALL_REGIONS] }}
+        showOrganisationField={false}
+        isSubmitting={false}
+        submitLabel="Save changes"
+        onCancel={vi.fn()}
+        onSubmit={onSubmit}
+      />,
+    );
+
+    expect(screen.getByLabelText('location')).toHaveTextContent('allRegions');
+    await user.click(screen.getByLabelText('location'));
+    for (const name of ['Yerevan', 'Shirak', 'Lori']) expect(screen.getByLabelText(name)).toBeChecked();
+
+    await user.click(screen.getByLabelText('Shirak'));
+    await user.click(screen.getByText('Save changes'));
+    expect(onSubmit.mock.calls[0][0]).toMatchObject({ regionIds: ['region-1', 'region-3'] });
+  });
+
+  it('pre-populates several regions in edit mode', () => {
+    render(
+      <ServiceForm
+        mode="edit"
+        initialValues={{ ...EDIT_INITIAL, regionIds: ['region-1', 'region-2'] }}
         showOrganisationField={false}
         isSubmitting={false}
         submitLabel="Save changes"
@@ -229,7 +292,7 @@ describe('ServiceForm', () => {
       />,
     );
 
-    expect(screen.getByLabelText('location')).toHaveValue(ALL_REGIONS);
+    expect(screen.getByLabelText('location')).toHaveTextContent('Yerevan, Shirak');
   });
 
   it('requires topics and target groups but not dates', async () => {
@@ -431,7 +494,7 @@ describe('ServiceForm', () => {
     shortDescriptionHy: '<p>short hy</p>',
     descriptionHy: '<p>desc hy</p>',
     howToAccessHy: '<p>access hy</p>',
-    regionId: 'region-1',
+    regionIds: ['region-1'],
     topicIds: ['topic-1'],
     targetGroupIds: ['tg-1'],
     availabilityStart: '2026-01-01',

@@ -4,7 +4,7 @@ import PublicServiceDetailPage from '@/app/(public)/services/[id]/page';
 
 const serviceState = {
   availabilityState: 'AVAILABLE' as string,
-  region: null as { id: string; name: string } | null,
+  regions: [] as { id: string; name: string }[],
   targetGroup: [] as string[],
 };
 
@@ -41,7 +41,7 @@ vi.mock('@/lib/api/services', () => ({
     data: {
       id: 's1',
       organisation: { id: 'o1', name: 'Org' },
-      region: serviceState.region,
+      regions: serviceState.regions,
       topics: [],
       targetGroup: serviceState.targetGroup,
       availabilityStart: null,
@@ -54,7 +54,7 @@ vi.mock('@/lib/api/services', () => ({
 describe('PublicServiceDetailPage availability badge', () => {
   beforeEach(() => {
     serviceState.availabilityState = 'AVAILABLE';
-    serviceState.region = null;
+    serviceState.regions = [];
   });
 
   it('renders the Available badge for AVAILABLE state', () => {
@@ -78,16 +78,25 @@ describe('PublicServiceDetailPage availability badge', () => {
 
 describe('PublicServiceDetailPage region', () => {
   beforeEach(() => {
-    serviceState.region = null;
+    serviceState.regions = [];
   });
 
   it('localises the region name even though the nested region has no svgPathId', () => {
-    serviceState.region = { id: 'r1', name: 'Vayots Dzor' };
+    serviceState.regions = [{ id: 'r1', name: 'Vayots Dzor' }];
     render(<PublicServiceDetailPage />);
     expect(screen.getByText('regions.vayotsDzor')).toBeInTheDocument();
   });
 
-  it('falls back to the all-regions label when the service has no region', () => {
+  it('lists every region of a multi-region service', () => {
+    serviceState.regions = [
+      { id: 'r1', name: 'Lori' },
+      { id: 'r2', name: 'Vayots Dzor' },
+    ];
+    render(<PublicServiceDetailPage />);
+    expect(screen.getByText('regions.lori, regions.vayotsDzor')).toBeInTheDocument();
+  });
+
+  it('falls back to the all-regions label when the service has no regions', () => {
     render(<PublicServiceDetailPage />);
     expect(screen.getByText('allRegions')).toBeInTheDocument();
   });

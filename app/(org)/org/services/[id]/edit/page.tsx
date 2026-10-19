@@ -31,7 +31,7 @@ export default function EditOrgServicePage() {
         howToAccess: service.howToAccess ?? '',
         howToAccessHy: service.howToAccessHy ?? '',
         status: service.status,
-        regionId: service.regionId ?? ALL_REGIONS,
+        regionIds: service.regions.length ? service.regions.map((region) => region.id) : [ALL_REGIONS],
         isAvailable: service.isAvailable,
         targetGroupIds: service.targetGroups.map((entry) => entry.targetGroup.id),
         topicIds: service.topics.map((entry) => entry.topic.id),
