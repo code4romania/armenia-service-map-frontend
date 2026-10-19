@@ -244,7 +244,6 @@ export interface Service {
   howToAccessHy: string | null;
   organisationId: string | null;
   externalOrganisationName?: string | null;
-  regionId: string | null;
   status: 'DRAFT' | 'PUBLISHED';
   isAvailable: boolean;
   availabilityState: 'AVAILABLE' | 'AVAILABLE_SOON' | 'UNAVAILABLE';
@@ -255,7 +254,8 @@ export interface Service {
   createdAt: string;
   updatedAt: string;
   organisation?: { id: string; name: string } | null;
-  region: { id: string; name: string } | null;
+  /** Sorted by name; empty = available in all regions. */
+  regions: { id: string; name: string }[];
   topics: ServiceTopic[];
 }
 

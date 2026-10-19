@@ -70,7 +70,7 @@ export default function AdminServicesPage() {
         ),
     },
     {
-      accessorFn: (row) => (row.region ? regionName(row.region) : t('allRegions')),
+      accessorFn: (row) => (row.regions.length ? row.regions.map(regionName).join(', ') : t('allRegions')),
       id: 'location',
       header: t('columns.location'),
       enableSorting: true,
@@ -207,7 +207,7 @@ export default function AdminServicesPage() {
                         serviceOrgName(row)
                       ),
                   },
-                  { label: t('columns.location'), value: row.region ? regionName(row.region) : t('allRegions') },
+                  { label: t('columns.location'), value: row.regions.length ? row.regions.map(regionName).join(', ') : t('allRegions') },
                   { label: t('columns.targetGroup'), value: row.targetGroups?.map((item) => targetGroupName(item.targetGroup)).join(', ') || '—' },
                   { label: t('columns.topics'), value: row.topics?.length ? `${row.topics[0].topic.name}${row.topics.length > 1 ? ` +${row.topics.length - 1}` : ''}` : '—' },
                   { label: t('columns.lastUpdated'), value: new Date(row.updatedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) },

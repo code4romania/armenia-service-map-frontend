@@ -23,8 +23,8 @@ export interface ServiceMutationInput {
   howToAccessHy: string;
   organisationId?: string;
   externalOrganisationName?: string | null;
-  /** `null` = available in all regions. */
-  regionId?: string | null;
+  /** Empty = available in all regions. */
+  regionIds?: string[];
   isAvailable?: boolean;
   status?: 'DRAFT' | 'PUBLISHED';
   availabilityStart?: string;
