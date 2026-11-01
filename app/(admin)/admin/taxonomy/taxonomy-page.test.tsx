@@ -7,8 +7,12 @@ vi.mock('next/navigation', () => ({
 }));
 
 vi.mock('next-intl', () => ({
-  useTranslations: () => (key: string, values?: Record<string, string | number>) =>
-    values ? `${key}:${Object.values(values).join(',')}` : key,
+  useTranslations: () =>
+    Object.assign(
+      (key: string, values?: Record<string, string | number>) =>
+        values ? `${key}:${Object.values(values).join(',')}` : key,
+      { has: () => false },
+    ),
 }));
 
 vi.mock('@/lib/api/taxonomy', () => ({

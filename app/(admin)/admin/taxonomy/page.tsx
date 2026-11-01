@@ -14,6 +14,7 @@ import { Badge } from '@/components/ui/badge';
 import { TableSearchInput } from '@/components/ui/table-controls';
 import { useTopics, useNeedTags, useTargetGroups } from '@/lib/api/taxonomy';
 import { useTranslations } from 'next-intl';
+import { useTopicName } from '@/lib/i18n/topic-name';
 import type { NeedTag, TargetGroup, Topic } from '@/types/api';
 
 type Tab = 'topics' | 'need-tags' | 'target-groups';
@@ -57,10 +58,11 @@ function TopicsSection() {
   const sortBy = sorting[0]?.id;
   const sortOrder = sorting[0]?.desc ? 'desc' : 'asc';
   const { data, isLoading } = useTopics({ page, perPage, search, sortBy, sortOrder });
+  const topicName = useTopicName();
 
   const columns: ColumnDef<Topic, unknown>[] = [
     { accessorKey: 'id', header: t('columns.id'), enableSorting: false },
-    { accessorKey: 'name', header: t('columns.topics'), enableSorting: true },
+    { accessorKey: 'name', header: t('columns.topics'), enableSorting: true, cell: ({ row }) => topicName(row.original) },
     {
       accessorFn: (row) => row._count.services,
       id: 'usage',
@@ -125,7 +127,7 @@ function TopicsSection() {
             onRowClick={(row) => router.push(`/admin/taxonomy/topics/${row.id}`)}
             mobileCard={(row) => ({
               eyebrow: row.id,
-              title: row.name,
+              title: topicName(row),
               badges: (
                 <Badge variant={row.status === 'ACTIVE' ? 'success' : 'neutral'}>
                   {row.status === 'ACTIVE' ? tStatuses('active') : tStatuses('inactive')}
