@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useTranslations, useLocale } from 'next-intl';
 import { type ColumnDef, type SortingState } from '@tanstack/react-table';
 import { getLocalizedServiceContent } from '@/lib/i18n/service-content';
+import { useTopicName } from '@/lib/i18n/topic-name';
 import { DataTable } from '@/components/admin/data-table';
 import { Pagination } from '@/components/admin/pagination';
 import { AdminPageHeader, AdminPanel, AdminToolbar } from '@/components/admin/admin-surface';
@@ -24,6 +25,7 @@ export default function AdminServicesPage() {
   const t = useTranslations('admin.services');
   const regionName = useRegionName();
   const targetGroupName = useTargetGroupName();
+  const topicName = useTopicName();
   const tStatus = useTranslations('admin.statuses');
   const tCommon = useTranslations('admin.common');
   const locale = useLocale();
@@ -115,7 +117,7 @@ export default function AdminServicesPage() {
         if (!firstTopic) return null;
         return (
           <span className="text-sm font-medium text-[#E8922D]">
-            {firstTopic.name}
+            {topicName(firstTopic)}
           </span>
         );
       },
@@ -209,7 +211,7 @@ export default function AdminServicesPage() {
                   },
                   { label: t('columns.location'), value: row.regions.length ? row.regions.map(regionName).join(', ') : t('allRegions') },
                   { label: t('columns.targetGroup'), value: row.targetGroups?.map((item) => targetGroupName(item.targetGroup)).join(', ') || '—' },
-                  { label: t('columns.topics'), value: row.topics?.length ? `${row.topics[0].topic.name}${row.topics.length > 1 ? ` +${row.topics.length - 1}` : ''}` : '—' },
+                  { label: t('columns.topics'), value: row.topics?.length ? `${topicName(row.topics[0].topic)}${row.topics.length > 1 ? ` +${row.topics.length - 1}` : ''}` : '—' },
                   { label: t('columns.lastUpdated'), value: new Date(row.updatedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) },
                 ],
                 action: <button type="button" onClick={() => router.push(`/admin/services/${row.id}`)} className="admin-link-button">{tCommon('view')}</button>,
