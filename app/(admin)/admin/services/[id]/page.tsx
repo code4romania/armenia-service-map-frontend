@@ -12,6 +12,7 @@ import { getLocalizedServiceContent } from '@/lib/i18n/service-content';
 import { serviceOrgName } from '@/lib/services/org-name';
 import { useRegionName } from '@/lib/i18n/region-name';
 import { useTargetGroupName } from '@/lib/i18n/target-group-name';
+import { useTopicName } from '@/lib/i18n/topic-name';
 
 export default function ServiceDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -20,6 +21,7 @@ export default function ServiceDetailPage() {
   const t = useTranslations('admin.services');
   const regionName = useRegionName();
   const targetGroupName = useTargetGroupName();
+  const topicName = useTopicName();
   const tStatus = useTranslations('admin.statuses');
   const tCommon = useTranslations('admin.common');
   const { data: service, isLoading } = useAdminService(id);
@@ -82,7 +84,7 @@ export default function ServiceDetailPage() {
             </div>
             <div>
               <div className="text-sm font-medium text-[#6b7280]">{t('topics')}</div>
-              <div className="mt-1 flex flex-wrap gap-1">{service.topics.map((entry) => <Badge key={entry.topic.id} variant="neutral">{entry.topic.name}</Badge>)}</div>
+              <div className="mt-1 flex flex-wrap gap-1">{service.topics.map((entry) => <Badge key={entry.topic.id} variant="neutral">{topicName(entry.topic)}</Badge>)}</div>
             </div>
             {service.targetGroup.length > 0 && (
               <div>
