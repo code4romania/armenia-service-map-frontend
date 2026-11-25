@@ -48,6 +48,8 @@ export interface TopicDetail extends Topic {
 export interface TopicFormPayload {
   name: string;
   slug?: string;
+  /** Key from `TOPIC_ICONS`; empty string clears the picked icon. */
+  icon?: string;
   status: 'ACTIVE' | 'INACTIVE';
   subtopics: Array<{
     id?: string;
@@ -62,6 +64,7 @@ export interface PublicTopic {
   id: string;
   name: string;
   slug: string;
+  icon?: string | null;
   children?: Array<{
     id: string;
     name: string;

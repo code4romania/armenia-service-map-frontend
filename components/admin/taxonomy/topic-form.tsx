@@ -5,6 +5,7 @@ import { useTranslations } from 'next-intl';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Switch } from '@/components/ui/switch';
+import { TOPIC_ICONS, TOPIC_ICON_KEYS, isTopicIconKey } from '@/lib/topic-icons';
 import type { TopicDetail, TopicFormPayload } from '@/types/api';
 
 type EditableSubtopic = {
@@ -30,6 +31,9 @@ export function TopicForm({
   const tStatuses = useTranslations('admin.statuses');
   const [name, setName] = useState(initialValue?.name ?? '');
   const [status, setStatus] = useState<'ACTIVE' | 'INACTIVE'>(initialValue?.status ?? 'ACTIVE');
+  const initialIcon = initialValue?.icon;
+  const [icon, setIcon] = useState<string>(isTopicIconKey(initialIcon) ? initialIcon : '');
+  const tIcons = useTranslations('admin.taxonomy.icons');
   const [subtopics, setSubtopics] = useState<EditableSubtopic[]>(
     initialValue?.children.map((child, index) => ({
       id: child.id,
@@ -107,6 +111,7 @@ export function TopicForm({
     setError(null);
     const payload: TopicFormPayload = {
       name: name.trim(),
+      icon,
       status,
       subtopics: subtopics.map((subtopic, index) => ({
         id: subtopic.id,
@@ -139,6 +144,34 @@ export function TopicForm({
             />
           </div>
         </div>
+
+        <fieldset className="mt-6">
+          <legend className="text-base font-semibold text-[#111827]">{t('form.icon')}</legend>
+          <p className="mt-1 text-sm text-[#6b7280]">{t('form.iconHint')}</p>
+          <div className="mt-3 flex flex-wrap gap-2">
+            {TOPIC_ICON_KEYS.map((key) => {
+              const Icon = TOPIC_ICONS[key];
+              const selected = icon === key;
+              const label = tIcons(key);
+
+              return (
+                <button
+                  key={key}
+                  type="button"
+                  aria-label={label}
+                  aria-pressed={selected}
+                  title={label}
+                  onClick={() => setIcon(selected ? '' : key)}
+                  className={`flex h-11 w-11 items-center justify-center rounded-lg border transition-colors ${
+                    selected ? 'border-[#E8922D] bg-[#fff4e8] text-[#E8922D]' : 'border-[#e5e7eb] text-[#4b5563] hover:border-[#d1d5db] hover:text-[#111827]'
+                  }`}
+                >
+                  <Icon className="h-5 w-5" aria-hidden="true" />
+                </button>
+              );
+            })}
+          </div>
+        </fieldset>
 
         <div className="mt-6">
           <h2 className="text-base font-semibold text-[#111827]">{t('form.subtopics')}</h2>
