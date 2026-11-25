@@ -1016,7 +1016,9 @@
     "peopleWithDisabilities": "Հաշմանդամություն ունեցող անձինք",
     "singleParents": "Միայնակ ծնողներ",
     "women": "Կանայք",
-    "youth": "Երիտասարդներ"
+    "youth": "Երիտասարդներ",
+    "lgbtPersons": "ԼԳԲՏ անձինք",
+    "peopleWithHiv": "ՄԻԱՎ ունեցող մարդիկ"
   },
   "account": {
     "title": "Իմ հաշիվը",

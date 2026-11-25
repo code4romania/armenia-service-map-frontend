@@ -1016,7 +1016,9 @@
     "peopleWithDisabilities": "People with Disabilities",
     "singleParents": "Single Parents",
     "women": "Women",
-    "youth": "Youth"
+    "youth": "Youth",
+    "lgbtPersons": "LGBT Persons",
+    "peopleWithHiv": "People with HIV"
   },
   "account": {
     "title": "My account",
