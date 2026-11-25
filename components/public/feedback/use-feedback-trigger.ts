@@ -8,6 +8,7 @@ import {
 } from './constants';
 
 const TICK_MS = 250;
+const MAX_DELTA_MS = 1_000;
 
 interface Options {
   enabled: boolean;
@@ -42,7 +43,11 @@ export function useFeedbackTrigger({ enabled, onTrigger }: Options) {
   const detailVisibleMsRef = useRef(0);
 
   const reportResultsInteraction = useCallback(() => {
-    resultsStartedRef.current = true;
+    if (!resultsStartedRef.current) {
+      resultsStartedRef.current = true;
+      // Scroll done before the first interaction still counts.
+      scrollMaxRef.current = Math.max(scrollMaxRef.current, window.scrollY);
+    }
   }, []);
   const reportDetailView = useCallback(() => {
     detailActiveRef.current = true;
@@ -62,9 +67,14 @@ export function useFeedbackTrigger({ enabled, onTrigger }: Options) {
     window.addEventListener('scroll', onScroll, { passive: true });
 
     let last = Date.now();
+    // Hidden tabs throttle timers; never credit the gap across a visibility change.
+    const onVisibility = () => {
+      last = Date.now();
+    };
+    document.addEventListener('visibilitychange', onVisibility);
     const tick = () => {
       const now = Date.now();
-      const delta = now - last;
+      const delta = Math.min(now - last, MAX_DELTA_MS);
       last = now;
       if (firedRef.current) return;
 
@@ -91,6 +101,7 @@ export function useFeedbackTrigger({ enabled, onTrigger }: Options) {
     return () => {
       window.clearInterval(id);
       window.removeEventListener('scroll', onScroll);
+      document.removeEventListener('visibilitychange', onVisibility);
     };
   }, [enabled]);
 

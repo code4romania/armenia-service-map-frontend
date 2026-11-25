@@ -78,6 +78,31 @@ describe('useFeedbackTrigger', () => {
     expect(onTrigger).toHaveBeenCalledTimes(1);
   });
 
+  it('does not credit time elapsed while hidden when timers were throttled', () => {
+    const { onTrigger, hook } = setup();
+    act(() => hook.result.current.reportResultsInteraction());
+    scrollTo(400);
+    advance(1_000);
+    act(() => setVisibility('hidden'));
+    // Clock jumps with no timer ticks (throttled hidden tab).
+    act(() => {
+      vi.setSystemTime(Date.now() + 60_000);
+      setVisibility('visible');
+    });
+    advance(1_000);
+    expect(onTrigger).not.toHaveBeenCalled();
+    advance(28_500);
+    expect(onTrigger).toHaveBeenCalledTimes(1);
+  });
+
+  it('counts scroll done before the first results interaction', () => {
+    const { onTrigger, hook } = setup();
+    scrollTo(350);
+    act(() => hook.result.current.reportResultsInteraction());
+    advance(30_500);
+    expect(onTrigger).toHaveBeenCalledTimes(1);
+  });
+
   it('fires after 15s on a detail view', () => {
     const { onTrigger, hook } = setup();
     act(() => hook.result.current.reportDetailView());
