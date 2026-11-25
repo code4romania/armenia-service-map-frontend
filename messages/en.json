@@ -465,7 +465,9 @@
           "topicRequired": "Service topic is required",
           "subtopicNameRequired": "Each sub-topic needs a name",
           "subtopicNamesUnique": "Sub-topic names must be unique"
-        }
+        },
+        "icon": "Icon",
+        "iconHint": "Shown on the homepage topic card."
       },
       "pages": {
         "newTopic": "Add service topic",
@@ -480,6 +482,27 @@
         "targetGroupNotFound": "Target group not found",
         "slug": "Slug",
         "servicesCount": "{count} services"
+      },
+      "icons": {
+        "legal": "Legal",
+        "health": "Health",
+        "mentalHealth": "Mental health / counselling",
+        "education": "Education",
+        "housing": "Housing",
+        "employment": "Employment",
+        "economy": "Economic integration",
+        "grants": "Grants / funding",
+        "business": "Entrepreneurship",
+        "socialCare": "Social care",
+        "support": "Support / case management",
+        "community": "Community",
+        "family": "Family / people",
+        "language": "Language",
+        "information": "Information",
+        "documents": "Documents",
+        "protection": "Protection",
+        "international": "International",
+        "other": "Other"
       }
     },
     "organisations": {
@@ -1016,7 +1039,9 @@
     "peopleWithDisabilities": "People with Disabilities",
     "singleParents": "Single Parents",
     "women": "Women",
-    "youth": "Youth"
+    "youth": "Youth",
+    "lgbtPersons": "LGBT Persons",
+    "peopleWithHiv": "People with HIV"
   },
   "account": {
     "title": "My account",
