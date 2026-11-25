@@ -56,5 +56,6 @@ export async function downloadFeedbackCsv(filters: FeedbackFilters): Promise<voi
   document.body.appendChild(anchor);
   anchor.click();
   anchor.remove();
-  URL.revokeObjectURL(url);
+  // Revoking synchronously can abort the download in Safari / older Firefox.
+  setTimeout(() => URL.revokeObjectURL(url), 1_000);
 }

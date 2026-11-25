@@ -46,13 +46,21 @@ describe('feedback api', () => {
       expect(this.href).toBe('blob:x');
     });
 
-    await downloadFeedbackCsv({ from: '2026-11-01' });
+    vi.useFakeTimers();
+    try {
+      await downloadFeedbackCsv({ from: '2026-11-01' });
 
-    const [url, init] = fetchMock.mock.calls[0];
-    expect(url).toMatch(/\/admin\/feedback\/export\?from=2026-11-01$/);
-    expect(init.headers.Authorization).toBe('Bearer tok');
-    expect(click).toHaveBeenCalledOnce();
-    expect(revokeUrl).toHaveBeenCalledWith('blob:x');
+      const [url, init] = fetchMock.mock.calls[0];
+      expect(url).toMatch(/\/admin\/feedback\/export\?from=2026-11-01$/);
+      expect(init.headers.Authorization).toBe('Bearer tok');
+      expect(click).toHaveBeenCalledOnce();
+      // Revoked later, not synchronously, so the browser can start the download.
+      expect(revokeUrl).not.toHaveBeenCalled();
+      vi.advanceTimersByTime(1_000);
+      expect(revokeUrl).toHaveBeenCalledWith('blob:x');
+    } finally {
+      vi.useRealTimers();
+    }
   });
 
   it('falls back to feedback.csv without a Content-Disposition header', async () => {

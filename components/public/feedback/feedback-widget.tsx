@@ -11,6 +11,13 @@ import { FeedbackForm } from './feedback-form';
 const EXCLUDED_PATHS = ['/login', '/forgot-password', '/setup-password', '/unsubscribe'];
 const THANKS_MS = 3_000;
 const SERVICE_DETAIL_RE = /^\/services\/([^/]+)\/?$/;
+// The backend validates serviceId with @IsUUID: never send a mistyped/old slug.
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+function serviceIdFromPath(pathname: string): string | undefined {
+  const candidate = SERVICE_DETAIL_RE.exec(pathname)?.[1];
+  return candidate && UUID_RE.test(candidate) ? candidate : undefined;
+}
 
 type View = 'open' | 'collapsed' | 'thanks' | 'gone';
 
@@ -51,7 +58,13 @@ export function FeedbackWidget() {
   }
 
   const stored = isClient ? feedbackStorage.getState() : null;
-  let mode: View | 'hidden' = view ?? (stored === 'dismissed' ? 'collapsed' : 'hidden');
+  // Already auto-opened this visit but never closed (e.g. reloaded while open):
+  // keep the pill so the rest of the visit is not left with nothing.
+  const fallback: View | 'hidden' =
+    stored === 'dismissed' || (stored === null && isClient && feedbackStorage.wasAutoOpened())
+      ? 'collapsed'
+      : 'hidden';
+  let mode: View | 'hidden' = view ?? fallback;
   if (stored === 'submitted' && mode !== 'thanks') mode = 'gone';
 
   const dialogRef = useRef<HTMLDivElement>(null);
@@ -131,7 +144,7 @@ export function FeedbackWidget() {
     setView((current) => (current === 'open' ? 'thanks' : 'gone'));
   };
 
-  const serviceId = SERVICE_DETAIL_RE.exec(pathname)?.[1];
+  const serviceId = serviceIdFromPath(pathname);
   const showDialog = mode === 'open' || mode === 'thanks';
 
   return (
@@ -144,7 +157,7 @@ export function FeedbackWidget() {
           aria-label={t('title')}
           tabIndex={-1}
           hidden={!showDialog}
-          className="fixed inset-x-0 bottom-0 z-50 max-h-[85vh] overflow-y-auto rounded-t-2xl border border-[#e5e7eb] bg-white px-5 pb-5 shadow-2xl outline-none sm:inset-x-auto sm:bottom-6 sm:right-6 sm:w-[380px] sm:max-h-[calc(100vh-3rem)] sm:rounded-2xl"
+          className="fixed inset-x-0 bottom-0 z-50 max-h-[85vh] overflow-y-auto rounded-t-2xl border border-[#e5e7eb] bg-white px-5 pb-[max(1.25rem,env(safe-area-inset-bottom))] shadow-2xl supports-[height:100dvh]:max-h-[85dvh] sm:pb-5 outline-none sm:inset-x-auto sm:bottom-6 sm:right-6 sm:w-[380px] sm:max-h-[calc(100vh-3rem)] sm:rounded-2xl"
         >
           {mode === 'thanks' ? (
             <p role="status" className="py-8 text-center text-base font-semibold text-[#101828]">

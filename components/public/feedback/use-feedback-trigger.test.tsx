@@ -103,6 +103,45 @@ describe('useFeedbackTrigger', () => {
     expect(onTrigger).toHaveBeenCalledTimes(1);
   });
 
+  it('does not fire after the visitor leaves /services', () => {
+    const { onTrigger, hook } = setup();
+    act(() => hook.result.current.reportResultsView());
+    act(() => hook.result.current.reportResultsInteraction());
+    act(() => hook.result.current.leaveResultsView());
+    // Scrolling and dwelling on another page (e.g. /report-a-need) must not count.
+    scrollTo(500);
+    advance(60_000);
+    expect(onTrigger).not.toHaveBeenCalled();
+  });
+
+  it('resumes accumulated dwell and scroll on returning to /services', () => {
+    const { onTrigger, hook } = setup();
+    act(() => hook.result.current.reportResultsView());
+    act(() => hook.result.current.reportResultsInteraction());
+    scrollTo(400);
+    advance(20_000);
+    act(() => hook.result.current.leaveResultsView());
+    advance(60_000);
+    expect(onTrigger).not.toHaveBeenCalled();
+    act(() => hook.result.current.reportResultsView());
+    advance(9_000);
+    expect(onTrigger).not.toHaveBeenCalled();
+    advance(1_500);
+    expect(onTrigger).toHaveBeenCalledTimes(1);
+  });
+
+  it('does not count scroll made away from /services', () => {
+    const { onTrigger, hook } = setup();
+    act(() => hook.result.current.reportResultsView());
+    act(() => hook.result.current.reportResultsInteraction());
+    act(() => hook.result.current.leaveResultsView());
+    scrollTo(500);
+    scrollTo(0);
+    act(() => hook.result.current.reportResultsView());
+    advance(60_000);
+    expect(onTrigger).not.toHaveBeenCalled();
+  });
+
   it('fires after 15s on a detail view', () => {
     const { onTrigger, hook } = setup();
     act(() => hook.result.current.reportDetailView());
@@ -130,6 +169,50 @@ describe('useFeedbackTrigger', () => {
     advance(40_000);
     expect(onTrigger).not.toHaveBeenCalled();
     act(() => input.blur());
+    advance(1_000);
+    expect(onTrigger).toHaveBeenCalledTimes(1);
+  });
+
+  it('does not treat a focused checkbox as typing', () => {
+    const { onTrigger, hook } = setup();
+    const checkbox = document.createElement('input');
+    checkbox.type = 'checkbox';
+    document.body.appendChild(checkbox);
+    checkbox.focus();
+    act(() => hook.result.current.reportDetailView());
+    advance(15_500);
+    expect(onTrigger).toHaveBeenCalledTimes(1);
+  });
+
+  it.each(['search', 'email', 'number'])('waits while a %s input is focused', (type) => {
+    const { onTrigger, hook } = setup();
+    const input = document.createElement('input');
+    input.type = type;
+    document.body.appendChild(input);
+    input.focus();
+    act(() => hook.result.current.reportDetailView());
+    advance(40_000);
+    expect(onTrigger).not.toHaveBeenCalled();
+  });
+
+  it('waits while a textarea or contenteditable is focused', () => {
+    const { onTrigger, hook } = setup();
+    const textarea = document.createElement('textarea');
+    document.body.appendChild(textarea);
+    textarea.focus();
+    act(() => hook.result.current.reportDetailView());
+    advance(40_000);
+    expect(onTrigger).not.toHaveBeenCalled();
+
+    const editable = document.createElement('div');
+    editable.setAttribute('contenteditable', 'true');
+    editable.tabIndex = 0;
+    document.body.appendChild(editable);
+    editable.focus();
+    advance(5_000);
+    expect(onTrigger).not.toHaveBeenCalled();
+
+    act(() => editable.blur());
     advance(1_000);
     expect(onTrigger).toHaveBeenCalledTimes(1);
   });

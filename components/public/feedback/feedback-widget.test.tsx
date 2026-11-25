@@ -29,6 +29,8 @@ let triggered = false;
 vi.mock('./feedback-engagement-context', () => ({
   useFeedbackEngagement: () => ({
     reportResultsInteraction: () => {},
+    reportResultsView: () => {},
+    leaveResultsView: () => {},
     reportDetailView: () => {},
     leaveDetailView: () => {},
     triggered,
@@ -184,10 +186,22 @@ describe('FeedbackWidget', () => {
     expect(markAutoOpened).not.toHaveBeenCalled();
   });
 
-  it('ignores the trigger when already auto-opened this visit', () => {
+  it('shows the pill (not the dialog) when already auto-opened this visit but never closed', () => {
+    // e.g. the visitor reloaded while the auto-opened dialog was still open.
     autoOpened = true;
-    const { container, rerenderWidget } = renderWidget();
+    const { rerenderWidget } = renderWidget();
+    expect(pill()).toBeInTheDocument();
+    expect(dialog()).not.toBeInTheDocument();
     fire(rerenderWidget);
+    expect(dialog()).not.toBeInTheDocument();
+    expect(pill()).toBeInTheDocument();
+    expect(markAutoOpened).not.toHaveBeenCalled();
+  });
+
+  it('renders nothing when auto-opened this visit and already submitted', () => {
+    autoOpened = true;
+    storedState = 'submitted';
+    const { container } = renderWidget();
     expect(container).toBeEmptyDOMElement();
   });
 
@@ -227,7 +241,8 @@ describe('FeedbackWidget', () => {
   });
 
   it('passes the service id on a service detail page', async () => {
-    mockPath = '/services/abc-123';
+    const id = '3f2b8c1e-9a4d-4e7f-8b21-0c5d6e7f8a9b';
+    mockPath = `/services/${id}`;
     submitFeedback.mockResolvedValue({ id: 'x' });
     const user = userEvent.setup();
     const { rerenderWidget } = renderWidget();
@@ -235,8 +250,22 @@ describe('FeedbackWidget', () => {
     await fillRequired(user);
     await user.click(screen.getByRole('button', { name: fb.send }));
     expect(submitFeedback).toHaveBeenCalledWith(
-      expect.objectContaining({ pagePath: '/services/abc-123', serviceId: 'abc-123' }),
+      expect.objectContaining({ pagePath: `/services/${id}`, serviceId: id }),
     );
+  });
+
+  it('omits serviceId when the detail path is not a UUID', async () => {
+    mockPath = '/services/abc-123';
+    submitFeedback.mockResolvedValue({ id: 'x' });
+    const user = userEvent.setup();
+    const { rerenderWidget } = renderWidget();
+    fire(rerenderWidget);
+    await fillRequired(user);
+    await user.click(screen.getByRole('button', { name: fb.send }));
+    expect(submitFeedback).toHaveBeenCalledTimes(1);
+    const payload = submitFeedback.mock.calls[0][0] as Record<string, unknown>;
+    expect(payload.pagePath).toBe('/services/abc-123');
+    expect(payload.serviceId).toBeUndefined();
   });
 
   it('renders nothing when already submitted', () => {

@@ -51,7 +51,12 @@ function ServicesContent() {
   const tNav = useTranslations('nav');
   const locale = useLocale();
 
-  const { reportResultsInteraction } = useFeedbackEngagement();
+  const { reportResultsInteraction, reportResultsView, leaveResultsView } = useFeedbackEngagement();
+  // The results trigger only counts dwell/scroll while this page is mounted.
+  useEffect(() => {
+    reportResultsView();
+    return () => leaveResultsView();
+  }, [reportResultsView, leaveResultsView]);
   // A search started on the homepage counts as a results interaction.
   useEffect(() => {
     if (feedbackStorage.consumeOwnSearchFlag()) reportResultsInteraction();
