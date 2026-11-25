@@ -379,7 +379,8 @@
       "services": "Services",
       "needsAndQueries": "Needs & Queries",
       "configurations": "Configurations",
-      "navAriaLabel": "Admin navigation"
+      "navAriaLabel": "Admin navigation",
+      "feedback": "Feedback"
     },
     "topbar": {
       "notifications": "Notifications",
@@ -418,7 +419,8 @@
       "users": "Users",
       "taxonomy": "Taxonomy",
       "account": "My account",
-      "deletedUsers": "Deleted users"
+      "deletedUsers": "Deleted users",
+      "feedback": "Feedback"
     },
     "taxonomy": {
       "title": "Nomenclature",
@@ -1082,5 +1084,30 @@
     "thanks": "Thank you for your feedback!",
     "errorGeneric": "Something went wrong. Please try again.",
     "errorTooMany": "Too many attempts. Please try again later."
+  },
+  "adminFeedback": {
+    "title": "Feedback",
+    "period": "Period",
+    "last30": "Last 30 days",
+    "last90": "Last 90 days",
+    "all": "All time",
+    "custom": "Custom range",
+    "from": "From",
+    "to": "To",
+    "downloadCsv": "Download CSV",
+    "total": "Total responses",
+    "withLookingFor": "Responses with a description",
+    "filterFound": "Found what they needed",
+    "filterKarabakh": "From Nagorno-Karabakh",
+    "anyAnswer": "Any answer",
+    "date": "Date",
+    "usefulness": "Usefulness",
+    "found": "Found",
+    "lookingFor": "Looking for",
+    "karabakh": "Karabakh",
+    "language": "Language",
+    "page": "Page / service",
+    "deletedService": "deleted",
+    "empty": "No feedback responses yet."
   }
 }
