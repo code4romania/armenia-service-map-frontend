@@ -12,17 +12,19 @@ import { usePublicRegions, usePublicServices, usePublicTopics } from '@/lib/api/
 import { useRegionName } from '@/lib/i18n/region-name';
 import { useTopicName } from '@/lib/i18n/topic-name';
 import { getLocalizedServiceContent } from '@/lib/i18n/service-content';
+import { topicIcon } from '@/lib/topic-icons';
 import type { Service } from '@/types/api';
+import { feedbackStorage } from '@/components/public/feedback/feedback-storage';
 
-const topicColors = [
-  { gradient: 'from-[#2b7fff] to-[#155dfc]', icon: ScaleIcon },
-  { gradient: 'from-[#ff2056] to-[#ec003f]', icon: HeartIcon },
-  { gradient: 'from-[#ad46ff] to-[#9810fa]', icon: LanguageIcon },
-  { gradient: 'from-[#00bc7d] to-[#009966]', icon: BriefcaseIcon },
-  { gradient: 'from-[#fe9a00] to-[#e17100]', icon: HomeIcon },
-  { gradient: 'from-[#615fff] to-[#4f39f6]', icon: UsersIcon },
-  { gradient: 'from-[#00b8db] to-[#0092b8]', icon: BookIcon },
-  { gradient: 'from-[#8e51ff] to-[#7f22fe]', icon: GlobeIcon },
+const topicGradients = [
+  'from-[#2b7fff] to-[#155dfc]',
+  'from-[#ff2056] to-[#ec003f]',
+  'from-[#ad46ff] to-[#9810fa]',
+  'from-[#00bc7d] to-[#009966]',
+  'from-[#fe9a00] to-[#e17100]',
+  'from-[#615fff] to-[#4f39f6]',
+  'from-[#00b8db] to-[#0092b8]',
+  'from-[#8e51ff] to-[#7f22fe]',
 ];
 
 export default function HomePage() {
@@ -45,6 +47,7 @@ export default function HomePage() {
 
   function handleSearch(event: React.FormEvent) {
     event.preventDefault();
+    feedbackStorage.markOwnSearch();
     const params = new URLSearchParams();
     if (search.trim()) params.set('search', search.trim());
     if (regionId) params.set('regionId', regionId);
@@ -134,17 +137,18 @@ export default function HomePage() {
           </div>
           <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
             {topics.slice(0, 8).map((topic, index) => {
-              const color = topicColors[index % topicColors.length];
-              const IconComponent = color.icon;
+              const gradient = topicGradients[index % topicGradients.length];
+              const IconComponent = topicIcon(topic.icon, index);
 
               return (
                 <Link
                   key={topic.id}
                   href={`/services?topicId=${topic.id}`}
+                  onClick={() => feedbackStorage.markOwnSearch()}
                   className="group rounded-2xl border border-[#e5e7eb] bg-white p-6 shadow-lg transition-all hover:-translate-y-1 hover:shadow-xl"
                 >
-                  <div className={`flex h-14 w-14 items-center justify-center rounded-[14px] bg-gradient-to-br ${color.gradient} shadow-lg`}>
-                    <IconComponent />
+                  <div className={`flex h-14 w-14 items-center justify-center rounded-[14px] bg-gradient-to-br ${gradient} shadow-lg`}>
+                    <IconComponent className="h-6 w-6 text-white" aria-hidden="true" />
                   </div>
                   <h3 className="mt-6 text-lg font-semibold text-[#101828]">{topicName(topic)}</h3>
                   <div className="mt-4 flex items-center gap-1 text-sm font-medium text-[#155dfc]">
@@ -237,72 +241,3 @@ function ArrowRightIcon({ className = 'h-5 w-5' }: { className?: string }) {
   );
 }
 
-function ScaleIcon() {
-  return (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M16 16l3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1zM2 16l3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1zM7 21h10M12 3v18M12 3a2.4 2.4 0 00-2 1 2.4 2.4 0 01-2 1h8a2.4 2.4 0 01-2-1 2.4 2.4 0 00-2-1z" />
-    </svg>
-  );
-}
-
-function HeartIcon() {
-  return (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z" />
-    </svg>
-  );
-}
-
-function LanguageIcon() {
-  return (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M5 8l6 6M4 14l6-6 2-3M2 5h12M7 2h1M22 22l-5-10-5 10M14 18h6" />
-    </svg>
-  );
-}
-
-function BriefcaseIcon() {
-  return (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <rect x="2" y="7" width="20" height="14" rx="2" ry="2" />
-      <path d="M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16" />
-    </svg>
-  );
-}
-
-function HomeIcon() {
-  return (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z" />
-      <polyline points="9 22 9 12 15 12 15 22" />
-    </svg>
-  );
-}
-
-function UsersIcon() {
-  return (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" />
-      <circle cx="9" cy="7" r="4" />
-      <path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75" />
-    </svg>
-  );
-}
-
-function BookIcon() {
-  return (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2zM22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z" />
-    </svg>
-  );
-}
-
-function GlobeIcon() {
-  return (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <circle cx="12" cy="12" r="10" />
-      <line x1="2" y1="12" x2="22" y2="12" />
-      <path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z" />
-    </svg>
-  );
-}

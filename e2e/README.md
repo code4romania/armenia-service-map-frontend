@@ -48,6 +48,11 @@ tokens, and pins the UI language to English (`locale` cookie). It also writes a 
 - **Admin** (`admin-smoke`, `admin-crud`): every admin page loads; organisations / users /
   topics surface in the list UI after an API create; target-groups / need-tags API round-trip;
   the pending-organisation approval workflow; a public-submitted need appears in the admin list.
+- **Feedback** (`public-feedback`, `admin-feedback`): homepage search → `/services` → scroll →
+  the pop-up opens, is answered and sent, and stays gone (no pop-up, no pill) after a reload;
+  a seeded response is listed on `/admin/feedback` and "Download CSV" saves
+  `feedback-YYYY-MM-DD.csv`. Playwright's dev server sets `NEXT_PUBLIC_FEEDBACK_TEST_DWELL_MS=1000`
+  so the pop-up dwell is 1 s instead of 15/30 s (start your own server with it if you reuse one).
 - **Org** (`org-admin-smoke`, `org-admin-access`): every org page loads; an org user visiting
   `/admin` is redirected to `/org/dashboard`.
 
@@ -57,3 +62,15 @@ Every test that mutates uses a unique `[e2e] … <timestamp>` name and **deletes
 the API in a `finally`/cleanup block** (note: approving an organisation provisions an org user
 from the contact email, which is also removed). Running the suite twice on the same database is
 clean — and `npm run test:e2e:cleanup` sweeps anything an interrupted run left behind.
+
+Feedback rows have no delete endpoint, so the feedback specs and the cleanup script remove them
+(`lookingFor` starting `e2e-`) straight from Postgres via `psql`, **only when `E2E_DATABASE_URL`
+is set** (e.g. the backend's `DATABASE_URL`). Without it they are left in the DB:
+
+```bash
+E2E_DATABASE_URL=postgresql://… npm run test:e2e
+E2E_DATABASE_URL=postgresql://… npm run test:e2e:cleanup
+```
+
+The public feedback endpoint is throttled (5 requests / 10 min per IP, in memory); each full run
+sends 2, so restart the backend if repeated runs start failing with "Too many attempts".

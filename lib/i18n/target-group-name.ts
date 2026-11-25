@@ -2,7 +2,7 @@ import { useTranslations } from 'next-intl';
 
 // Target group names come from the API in English only and carry no slug; localise them via the
 // `targetGroups` namespace, keyed by the camelCased English name (`Older Persons` -> `olderPersons`).
-function targetGroupKey(name: string) {
+export function targetGroupKey(name: string) {
   return name
     .trim()
     .toLowerCase()

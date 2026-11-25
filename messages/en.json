@@ -379,7 +379,8 @@
       "services": "Services",
       "needsAndQueries": "Needs & Queries",
       "configurations": "Configurations",
-      "navAriaLabel": "Admin navigation"
+      "navAriaLabel": "Admin navigation",
+      "feedback": "Feedback"
     },
     "topbar": {
       "notifications": "Notifications",
@@ -418,7 +419,8 @@
       "users": "Users",
       "taxonomy": "Taxonomy",
       "account": "My account",
-      "deletedUsers": "Deleted users"
+      "deletedUsers": "Deleted users",
+      "feedback": "Feedback"
     },
     "taxonomy": {
       "title": "Nomenclature",
@@ -465,7 +467,9 @@
           "topicRequired": "Service topic is required",
           "subtopicNameRequired": "Each sub-topic needs a name",
           "subtopicNamesUnique": "Sub-topic names must be unique"
-        }
+        },
+        "icon": "Icon",
+        "iconHint": "Shown on the homepage topic card."
       },
       "pages": {
         "newTopic": "Add service topic",
@@ -480,6 +484,27 @@
         "targetGroupNotFound": "Target group not found",
         "slug": "Slug",
         "servicesCount": "{count} services"
+      },
+      "icons": {
+        "legal": "Legal",
+        "health": "Health",
+        "mentalHealth": "Mental health / counselling",
+        "education": "Education",
+        "housing": "Housing",
+        "employment": "Employment",
+        "economy": "Economic integration",
+        "grants": "Grants / funding",
+        "business": "Entrepreneurship",
+        "socialCare": "Social care",
+        "support": "Support / case management",
+        "community": "Community",
+        "family": "Family / people",
+        "language": "Language",
+        "information": "Information",
+        "documents": "Documents",
+        "protection": "Protection",
+        "international": "International",
+        "other": "Other"
       }
     },
     "organisations": {
@@ -1016,7 +1041,9 @@
     "peopleWithDisabilities": "People with Disabilities",
     "singleParents": "Single Parents",
     "women": "Women",
-    "youth": "Youth"
+    "youth": "Youth",
+    "lgbtPersons": "LGBT Persons",
+    "peopleWithHiv": "People with HIV"
   },
   "account": {
     "title": "My account",
@@ -1048,5 +1075,66 @@
       "mismatch": "Passwords do not match.",
       "wrongCurrent": "Your current password is incorrect."
     }
+  },
+  "feedback": {
+    "title": "Help us improve",
+    "intro": "It takes less than a minute.",
+    "q1": "How useful was this information for you?",
+    "q1Options": {
+      "NOT_AT_ALL": "Not at all useful",
+      "SLIGHTLY": "Slightly useful",
+      "MODERATELY": "Moderately useful",
+      "VERY": "Very useful",
+      "EXTREMELY": "Extremely useful"
+    },
+    "q2": "Did you find what you were looking for?",
+    "q2Options": {
+      "YES": "Yes",
+      "PARTLY": "Partly",
+      "NO": "No"
+    },
+    "q21": "If you answered “Partly” or “No”: What were you looking for?",
+    "q3": "Did you or your family move to Armenia from Nagorno-Karabakh?",
+    "q3Options": {
+      "YES": "Yes",
+      "NO": "No",
+      "PREFER_NOT_TO_SAY": "Prefer not to say"
+    },
+    "required": "Please answer this question.",
+    "charCount": "{count}/500",
+    "send": "Send",
+    "sending": "Sending…",
+    "close": "Close",
+    "button": "Feedback",
+    "thanks": "Thank you for your feedback!",
+    "errorGeneric": "Something went wrong. Please try again.",
+    "errorTooMany": "Too many attempts. Please try again later."
+  },
+  "adminFeedback": {
+    "title": "Feedback",
+    "period": "Period",
+    "last30": "Last 30 days",
+    "last90": "Last 90 days",
+    "all": "All time",
+    "custom": "Custom range",
+    "from": "From",
+    "to": "To",
+    "downloadCsv": "Download CSV",
+    "total": "Total responses",
+    "withLookingFor": "Responses with a description",
+    "filterFound": "Found what they needed",
+    "filterKarabakh": "From Nagorno-Karabakh",
+    "anyAnswer": "Any answer",
+    "date": "Date",
+    "usefulness": "Usefulness",
+    "found": "Found",
+    "lookingFor": "Looking for",
+    "karabakh": "Karabakh",
+    "language": "Language",
+    "page": "Page / service",
+    "deletedService": "deleted",
+    "empty": "No feedback responses yet.",
+    "downloadError": "Could not download the CSV. Please try again.",
+    "loadError": "Could not load feedback. Please try again."
   }
 }

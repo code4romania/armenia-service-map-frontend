@@ -48,6 +48,8 @@ export interface TopicDetail extends Topic {
 export interface TopicFormPayload {
   name: string;
   slug?: string;
+  /** Key from `TOPIC_ICONS`; empty string clears the picked icon. */
+  icon?: string;
   status: 'ACTIVE' | 'INACTIVE';
   subtopics: Array<{
     id?: string;
@@ -62,6 +64,7 @@ export interface PublicTopic {
   id: string;
   name: string;
   slug: string;
+  icon?: string | null;
   children?: Array<{
     id: string;
     name: string;
@@ -364,4 +367,46 @@ export interface OrgOverviewStats {
   activeServices: number;
   assignedNeeds: number;
   resolvedNeeds: number;
+}
+
+// Public feedback
+export type FeedbackUsefulness = 'NOT_AT_ALL' | 'SLIGHTLY' | 'MODERATELY' | 'VERY' | 'EXTREMELY';
+export type FeedbackFound = 'YES' | 'PARTLY' | 'NO';
+export type FeedbackKarabakh = 'YES' | 'NO' | 'PREFER_NOT_TO_SAY';
+
+export interface SubmitFeedbackPayload {
+  usefulness: FeedbackUsefulness;
+  found: FeedbackFound;
+  lookingFor?: string;
+  fromKarabakh: FeedbackKarabakh;
+  locale: 'hy' | 'en';
+  pagePath: string;
+  serviceId?: string;
+}
+
+export interface FeedbackListItem {
+  id: string;
+  createdAt: string;
+  usefulness: FeedbackUsefulness;
+  found: FeedbackFound;
+  lookingFor: string | null;
+  fromKarabakh: FeedbackKarabakh;
+  locale: string;
+  pagePath: string;
+  service: { id: string; title: string; deleted: boolean } | null;
+}
+
+export interface FeedbackSummary {
+  total: number;
+  withLookingFor: number;
+  usefulness: Record<FeedbackUsefulness, number>;
+  found: Record<FeedbackFound, number>;
+  fromKarabakh: Record<FeedbackKarabakh, number>;
+}
+
+export interface FeedbackFilters {
+  from?: string;
+  to?: string;
+  found?: FeedbackFound;
+  fromKarabakh?: FeedbackKarabakh;
 }

@@ -19,6 +19,8 @@ import { getLocalizedServiceContent } from '@/lib/i18n/service-content';
 import { serviceOrgName } from '@/lib/services/org-name';
 import type { PaginatedResponse, Service } from '@/types/api';
 import { SITE_URL } from '@/lib/site';
+import { useFeedbackEngagement } from '@/components/public/feedback/feedback-engagement-context';
+import { feedbackStorage } from '@/components/public/feedback/feedback-storage';
 
 type ViewMode = 'list' | 'map';
 type QueuedSearchLog = {
@@ -48,6 +50,17 @@ function ServicesContent() {
   const tHome = useTranslations('home');
   const tNav = useTranslations('nav');
   const locale = useLocale();
+
+  const { reportResultsInteraction, reportResultsView, leaveResultsView } = useFeedbackEngagement();
+  // The results trigger only counts dwell/scroll while this page is mounted.
+  useEffect(() => {
+    reportResultsView();
+    return () => leaveResultsView();
+  }, [reportResultsView, leaveResultsView]);
+  // A search started on the homepage counts as a results interaction.
+  useEffect(() => {
+    if (feedbackStorage.consumeOwnSearchFlag()) reportResultsInteraction();
+  }, [reportResultsInteraction]);
 
   const [view, setView] = useState<ViewMode>('map');
   const [page, setPage] = useState(1);
@@ -230,6 +243,7 @@ function ServicesContent() {
 
   const hasActiveFilters = Boolean(trimmedSearch || selectedRegionId || selectedTopicId || selectedSubtopicId || onlyAvailable);
   const handleClearFilters = () => {
+    reportResultsInteraction();
     setSearch('');
     setSelectedTopicId('');
     setSelectedSubtopicId('');
@@ -243,17 +257,20 @@ function ServicesContent() {
   const scrollToPaginationTarget = () => scrollToAnchor(view === 'map' ? listRef : resultsRef);
 
   const handlePageChange = (nextPage: number) => {
+    reportResultsInteraction();
     setPage(nextPage);
     scrollToPaginationTarget();
   };
 
   const handlePerPageChange = (nextPerPage: number) => {
+    reportResultsInteraction();
     setPerPage(nextPerPage);
     setPage(1);
     scrollToPaginationTarget();
   };
 
   const handleRegionClick = (svgPathId: string) => {
+    reportResultsInteraction();
     const region = regions?.find((entry) => entry.svgPathId === svgPathId);
     setSelectedRegionId(region?.id === selectedRegionId ? '' : (region?.id || ''));
     setPage(1);
@@ -291,7 +308,7 @@ function ServicesContent() {
           <span className="text-[#101828]">{t('title')}</span>
         </div>
 
-        <h1 className="text-4xl font-bold text-[#101828]">{t('title')}</h1>
+        <h1 className="break-words text-3xl font-bold text-[#101828] sm:text-4xl">{t('title')}</h1>
         <p className="mt-3 max-w-4xl text-lg leading-7 text-[#4a5565]">{t('subtitle')}</p>
       </div>
 
@@ -303,6 +320,7 @@ function ServicesContent() {
               <select
                 value={selectedRegionId}
                 onChange={(event) => {
+                  reportResultsInteraction();
                   setSelectedRegionId(event.target.value);
                   setPage(1);
                 }}
@@ -322,6 +340,7 @@ function ServicesContent() {
                 type="search"
                 value={search}
                 onChange={(event) => {
+                  reportResultsInteraction();
                   setSearch(event.target.value);
                   setPage(1);
                 }}
@@ -344,6 +363,7 @@ function ServicesContent() {
                   type="button"
                   aria-pressed={selectedTopicId === topic.id}
                   onClick={() => {
+                    reportResultsInteraction();
                     setSelectedTopicId((current) => (current === topic.id ? '' : topic.id));
                     setSelectedSubtopicId('');
                     setPage(1);
@@ -375,6 +395,7 @@ function ServicesContent() {
                       type="button"
                       aria-pressed={selectedSubtopicId === subtopic.id}
                       onClick={() => {
+                        reportResultsInteraction();
                         setSelectedSubtopicId((current) => (current === subtopic.id ? '' : subtopic.id));
                         setPage(1);
                       }}
@@ -398,6 +419,7 @@ function ServicesContent() {
                 type="checkbox"
                 checked={onlyAvailable}
                 onChange={(event) => {
+                  reportResultsInteraction();
                   setOnlyAvailable(event.target.checked);
                   setPage(1);
                 }}
@@ -407,7 +429,7 @@ function ServicesContent() {
               {t('onlyAvailable')}
             </label>
 
-            <div className="flex items-center justify-between gap-4 md:justify-end">
+            <div className="flex flex-wrap items-center justify-between gap-4 md:justify-end">
               <p className="text-sm text-[#4a5565]">
                 <span className="font-bold">{totalServices}</span> {t('servicesFound')}
               </p>
