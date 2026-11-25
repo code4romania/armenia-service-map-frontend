@@ -303,7 +303,7 @@ function ServicesContent() {
           <span className="text-[#101828]">{t('title')}</span>
         </div>
 
-        <h1 className="text-4xl font-bold text-[#101828]">{t('title')}</h1>
+        <h1 className="break-words text-3xl font-bold text-[#101828] sm:text-4xl">{t('title')}</h1>
         <p className="mt-3 max-w-4xl text-lg leading-7 text-[#4a5565]">{t('subtitle')}</p>
       </div>
 
@@ -424,7 +424,7 @@ function ServicesContent() {
               {t('onlyAvailable')}
             </label>
 
-            <div className="flex items-center justify-between gap-4 md:justify-end">
+            <div className="flex flex-wrap items-center justify-between gap-4 md:justify-end">
               <p className="text-sm text-[#4a5565]">
                 <span className="font-bold">{totalServices}</span> {t('servicesFound')}
               </p>

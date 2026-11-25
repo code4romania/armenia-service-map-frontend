@@ -155,10 +155,20 @@ describe('FeedbackWidget', () => {
     expect(pill()).not.toBeInTheDocument();
   });
 
-  it('clicking outside the dialog collapses it', () => {
+  it('a pointerdown or scroll outside without a click does not dismiss', () => {
     const { rerenderWidget } = renderWidget();
     fire(rerenderWidget);
     fireEvent.pointerDown(document.body);
+    fireEvent.touchStart(document.body);
+    fireEvent.scroll(window);
+    expect(dialog()).toBeInTheDocument();
+    expect(setState).not.toHaveBeenCalled();
+  });
+
+  it('clicking outside the dialog collapses it', () => {
+    const { rerenderWidget } = renderWidget();
+    fire(rerenderWidget);
+    fireEvent.click(document.body);
     expect(dialog()).not.toBeInTheDocument();
     expect(setState).toHaveBeenCalledWith('dismissed');
     expect(pill()).toBeInTheDocument();
@@ -195,6 +205,24 @@ describe('FeedbackWidget', () => {
     act(() => {
       vi.advanceTimersByTime(3000);
     });
+    expect(container).toBeEmptyDOMElement();
+  });
+
+  it('hides everything when a submit resolves after the user collapsed the dialog', async () => {
+    let resolve: (v: { id: string }) => void = () => {};
+    submitFeedback.mockReturnValue(new Promise((r) => { resolve = r; }));
+    const user = userEvent.setup();
+    const { container, rerenderWidget } = renderWidget();
+    fire(rerenderWidget);
+    await fillRequired(user);
+    await user.click(screen.getByRole('button', { name: fb.send }));
+    await user.keyboard('{Escape}');
+    expect(pill()).toBeInTheDocument();
+    await act(async () => {
+      resolve({ id: 'x' });
+    });
+    expect(setState).toHaveBeenLastCalledWith('submitted');
+    expect(screen.queryByText(fb.thanks)).not.toBeInTheDocument();
     expect(container).toBeEmptyDOMElement();
   });
 

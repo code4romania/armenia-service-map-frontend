@@ -95,15 +95,18 @@ export function FeedbackWidget() {
     const onKey = (event: KeyboardEvent) => {
       if (event.key === 'Escape') dismissRef.current();
     };
-    const onPointerDown = (event: Event) => {
+    // `click`, not pointerdown: a touch-scroll on the page must not dismiss.
+    // A disconnected target is the pill that just opened the dialog.
+    const onClick = (event: MouseEvent) => {
       const node = dialogRef.current;
-      if (node && event.target instanceof Node && !node.contains(event.target)) dismissRef.current();
+      const target = event.target;
+      if (node && target instanceof Node && target.isConnected && !node.contains(target)) dismissRef.current();
     };
     document.addEventListener('keydown', onKey);
-    document.addEventListener('pointerdown', onPointerDown);
+    document.addEventListener('click', onClick);
     return () => {
       document.removeEventListener('keydown', onKey);
-      document.removeEventListener('pointerdown', onPointerDown);
+      document.removeEventListener('click', onClick);
     };
   }, [isOpen]);
 
@@ -124,7 +127,8 @@ export function FeedbackWidget() {
   const handleSubmitted = () => {
     feedbackStorage.setState('submitted');
     focusTargetRef.current = 'dialog';
-    setView('thanks');
+    // If the user collapsed the dialog while sending, don't pop it back up.
+    setView((current) => (current === 'open' ? 'thanks' : 'gone'));
   };
 
   const serviceId = SERVICE_DETAIL_RE.exec(pathname)?.[1];
