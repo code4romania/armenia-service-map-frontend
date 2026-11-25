@@ -1,3 +1,4 @@
+import { spawnSync } from 'node:child_process';
 import type { APIRequestContext, Page } from '@playwright/test';
 
 /** Backend base URL. Mirrors the frontend's NEXT_PUBLIC_API_URL default. */
@@ -154,4 +155,28 @@ export async function apiList(
 ): Promise<{ data: Array<Record<string, unknown>> }> {
   const res = await request.get(`${API_URL}${path}`, authHeaders(token));
   return res.json();
+}
+
+/** localStorage key the public feedback widget uses to remember dismissed/submitted. */
+export const FEEDBACK_STATE_KEY = 'qezhet-feedback-state';
+
+/** Prefix that marks feedback rows created by e2e runs (`lookingFor`). */
+export const E2E_FEEDBACK_PREFIX = 'e2e-';
+
+/**
+ * Deletes feedback rows created by e2e runs. There is no admin delete endpoint for feedback,
+ * so this goes straight to Postgres through `psql`, and only when `E2E_DATABASE_URL` is set;
+ * otherwise it is a no-op and `E2E_DATABASE_URL=... npm run test:e2e:cleanup` sweeps the rows
+ * later. Pass the exact `lookingFor` so parallel specs don't delete each other's rows.
+ * Returns rows removed, or null when skipped.
+ */
+export function deleteE2eFeedback(lookingFor: string): number | null {
+  const url = process.env.E2E_DATABASE_URL;
+  if (!url) return null;
+  if (!/^e2e-[\w-]+$/.test(lookingFor)) throw new Error(`Refusing to delete feedback "${lookingFor}"`);
+  const sql = `WITH d AS (DELETE FROM feedback WHERE looking_for = '${lookingFor}' RETURNING 1) SELECT count(*) FROM d`;
+  const res = spawnSync('psql', [url, '-v', 'ON_ERROR_STOP=1', '-tAc', sql], { encoding: 'utf8' });
+  if (res.error) throw new Error(`psql not runnable: ${res.error.message}`);
+  if (res.status !== 0) throw new Error(`feedback cleanup failed: ${res.stderr.trim()}`);
+  return Number(res.stdout.trim()) || 0;
 }

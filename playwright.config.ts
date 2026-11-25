@@ -6,6 +6,7 @@ import { defineConfig, devices } from '@playwright/test';
  * See e2e/README.md.
  */
 const BASE_URL = process.env.E2E_BASE_URL ?? 'http://localhost:3001';
+const PORT = new URL(BASE_URL).port || '3001';
 
 export default defineConfig({
   testDir: './e2e',
@@ -43,8 +44,10 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command: 'next dev -p 3001',
+    command: `next dev -p ${PORT}`,
     url: BASE_URL,
+    // Shorten the feedback pop-up dwell so the e2e flow doesn't wait 15-30 s.
+    env: { ...process.env, NEXT_PUBLIC_FEEDBACK_TEST_DWELL_MS: '1000' } as Record<string, string>,
     reuseExistingServer: !process.env.CI,
     timeout: 120_000,
   },

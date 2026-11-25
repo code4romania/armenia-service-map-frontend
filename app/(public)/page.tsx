@@ -14,6 +14,7 @@ import { useTopicName } from '@/lib/i18n/topic-name';
 import { getLocalizedServiceContent } from '@/lib/i18n/service-content';
 import { topicIcon } from '@/lib/topic-icons';
 import type { Service } from '@/types/api';
+import { feedbackStorage } from '@/components/public/feedback/feedback-storage';
 
 const topicGradients = [
   'from-[#2b7fff] to-[#155dfc]',
@@ -46,6 +47,7 @@ export default function HomePage() {
 
   function handleSearch(event: React.FormEvent) {
     event.preventDefault();
+    feedbackStorage.markOwnSearch();
     const params = new URLSearchParams();
     if (search.trim()) params.set('search', search.trim());
     if (regionId) params.set('regionId', regionId);
@@ -142,6 +144,7 @@ export default function HomePage() {
                 <Link
                   key={topic.id}
                   href={`/services?topicId=${topic.id}`}
+                  onClick={() => feedbackStorage.markOwnSearch()}
                   className="group rounded-2xl border border-[#e5e7eb] bg-white p-6 shadow-lg transition-all hover:-translate-y-1 hover:shadow-xl"
                 >
                   <div className={`flex h-14 w-14 items-center justify-center rounded-[14px] bg-gradient-to-br ${gradient} shadow-lg`}>
