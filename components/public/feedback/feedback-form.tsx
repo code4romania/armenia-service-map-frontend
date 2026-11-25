@@ -119,7 +119,7 @@ export function FeedbackForm({ pagePath, serviceId, onSubmitted, onClose }: Feed
 
   return (
     <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-5">
-      <div className="flex items-start justify-between gap-3">
+      <div className="sticky top-0 z-10 flex items-start justify-between gap-3 bg-white pb-1 pt-5">
         <div>
           <h2 className="text-lg font-bold text-[#101828]">{t('title')}</h2>
           <p className="mt-1 text-sm text-[#4a5565]">{t('intro')}</p>

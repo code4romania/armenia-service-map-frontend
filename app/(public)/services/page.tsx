@@ -19,6 +19,8 @@ import { getLocalizedServiceContent } from '@/lib/i18n/service-content';
 import { serviceOrgName } from '@/lib/services/org-name';
 import type { PaginatedResponse, Service } from '@/types/api';
 import { SITE_URL } from '@/lib/site';
+import { useFeedbackEngagement } from '@/components/public/feedback/feedback-engagement-context';
+import { feedbackStorage } from '@/components/public/feedback/feedback-storage';
 
 type ViewMode = 'list' | 'map';
 type QueuedSearchLog = {
@@ -48,6 +50,12 @@ function ServicesContent() {
   const tHome = useTranslations('home');
   const tNav = useTranslations('nav');
   const locale = useLocale();
+
+  const { reportResultsInteraction } = useFeedbackEngagement();
+  // A search started on the homepage counts as a results interaction.
+  useEffect(() => {
+    if (feedbackStorage.consumeOwnSearchFlag()) reportResultsInteraction();
+  }, [reportResultsInteraction]);
 
   const [view, setView] = useState<ViewMode>('map');
   const [page, setPage] = useState(1);
@@ -230,6 +238,7 @@ function ServicesContent() {
 
   const hasActiveFilters = Boolean(trimmedSearch || selectedRegionId || selectedTopicId || selectedSubtopicId || onlyAvailable);
   const handleClearFilters = () => {
+    reportResultsInteraction();
     setSearch('');
     setSelectedTopicId('');
     setSelectedSubtopicId('');
@@ -243,17 +252,20 @@ function ServicesContent() {
   const scrollToPaginationTarget = () => scrollToAnchor(view === 'map' ? listRef : resultsRef);
 
   const handlePageChange = (nextPage: number) => {
+    reportResultsInteraction();
     setPage(nextPage);
     scrollToPaginationTarget();
   };
 
   const handlePerPageChange = (nextPerPage: number) => {
+    reportResultsInteraction();
     setPerPage(nextPerPage);
     setPage(1);
     scrollToPaginationTarget();
   };
 
   const handleRegionClick = (svgPathId: string) => {
+    reportResultsInteraction();
     const region = regions?.find((entry) => entry.svgPathId === svgPathId);
     setSelectedRegionId(region?.id === selectedRegionId ? '' : (region?.id || ''));
     setPage(1);
@@ -303,6 +315,7 @@ function ServicesContent() {
               <select
                 value={selectedRegionId}
                 onChange={(event) => {
+                  reportResultsInteraction();
                   setSelectedRegionId(event.target.value);
                   setPage(1);
                 }}
@@ -322,6 +335,7 @@ function ServicesContent() {
                 type="search"
                 value={search}
                 onChange={(event) => {
+                  reportResultsInteraction();
                   setSearch(event.target.value);
                   setPage(1);
                 }}
@@ -344,6 +358,7 @@ function ServicesContent() {
                   type="button"
                   aria-pressed={selectedTopicId === topic.id}
                   onClick={() => {
+                    reportResultsInteraction();
                     setSelectedTopicId((current) => (current === topic.id ? '' : topic.id));
                     setSelectedSubtopicId('');
                     setPage(1);
@@ -375,6 +390,7 @@ function ServicesContent() {
                       type="button"
                       aria-pressed={selectedSubtopicId === subtopic.id}
                       onClick={() => {
+                        reportResultsInteraction();
                         setSelectedSubtopicId((current) => (current === subtopic.id ? '' : subtopic.id));
                         setPage(1);
                       }}
@@ -398,6 +414,7 @@ function ServicesContent() {
                 type="checkbox"
                 checked={onlyAvailable}
                 onChange={(event) => {
+                  reportResultsInteraction();
                   setOnlyAvailable(event.target.checked);
                   setPage(1);
                 }}
