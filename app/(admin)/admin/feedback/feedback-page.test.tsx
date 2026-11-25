@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import AdminFeedbackPage from './page';
 
 const state = vi.hoisted(() => ({
@@ -10,6 +10,7 @@ const state = vi.hoisted(() => ({
     found: { YES: 2, PARTLY: 1, NO: 0 },
     fromKarabakh: { YES: 1, NO: 2, PREFER_NOT_TO_SAY: 0 },
   },
+  error: false,
   listCalls: [] as Array<Record<string, unknown>>,
   summaryCalls: [] as Array<Record<string, unknown>>,
 }));
@@ -27,11 +28,14 @@ vi.mock('react-chartjs-2', () => ({
   ),
 }));
 
+vi.mock('@/lib/toast-bus', () => ({ publishToast: vi.fn() }));
+
 vi.mock('@/lib/api/feedback', () => ({
   useAdminFeedback: (filters: Record<string, unknown>) => {
     state.listCalls.push(filters);
     return {
       isLoading: false,
+      isError: state.error,
       data: {
         data: [
           {
@@ -57,17 +61,18 @@ vi.mock('@/lib/api/feedback', () => ({
             service: { id: 's2', title: 'Gone service', deleted: true },
           },
         ],
-        meta: { total: 2, page: 1, perPage: 10, totalPages: 1 },
+        meta: { total: 25, page: (filters.page as number) ?? 1, perPage: 10, totalPages: 3 },
       },
     };
   },
   useAdminFeedbackSummary: (filters: Record<string, unknown>) => {
     state.summaryCalls.push(filters);
-    return { isLoading: false, data: state.summary };
+    return { isLoading: false, isError: state.error, data: state.error ? undefined : state.summary };
   },
   downloadFeedbackCsv: vi.fn().mockResolvedValue(undefined),
 }));
 
+import { publishToast } from '@/lib/toast-bus';
 import { downloadFeedbackCsv } from '@/lib/api/feedback';
 
 describe('AdminFeedbackPage', () => {
@@ -78,6 +83,8 @@ describe('AdminFeedbackPage', () => {
     state.listCalls.length = 0;
     state.summaryCalls.length = 0;
     state.summary.total = 3;
+    state.error = false;
+    vi.mocked(publishToast).mockClear();
     vi.mocked(downloadFeedbackCsv).mockClear();
   });
   afterEach(() => {
@@ -142,5 +149,36 @@ describe('AdminFeedbackPage', () => {
     state.summary.total = 0;
     render(<AdminFeedbackPage />);
     expect(screen.getByText('adminFeedback.empty')).toBeInTheDocument();
+  });
+
+  it('toasts an error and re-enables the button when the CSV download fails', async () => {
+    let reject!: (e: Error) => void;
+    vi.mocked(downloadFeedbackCsv).mockReturnValueOnce(new Promise<void>((_, r) => (reject = r)));
+    render(<AdminFeedbackPage />);
+    const button = screen.getByRole('button', { name: 'adminFeedback.downloadCsv' });
+    fireEvent.click(button);
+    expect(button).toBeDisabled();
+    fireEvent.click(button);
+    expect(downloadFeedbackCsv).toHaveBeenCalledTimes(1);
+    reject(new Error('401'));
+    await waitFor(() =>
+      expect(publishToast).toHaveBeenCalledWith({ type: 'error', message: 'adminFeedback.downloadError' }),
+    );
+    await waitFor(() => expect(button).not.toBeDisabled());
+  });
+
+  it('shows an error state instead of the empty state when loading fails', () => {
+    state.error = true;
+    render(<AdminFeedbackPage />);
+    expect(screen.getByRole('alert')).toHaveTextContent('adminFeedback.loadError');
+    expect(screen.queryByText('adminFeedback.empty')).not.toBeInTheDocument();
+  });
+
+  it('resets to page 1 when a filter changes', () => {
+    render(<AdminFeedbackPage />);
+    fireEvent.click(screen.getAllByRole('button', { name: 'admin.pagination.goToPage' })[1]);
+    expect(state.listCalls.at(-1)).toMatchObject({ page: 2 });
+    fireEvent.change(screen.getByLabelText('adminFeedback.filterFound'), { target: { value: 'YES' } });
+    expect(state.listCalls.at(-1)).toMatchObject({ page: 1, found: 'YES' });
   });
 });

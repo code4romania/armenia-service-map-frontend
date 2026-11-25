@@ -1108,6 +1108,8 @@
     "language": "Language",
     "page": "Page / service",
     "deletedService": "deleted",
-    "empty": "No feedback responses yet."
+    "empty": "No feedback responses yet.",
+    "downloadError": "Could not download the CSV. Please try again.",
+    "loadError": "Could not load feedback. Please try again."
   }
 }

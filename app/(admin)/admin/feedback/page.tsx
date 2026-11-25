@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useLocale, useTranslations } from 'next-intl';
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Tooltip, Legend } from 'chart.js';
 import { Bar } from 'react-chartjs-2';
+import { publishToast } from '@/lib/toast-bus';
 import type { ColumnDef } from '@tanstack/react-table';
 import { AdminPanel } from '@/components/admin/admin-surface';
 import { DataTable } from '@/components/admin/data-table';
@@ -55,6 +56,7 @@ export default function AdminFeedbackPage() {
   const [karabakh, setKarabakh] = useState<FeedbackKarabakh | ''>('');
   const [page, setPage] = useState(1);
   const [perPage, setPerPage] = useState(10);
+  const [exporting, setExporting] = useState(false);
   const [expanded, setExpanded] = useState<Set<string>>(new Set());
 
   const filters: FeedbackFilters = useMemo(() => {
@@ -79,8 +81,8 @@ export default function AdminFeedbackPage() {
     };
   }, [preset, customFrom, customTo, found, karabakh]);
 
-  const { data: summary, isLoading: summaryLoading } = useAdminFeedbackSummary(filters);
-  const { data: list, isLoading: listLoading } = useAdminFeedback({ ...filters, page, perPage });
+  const { data: summary, isLoading: summaryLoading, isError: summaryError } = useAdminFeedbackSummary(filters);
+  const { data: list, isLoading: listLoading, isError: listError } = useAdminFeedback({ ...filters, page, perPage });
 
   const resetPage = () => setPage(1);
 
@@ -142,7 +144,20 @@ export default function AdminFeedbackPage() {
   );
 
   const loading = summaryLoading || listLoading;
-  const isEmpty = !loading && (summary?.total ?? 0) === 0;
+  const hasError = !loading && (summaryError || listError);
+  const isEmpty = !loading && !hasError && (summary?.total ?? 0) === 0;
+
+  async function handleDownload() {
+    if (exporting) return;
+    setExporting(true);
+    try {
+      await downloadFeedbackCsv(filters);
+    } catch {
+      publishToast({ type: 'error', message: t('downloadError') });
+    } finally {
+      setExporting(false);
+    }
+  }
 
   return (
     <div className="space-y-6">
@@ -150,8 +165,9 @@ export default function AdminFeedbackPage() {
         <h1 className="text-2xl font-semibold text-[#111827]">{t('title')}</h1>
         <button
           type="button"
-          onClick={() => void downloadFeedbackCsv(filters)}
-          className="rounded-xl bg-[#E8922D] px-3 py-2 text-sm font-semibold text-white transition hover:bg-[#d4801f]"
+          onClick={() => void handleDownload()}
+          disabled={exporting}
+          className="rounded-xl disabled:cursor-not-allowed disabled:opacity-60 bg-[#E8922D] px-3 py-2 text-sm font-semibold text-white transition hover:bg-[#d4801f]"
         >
           {t('downloadCsv')}
         </button>
@@ -244,7 +260,11 @@ export default function AdminFeedbackPage() {
         </label>
       </AdminPanel>
 
-      {isEmpty ? (
+      {hasError ? (
+        <AdminPanel className="p-8 text-center text-sm text-[#991b1b]" role="alert">
+          {t('loadError')}
+        </AdminPanel>
+      ) : isEmpty ? (
         <AdminPanel className="p-8 text-center text-sm text-[#6b7280]">{t('empty')}</AdminPanel>
       ) : summary ? (
         <>
@@ -282,7 +302,7 @@ export default function AdminFeedbackPage() {
         </>
       ) : null}
 
-      {!isEmpty ? (
+      {!isEmpty && !hasError ? (
         <AdminPanel>
           <DataTable
             columns={columns}
