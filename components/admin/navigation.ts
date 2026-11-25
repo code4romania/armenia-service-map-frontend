@@ -1,6 +1,7 @@
 import {
   ArchiveBoxIcon,
   ArrowTrendingUpIcon,
+  ChatBubbleLeftRightIcon,
   HomeIcon,
   InboxIcon,
   MapIcon,
@@ -42,6 +43,7 @@ export const adminNav: AdminNavSection[] = [
       { labelKey: 'needReports', href: '/admin/needs', icon: InboxIcon },
       { labelKey: 'needsMap', href: '/admin/needs/map', icon: MapIcon },
       { labelKey: 'analytics', href: '/admin/analytics', icon: ArrowTrendingUpIcon },
+      { labelKey: 'feedback', href: '/admin/feedback', icon: ChatBubbleLeftRightIcon },
     ],
   },
   {
@@ -67,6 +69,7 @@ export const adminBreadcrumbKeys: Record<string, string> = {
   needs: 'needReports',
   map: 'needsMap',
   analytics: 'analytics',
+  feedback: 'feedback',
   organisations: 'userManagement',
   users: 'users',
   taxonomy: 'taxonomy',

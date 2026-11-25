@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect } from 'react';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { useLocale, useTranslations } from 'next-intl';
@@ -11,6 +12,7 @@ import { useTargetGroupName } from '@/lib/i18n/target-group-name';
 import { useTopicName } from '@/lib/i18n/topic-name';
 import { serviceOrgName } from '@/lib/services/org-name';
 import { SITE_URL } from '@/lib/site';
+import { useFeedbackEngagement } from '@/components/public/feedback/feedback-engagement-context';
 
 export default function PublicServiceDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -24,6 +26,12 @@ export default function PublicServiceDetailPage() {
   const targetGroupName = useTargetGroupName();
 
   const { data: service, isLoading } = usePublicService(id);
+
+  const { reportDetailView, leaveDetailView } = useFeedbackEngagement();
+  useEffect(() => {
+    reportDetailView();
+    return () => leaveDetailView();
+  }, [id, reportDetailView, leaveDetailView]);
 
   if (isLoading) {
     return <ServiceDetailSkeleton />;
