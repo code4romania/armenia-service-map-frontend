@@ -365,3 +365,45 @@ export interface OrgOverviewStats {
   assignedNeeds: number;
   resolvedNeeds: number;
 }
+
+// Public feedback
+export type FeedbackUsefulness = 'NOT_AT_ALL' | 'SLIGHTLY' | 'MODERATELY' | 'VERY' | 'EXTREMELY';
+export type FeedbackFound = 'YES' | 'PARTLY' | 'NO';
+export type FeedbackKarabakh = 'YES' | 'NO' | 'PREFER_NOT_TO_SAY';
+
+export interface SubmitFeedbackPayload {
+  usefulness: FeedbackUsefulness;
+  found: FeedbackFound;
+  lookingFor?: string;
+  fromKarabakh: FeedbackKarabakh;
+  locale: 'hy' | 'en';
+  pagePath: string;
+  serviceId?: string;
+}
+
+export interface FeedbackListItem {
+  id: string;
+  createdAt: string;
+  usefulness: FeedbackUsefulness;
+  found: FeedbackFound;
+  lookingFor: string | null;
+  fromKarabakh: FeedbackKarabakh;
+  locale: string;
+  pagePath: string;
+  service: { id: string; title: string; deleted: boolean } | null;
+}
+
+export interface FeedbackSummary {
+  total: number;
+  withLookingFor: number;
+  usefulness: Record<FeedbackUsefulness, number>;
+  found: Record<FeedbackFound, number>;
+  fromKarabakh: Record<FeedbackKarabakh, number>;
+}
+
+export interface FeedbackFilters {
+  from?: string;
+  to?: string;
+  found?: FeedbackFound;
+  fromKarabakh?: FeedbackKarabakh;
+}

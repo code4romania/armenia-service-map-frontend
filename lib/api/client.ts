@@ -44,14 +44,18 @@ async function refreshAccessToken(): Promise<string | null> {
   }
 }
 
-export async function apiClient<T>(endpoint: string, options: RequestOptions = {}): Promise<T> {
+async function request(
+  endpoint: string,
+  options: RequestOptions,
+  defaultHeaders: Record<string, string>,
+): Promise<Response> {
   const { method = 'GET', body, headers = {} } = options;
 
   let accessToken = await getAccessToken();
 
   const makeRequest = async (token: string | null) => {
     const requestHeaders: Record<string, string> = {
-      'Content-Type': 'application/json',
+      ...defaultHeaders,
       ...headers,
     };
 
@@ -80,10 +84,23 @@ export async function apiClient<T>(endpoint: string, options: RequestOptions = {
     throw new ApiError(response.status, error.message);
   }
 
+  return response;
+}
+
+export async function apiClient<T>(endpoint: string, options: RequestOptions = {}): Promise<T> {
+  const response = await request(endpoint, options, { 'Content-Type': 'application/json' });
+
   // Some endpoints (DELETE, actions) reply 200/204 with no body.
   const text = await response.text();
   if (!text) return undefined as T;
   return JSON.parse(text) as T;
+}
+
+export async function apiDownload(endpoint: string): Promise<{ blob: Blob; filename: string | null }> {
+  const response = await request(endpoint, {}, {});
+  const disposition = response.headers.get('Content-Disposition');
+  const match = disposition?.match(/filename\*?=(?:UTF-8'')?"?([^";]+)"?/i);
+  return { blob: await response.blob(), filename: match ? decodeURIComponent(match[1]) : null };
 }
 
 export class ApiError extends Error {
