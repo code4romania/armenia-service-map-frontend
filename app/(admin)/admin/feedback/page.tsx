@@ -279,7 +279,7 @@ export default function AdminFeedbackPage() {
             </div>
           </section>
 
-          <section className="grid gap-4 xl:grid-cols-3">
+          <section className="grid gap-4">
             <ChartPanel
               title={tf('q1')}
               total={summary.total}
@@ -415,14 +415,19 @@ function ChartPanel({
   return (
     <section className="admin-panel p-5">
       <h2 className="text-base font-semibold text-[#111827]">{title}</h2>
-      <div className="mt-4">
+      {/* Fixed height per option so every (long, Armenian) label stays readable. */}
+      <div className="mt-4" style={{ height: entries.length * 40 + 40 }}>
         <Bar
           data={{ labels, datasets: [{ label: title, data: entries.map((e) => e.count), backgroundColor: color }] }}
           options={{
             indexAxis: 'y',
             responsive: true,
+            maintainAspectRatio: false,
             plugins: { legend: { display: false } },
-            scales: { x: { beginAtZero: true, ticks: { precision: 0 } } },
+            scales: {
+              x: { beginAtZero: true, ticks: { precision: 0 } },
+              y: { ticks: { autoSkip: false } },
+            },
           }}
         />
       </div>
