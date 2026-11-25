@@ -1048,5 +1048,39 @@
       "mismatch": "Passwords do not match.",
       "wrongCurrent": "Your current password is incorrect."
     }
+  },
+  "feedback": {
+    "title": "Help us improve",
+    "intro": "It takes less than a minute.",
+    "q1": "How useful was this information for you?",
+    "q1Options": {
+      "NOT_AT_ALL": "Not at all useful",
+      "SLIGHTLY": "Slightly useful",
+      "MODERATELY": "Moderately useful",
+      "VERY": "Very useful",
+      "EXTREMELY": "Extremely useful"
+    },
+    "q2": "Did you find what you were looking for?",
+    "q2Options": {
+      "YES": "Yes",
+      "PARTLY": "Partly",
+      "NO": "No"
+    },
+    "q21": "If you answered “Partly” or “No”: What were you looking for?",
+    "q3": "Did you or your family move to Armenia from Nagorno-Karabakh?",
+    "q3Options": {
+      "YES": "Yes",
+      "NO": "No",
+      "PREFER_NOT_TO_SAY": "Prefer not to say"
+    },
+    "required": "Please answer this question.",
+    "charCount": "{count}/500",
+    "send": "Send",
+    "sending": "Sending…",
+    "close": "Close",
+    "button": "Feedback",
+    "thanks": "Thank you for your feedback!",
+    "errorGeneric": "Something went wrong. Please try again.",
+    "errorTooMany": "Too many attempts. Please try again later."
   }
 }
