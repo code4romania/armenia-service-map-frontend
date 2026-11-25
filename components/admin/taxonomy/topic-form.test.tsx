@@ -25,6 +25,22 @@ describe('TopicForm', () => {
     expect(onSubmit).not.toHaveBeenCalled();
   });
 
+  it('submits the picked icon and lets it be cleared', async () => {
+    const user = userEvent.setup();
+    const onSubmit = vi.fn();
+    render(<TopicForm mode="create" onSubmit={onSubmit} />);
+
+    await user.type(screen.getByLabelText('entities.serviceTopic'), 'Grants');
+    await user.click(screen.getByRole('button', { name: 'grants' }));
+    expect(screen.getByRole('button', { name: 'grants' })).toHaveAttribute('aria-pressed', 'true');
+    await user.click(screen.getByRole('button', { name: 'saveChanges' }));
+    expect(onSubmit).toHaveBeenLastCalledWith(expect.objectContaining({ icon: 'grants' }));
+
+    await user.click(screen.getByRole('button', { name: 'grants' }));
+    await user.click(screen.getByRole('button', { name: 'saveChanges' }));
+    expect(onSubmit).toHaveBeenLastCalledWith(expect.objectContaining({ icon: '' }));
+  });
+
   it('submits inline switch states for topic and subtopics', async () => {
     const user = userEvent.setup();
     const onSubmit = vi.fn();
