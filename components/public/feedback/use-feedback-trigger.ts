@@ -1,11 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useRef } from 'react';
-import {
-  FEEDBACK_DETAIL_DWELL_MS,
-  FEEDBACK_RESULTS_DWELL_MS,
-  FEEDBACK_SCROLL_PX,
-} from './constants';
+import { FEEDBACK_DETAIL_DWELL_MS, FEEDBACK_RESULTS_DWELL_MS } from './constants';
 
 const TICK_MS = 250;
 const MAX_DELTA_MS = 1_000;
@@ -37,9 +33,9 @@ function isBlocked(): boolean {
 
 /**
  * Implements the feedback "Trigger rules": fires onTrigger once per mount when
- * either the detail-view dwell or the results interaction + scroll + dwell
- * condition is met (visible-tab time only), and no input/modal is blocking.
- * The results rule only counts dwell and scroll while /services is mounted
+ * either the detail-view dwell or the results interaction + dwell condition is
+ * met (visible-tab time only), and no input/modal is blocking.
+ * The results rule only counts dwell while /services is mounted
  * (reportResultsView / leaveResultsView).
  */
 export function useFeedbackTrigger({ enabled, onTrigger }: Options) {
@@ -53,25 +49,20 @@ export function useFeedbackTrigger({ enabled, onTrigger }: Options) {
   const resultsActiveRef = useRef(false);
   const resultsStartedRef = useRef(false);
   const resultsVisibleMsRef = useRef(0);
-  const scrollMaxRef = useRef(0);
   const detailActiveRef = useRef(false);
   const detailVisibleMsRef = useRef(0);
 
   const reportResultsInteraction = useCallback(() => {
     // Interactions only come from the results page, so we are on it.
     resultsActiveRef.current = true;
-    if (!resultsStartedRef.current) {
-      resultsStartedRef.current = true;
-      // Scroll done before the first interaction still counts.
-      scrollMaxRef.current = Math.max(scrollMaxRef.current, window.scrollY);
-    }
+    resultsStartedRef.current = true;
   }, []);
   const reportResultsView = useCallback(() => {
     resultsActiveRef.current = true;
   }, []);
   // Leaving /services pauses the results rule. Returning resumes it: the
-  // accumulated dwell and max scroll are kept (not reset), so progress made on
-  // the results page is not lost by a quick detour to a service detail page.
+  // accumulated dwell is kept (not reset), so progress made on the results
+  // page is not lost by a quick detour to a service detail page.
   const leaveResultsView = useCallback(() => {
     resultsActiveRef.current = false;
   }, []);
@@ -85,12 +76,6 @@ export function useFeedbackTrigger({ enabled, onTrigger }: Options) {
 
   useEffect(() => {
     if (!enabled) return;
-
-    const onScroll = () => {
-      if (!resultsStartedRef.current || !resultsActiveRef.current) return;
-      scrollMaxRef.current = Math.max(scrollMaxRef.current, window.scrollY);
-    };
-    window.addEventListener('scroll', onScroll, { passive: true });
 
     let last = Date.now();
     // Hidden tabs throttle timers; never credit the gap across a visibility change.
@@ -117,7 +102,6 @@ export function useFeedbackTrigger({ enabled, onTrigger }: Options) {
       const resultsReady =
         resultsActiveRef.current &&
         resultsStartedRef.current &&
-        scrollMaxRef.current >= FEEDBACK_SCROLL_PX &&
         resultsVisibleMsRef.current >= FEEDBACK_RESULTS_DWELL_MS;
 
       if ((detailReady || resultsReady) && !isBlocked()) {
@@ -129,7 +113,6 @@ export function useFeedbackTrigger({ enabled, onTrigger }: Options) {
 
     return () => {
       window.clearInterval(id);
-      window.removeEventListener('scroll', onScroll);
       document.removeEventListener('visibilitychange', onVisibility);
     };
   }, [enabled]);
