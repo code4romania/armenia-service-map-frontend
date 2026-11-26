@@ -48,11 +48,11 @@ tokens, and pins the UI language to English (`locale` cookie). It also writes a 
 - **Admin** (`admin-smoke`, `admin-crud`): every admin page loads; organisations / users /
   topics surface in the list UI after an API create; target-groups / need-tags API round-trip;
   the pending-organisation approval workflow; a public-submitted need appears in the admin list.
-- **Feedback** (`public-feedback`, `admin-feedback`): homepage search → `/services` → scroll →
-  the pop-up opens, is answered and sent, and stays gone (no pop-up, no pill) after a reload;
+- **Feedback** (`public-feedback`, `admin-feedback`): homepage search → `/services` →
+  the pop-up opens right away, is answered and sent, and stays gone (no pop-up, no pill) after a reload;
   a seeded response is listed on `/admin/feedback` and "Download CSV" saves
   `feedback-YYYY-MM-DD.csv`. Playwright's dev server sets `NEXT_PUBLIC_FEEDBACK_TEST_DWELL_MS=1000`
-  so the pop-up dwell is 1 s instead of 15/30 s (start your own server with it if you reuse one).
+  (the production default is also 1 s; start your own server with it if you reuse one).
 - **Org** (`org-admin-smoke`, `org-admin-access`): every org page loads; an org user visiting
   `/admin` is redirected to `/org/dashboard`.
 
