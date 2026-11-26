@@ -18,12 +18,9 @@ test.describe('Public feedback pop-up', () => {
     await expect(page).toHaveURL(/\/services/);
     await expect(page.getByRole('heading', { level: 1, name: 'Explore services' })).toBeVisible();
 
+    // The homepage search counts as the visitor's own lookup: the pop-up opens
+    // right away on /services, no scrolling needed.
     const dialog = page.getByRole('dialog', { name: 'Help us improve' });
-    await expect(dialog).toHaveCount(0);
-
-    // Trigger needs >= 300 px of scroll plus the (shortened) dwell.
-    await page.mouse.wheel(0, 800);
-    await expect.poll(() => page.evaluate(() => window.scrollY)).toBeGreaterThanOrEqual(300);
     await expect(dialog).toBeVisible({ timeout: 10_000 });
 
     await dialog
