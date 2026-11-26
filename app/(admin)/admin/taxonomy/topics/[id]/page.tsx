@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
+import { useTopicName } from '@/lib/i18n/topic-name';
 import { AdminPanel } from '@/components/admin/admin-surface';
 import { TopicSubtopicsTable } from '@/components/admin/taxonomy/topic-subtopics-table';
 import { TaxonomyPageHeader } from '@/components/admin/taxonomy/taxonomy-page-header';
@@ -17,6 +18,7 @@ export default function TopicDetailPage() {
   const updateTopic = useUpdateTopic();
   const t = useTranslations('admin.taxonomy');
   const tStatuses = useTranslations('admin.statuses');
+  const topicName = useTopicName();
 
   if (isLoading) return <DetailPageLoadingSkeleton />;
   if (!topic) return <div className="p-8 text-[#6b7280]">{t('pages.topicNotFound')}</div>;
@@ -24,7 +26,7 @@ export default function TopicDetailPage() {
   return (
     <div className="space-y-6">
       <TaxonomyPageHeader
-        title={topic.name}
+        title={topicName(topic)}
         action={{ href: `/admin/taxonomy/topics/${id}/edit`, label: t('pages.editTopicAction') }}
       />
 
